@@ -1,8 +1,0 @@
-title: Server Setup Scripts
-description: Automated scripts for server deployment and configuration
-theme: jekyll-theme-cayman
-show_downloads: true
-google_analytics:
-baseurl: ""
-url: "https://ls.r-u.live"
-domain: ls.r-u.live
