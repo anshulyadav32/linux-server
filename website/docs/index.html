@@ -271,14 +271,14 @@ sudo ./modules/system/review-logs.sh</code></pre>
                     
                     <h3>Module Customization</h3>
                     <p>Each module can be customized by modifying its configuration files:</p>
-                    <pre><code># Edit web module configuration
-sudo nano modules/web/config.conf
+                    <pre><code># Edit SSL module configuration
+sudo nano modules/ssl/config.conf
 
 # Customize mail server settings
 sudo nano modules/mail/mail.conf
 
 # Modify database parameters
-sudo nano modules/db/database.conf</code></pre>
+sudo nano modules/database/database.conf</code></pre>
                     
                     <h3>Workflow Modification</h3>
                     <p>Automation workflows can be customized by editing the interdependent.sh script:</p>
@@ -329,14 +329,14 @@ sudo ./modules/MODULE_NAME/install.sh --deps-only</code></pre>
                     
                     <h3>Service Issues</h3>
                     <dl>
-                        <dt>Web server not starting</dt>
+                        <dt>SSL certificate issues</dt>
                         <dd>
-                            <p>Check web module status and logs:</p>
+                            <p>Check SSL module status and logs:</p>
                             <pre><code># Module status
-sudo ./modules/web/test.sh --status
+sudo ./modules/ssl/test.sh --status
 
-# View service logs
-sudo ./modules/web/test.sh --logs</code></pre>
+# View certificate logs
+sudo ./modules/ssl/test.sh --logs</code></pre>
                         </dd>
                         
                         <dt>Mail server configuration errors</dt>
@@ -345,8 +345,8 @@ sudo ./modules/web/test.sh --logs</code></pre>
                             <pre><code># Test mail configuration
 sudo ./modules/mail/test.sh --validate
 
-# Check DNS records
-sudo ./modules/dns/test.sh --check-mx</code></pre>
+# Check firewall rules
+sudo ./modules/firewall/test.sh --check-rules</code></pre>
                         </dd>
                     </dl>
                     
