@@ -355,14 +355,16 @@ check_webserver_requirements() {
     
     # Check minimum system requirements
     local total_memory=$(get_total_memory)
+    log_info "Total system memory: ${total_memory}MB"
     if [[ $total_memory -lt 1024 ]]; then
         log_warning "Low memory detected: ${total_memory}MB. Recommended: 1GB+"
     fi
     
-    # Check disk space
+    # Check disk space (need at least 2GB)
     local available_space=$(get_available_space "/")
-    if [[ $available_space -lt 2048 ]]; then
-        log_error "Insufficient disk space. Need at least 2GB available"
+    log_info "Available disk space: ${available_space}GB"
+    if [[ $available_space -lt 2 ]]; then
+        log_error "Insufficient disk space. Need at least 2GB available, found ${available_space}GB"
         exit 1
     fi
     
