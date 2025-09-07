@@ -98,6 +98,36 @@ section {
     transform: translateY(-5px);
 }
 
+pre {
+    background-color: #333;
+    color: white;
+    padding: 1rem;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: monospace;
+    margin: 1rem 0;
+}
+
+code {
+    font-family: monospace;
+}
+
+.btn {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-top: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: var(--secondary-color);
+}
+
 .btn {
     display: inline-block;
     background-color: var(--primary-color);
@@ -166,4 +196,14 @@ footer a:hover {
     .tagline {
         font-size: 1rem;
     }
+}
+
+.yes {
+    color: var(--success-color);
+    font-weight: bold;
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    background-color: rgba(40, 167, 69, 0.1);
+    border: 1px solid var(--success-color);
 }
