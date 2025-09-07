@@ -3,7 +3,7 @@
 # Purpose: Install and configure comprehensive backup system
 
 # Quick install from remote source
-# curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+# curl -sSL ls.r-u.live/sh/backup.sh | sudo bash
 
 set -e
 

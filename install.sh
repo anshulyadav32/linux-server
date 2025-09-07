@@ -1,7 +1,6 @@
 #!/bin/bash
-# Comprehensive Automated Web Server Installation Script
-# This script installs everything required for a complete web server setup
-# with checkpoints, testing, and verification
+# Complete Server Management System Installer
+# Quick install: curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
 
 set -e  # Exit on any error
 
@@ -15,16 +14,88 @@ CYAN='\033[0;36m'
 WHITE='\033[1;37m'
 NC='\033[0m' # No Color
 
+echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
+echo -e "${WHITE}           COMPLETE SERVER MANAGEMENT SYSTEM                   ${NC}"
+echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
+echo -e "${GREEN}Quick Install: ${CYAN}curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
+echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
+echo ""
+echo -e "${WHITE}Available Modules:${NC}"
+echo ""
+echo -e "${CYAN}🔐 SSL Certificates${NC}"
+echo -e "${WHITE}   Let's Encrypt automation with multi-domain support${NC}"
+echo -e "${YELLOW}   ./modules/ssl/menu.sh${NC}"
+echo ""
+echo -e "${CYAN}✉️  Mail System${NC}"
+echo -e "${WHITE}   Postfix, Dovecot, Roundcube with DKIM/SPF/DMARC${NC}"
+echo -e "${YELLOW}   ./modules/mail/menu.sh${NC}"
+echo ""
+echo -e "${CYAN}🗄️  Database${NC}"
+echo -e "${WHITE}   PostgreSQL, MariaDB, MongoDB with backup automation${NC}"
+echo -e "${YELLOW}   ./modules/database/menu.sh${NC}"
+echo ""
+echo -e "${CYAN}🔒 Firewall & Security${NC}"
+echo -e "${WHITE}   UFW, Fail2Ban, ClamAV with security auditing${NC}"
+echo -e "${YELLOW}   ./modules/firewall/menu.sh${NC}"
+echo ""
+echo -e "${CYAN}💾 Backup System${NC}"
+echo -e "${WHITE}   Automated backups with encryption and remote sync${NC}"
+echo -e "${YELLOW}   ./modules/backup/menu.sh${NC}"
+echo ""
+echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
+
 # Installation tracking
-INSTALL_LOG="/var/log/web-server-install.log"
+INSTALL_LOG="/var/log/server-management-install.log"
 COMPONENTS_INSTALLED=()
 COMPONENTS_FAILED=()
-TOTAL_STEPS=20
+TOTAL_STEPS=15
 CURRENT_STEP=0
 
 # Create log file
 mkdir -p "$(dirname "$INSTALL_LOG")"
 touch "$INSTALL_LOG"
+
+echo ""
+echo -e "${WHITE}Installation Options:${NC}"
+echo -e "${GREEN}1)${NC} Quick Install All Modules (Recommended)"
+echo -e "${GREEN}2)${NC} Custom Module Selection"
+echo -e "${GREEN}3)${NC} Individual Module Installation"
+echo -e "${GREEN}4)${NC} Exit"
+echo ""
+read -p "Select installation option (1-4): " install_option
+
+case $install_option in
+    1)
+        echo -e "${GREEN}Starting complete server management system installation...${NC}"
+        INSTALL_ALL=true
+        ;;
+    2)
+        echo -e "${YELLOW}Custom module selection mode${NC}"
+        INSTALL_ALL=false
+        # Will add module selection logic
+        ;;
+    3)
+        echo -e "${BLUE}Individual module installation${NC}"
+        echo -e "${YELLOW}Available commands:${NC}"
+        echo -e "${CYAN}./modules/ssl/install.sh${NC}     - SSL Certificates"
+        echo -e "${CYAN}./modules/mail/install.sh${NC}    - Mail System"
+        echo -e "${CYAN}./modules/database/install.sh${NC} - Database"
+        echo -e "${CYAN}./modules/firewall/install.sh${NC} - Firewall & Security"
+        echo -e "${CYAN}./modules/backup/install.sh${NC}   - Backup System"
+        echo ""
+        echo -e "${YELLOW}Or use the quick install command:${NC}"
+        echo -e "${CYAN}curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
+        exit 0
+        ;;
+    4)
+        echo -e "${YELLOW}Installation cancelled${NC}"
+        exit 0
+        ;;
+    *)
+        echo -e "${RED}Invalid option. Please run the script again.${NC}"
+        exit 1
+        ;;
+esac
 
 #===========================================
 # UTILITY FUNCTIONS
@@ -857,8 +928,6 @@ EOF
 
 # Installation summary
 show_installation_summary() {
-    show_progress 14 "Installation Summary"
-    
     echo ""
     echo -e "${WHITE}═══════════════════════════════════════════════════════════${NC}"
     echo -e "${WHITE}              INSTALLATION SUMMARY REPORT${NC}"
@@ -867,7 +936,7 @@ show_installation_summary() {
     
     # Show successful installations
     if [[ ${#COMPONENTS_INSTALLED[@]} -gt 0 ]]; then
-        echo -e "${GREEN}✓ SUCCESSFULLY INSTALLED (${#COMPONENTS_INSTALLED[@]} components):${NC}"
+        echo -e "${GREEN}✓ SUCCESSFULLY INSTALLED MODULES (${#COMPONENTS_INSTALLED[@]}):${NC}"
         for component in "${COMPONENTS_INSTALLED[@]}"; do
             echo -e "  ${GREEN}✓${NC} $component"
         done
@@ -876,7 +945,7 @@ show_installation_summary() {
     
     # Show failed installations
     if [[ ${#COMPONENTS_FAILED[@]} -gt 0 ]]; then
-        echo -e "${RED}✗ FAILED INSTALLATIONS (${#COMPONENTS_FAILED[@]} components):${NC}"
+        echo -e "${RED}✗ FAILED MODULE INSTALLATIONS (${#COMPONENTS_FAILED[@]}):${NC}"
         for component in "${COMPONENTS_FAILED[@]}"; do
             echo -e "  ${RED}✗${NC} $component"
         done
@@ -885,28 +954,30 @@ show_installation_summary() {
     
     # System information
     echo -e "${BLUE}📊 SYSTEM INFORMATION:${NC}"
-    echo -e "  OS: $(lsb_release -d | cut -f2)"
+    echo -e "  OS: $(lsb_release -d 2>/dev/null | cut -f2 || echo "Unknown")"
     echo -e "  Kernel: $(uname -r)"
     echo -e "  Architecture: $(uname -m)"
-    echo -e "  Memory: $(free -h | grep Mem | awk '{print $2}')"
-    echo -e "  Disk Space: $(df -h / | tail -1 | awk '{print $4}') available"
+    echo -e "  Memory: $(free -h 2>/dev/null | grep Mem | awk '{print $2}' || echo "Unknown")"
+    echo -e "  Disk Space: $(df -h / 2>/dev/null | tail -1 | awk '{print $4}' || echo "Unknown") available"
     echo ""
     
-    # Service status
-    echo -e "${BLUE}🔧 SERVICE STATUS:${NC}"
-    local services=("apache2" "mysql" "redis-server" "fail2ban")
-    for service in "${services[@]}"; do
-        if systemctl is-active --quiet "$service" 2>/dev/null; then
-            echo -e "  ${GREEN}✓${NC} $service: Running"
-        elif systemctl is-enabled "$service" >/dev/null 2>&1; then
-            echo -e "  ${YELLOW}○${NC} $service: Installed but not running"
-        else
-            echo -e "  ${RED}✗${NC} $service: Not installed"
-        fi
-    done
+    # Quick access commands
+    echo -e "${BLUE}🔧 QUICK ACCESS COMMANDS:${NC}"
+    echo -e "  ${CYAN}./master.sh${NC}                    - Main management interface"
+    echo -e "  ${CYAN}./modules/ssl/menu.sh${NC}           - SSL Certificate management"
+    echo -e "  ${CYAN}./modules/mail/menu.sh${NC}          - Mail system management"
+    echo -e "  ${CYAN}./modules/database/menu.sh${NC}      - Database management"
+    echo -e "  ${CYAN}./modules/firewall/menu.sh${NC}      - Firewall & Security management"
+    echo -e "  ${CYAN}./modules/backup/menu.sh${NC}        - Backup system management"
     echo ""
     
-    # Network information
+    # Installation log
+    echo -e "${BLUE}📋 INSTALLATION LOG:${NC}"
+    echo -e "  Log file: ${INSTALL_LOG}"
+    echo -e "  View log: ${CYAN}tail -f ${INSTALL_LOG}${NC}"
+    echo ""
+    
+    echo -e "${WHITE}═══════════════════════════════════════════════════════════${NC}"
     echo -e "${BLUE}🌐 NETWORK INFORMATION:${NC}"
     local server_ip=$(curl -s ipinfo.io/ip 2>/dev/null || echo "Unable to detect")
     echo -e "  Server IP: $server_ip"
@@ -969,27 +1040,29 @@ show_installation_summary() {
 main() {
     clear
     echo -e "${CYAN}════════════════════════════════════════════════════════════════════${NC}"
-    echo -e "${WHITE}                    AUTOMATED WEB SERVER INSTALLER${NC}"
-    echo -e "${WHITE}           Complete LAMP Stack with Security & Optimization${NC}"
+    echo -e "${WHITE}            COMPLETE SERVER MANAGEMENT SYSTEM INSTALLER${NC}"
+    echo -e "${WHITE}        5 Specialized Modules for Professional Server Setup${NC}"
     echo -e "${CYAN}════════════════════════════════════════════════════════════════════${NC}"
     echo ""
-    echo -e "${WHITE}This script will install and configure:${NC}"
-    echo -e "  ${GREEN}✓${NC} Apache Web Server with SSL support"
-    echo -e "  ${GREEN}✓${NC} PHP with essential extensions"
-    echo -e "  ${GREEN}✓${NC} MySQL Database Server"
-    echo -e "  ${GREEN}✓${NC} Redis Cache Server"
-    echo -e "  ${GREEN}✓${NC} SSL/TLS certificates (Let's Encrypt)"
-    echo -e "  ${GREEN}✓${NC} UFW Firewall with security rules"
-    echo -e "  ${GREEN}✓${NC} Fail2Ban intrusion prevention"
-    echo -e "  ${GREEN}✓${NC} Performance optimization"
-    echo -e "  ${GREEN}✓${NC} Development and monitoring tools"
-    echo -e "  ${GREEN}✓${NC} Automated security configurations"
+    echo -e "${WHITE}This system will install and configure:${NC}"
+    echo -e "  ${GREEN}🔐${NC} SSL Certificates - Let's Encrypt automation with multi-domain support"
+    echo -e "  ${GREEN}✉️${NC}  Mail System - Postfix, Dovecot, Roundcube with DKIM/SPF/DMARC"
+    echo -e "  ${GREEN}🗄️${NC}  Database - PostgreSQL, MariaDB, MongoDB with backup automation"
+    echo -e "  ${GREEN}🔒${NC} Firewall & Security - UFW, Fail2Ban, ClamAV with security auditing"
+    echo -e "  ${GREEN}💾${NC} Backup System - Automated backups with encryption and remote sync"
     echo ""
     echo -e "${YELLOW}⚠ This script requires sudo privileges and will modify system configuration${NC}"
+    echo -e "${BLUE}💡 Quick install command: curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
     echo ""
     
+    # Only proceed if INSTALL_ALL is true (from menu selection)
+    if [[ "$INSTALL_ALL" != "true" ]]; then
+        echo -e "${YELLOW}Custom installation mode - use menu options above${NC}"
+        return 0
+    fi
+    
     # Confirm installation
-    read -p "Do you want to proceed with the installation? [y/N]: " -n 1 -r
+    read -p "Do you want to proceed with the complete installation? [y/N]: " -n 1 -r
     echo ""
     
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -1005,30 +1078,97 @@ main() {
     fi
     
     # Start installation
-    echo -e "${GREEN}Starting automated web server installation...${NC}"
+    echo -e "${GREEN}Starting complete server management system installation...${NC}"
     sleep 2
     
-    # Run installation steps
-    prepare_system
-    install_webserver
-    install_php
-    install_databases
-    install_ssl
-    install_security
-    install_development_tools
-    install_monitoring
-    install_php_extensions
-    install_performance_tools
-    optimize_performance
-    create_default_website
-    final_configuration
-    show_installation_summary
+    # Run modular installation
+    install_system_modules
     
     # Final message
-    echo -e "${GREEN}🎉 Installation completed successfully!${NC}"
-    echo -e "${WHITE}You can now access your website at: http://localhost${NC}"
+    echo -e "${GREEN}🎉 Complete Server Management System Installation Completed!${NC}"
+    echo -e "${WHITE}Available Management Commands:${NC}"
+    echo -e "  ${CYAN}./master.sh${NC}                    - Main management interface"
+    echo -e "  ${CYAN}./modules/ssl/menu.sh${NC}           - SSL Certificate management"
+    echo -e "  ${CYAN}./modules/mail/menu.sh${NC}          - Mail system management"
+    echo -e "  ${CYAN}./modules/database/menu.sh${NC}      - Database management"
+    echo -e "  ${CYAN}./modules/firewall/menu.sh${NC}      - Firewall & Security management"
+    echo -e "  ${CYAN}./modules/backup/menu.sh${NC}        - Backup system management"
     echo ""
-    echo -e "${CYAN}Thank you for using the Automated Web Server Installer!${NC}"
+    echo -e "${BLUE}Quick Install Command: curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
+    echo -e "${CYAN}Thank you for using the Complete Server Management System!${NC}"
+}
+
+# Install all system modules
+install_system_modules() {
+    local script_dir="$(dirname "$0")"
+    
+    # Module 1: SSL Certificates
+    if [[ -f "$script_dir/modules/ssl/install.sh" ]]; then
+        show_progress 1 "Installing SSL Certificate Module"
+        echo -e "${BLUE}🔐 SSL Certificates - Let's Encrypt automation with multi-domain support${NC}"
+        if bash "$script_dir/modules/ssl/install.sh"; then
+            show_success "SSL Certificate module installed successfully"
+            COMPONENTS_INSTALLED+=("SSL Certificates")
+        else
+            show_error "SSL Certificate module installation failed"
+            COMPONENTS_FAILED+=("SSL Certificates")
+        fi
+    fi
+    
+    # Module 2: Mail System
+    if [[ -f "$script_dir/modules/mail/install.sh" ]]; then
+        show_progress 2 "Installing Mail System Module"
+        echo -e "${BLUE}✉️ Mail System - Postfix, Dovecot, Roundcube with DKIM/SPF/DMARC${NC}"
+        if bash "$script_dir/modules/mail/install.sh"; then
+            show_success "Mail System module installed successfully"
+            COMPONENTS_INSTALLED+=("Mail System")
+        else
+            show_error "Mail System module installation failed"
+            COMPONENTS_FAILED+=("Mail System")
+        fi
+    fi
+    
+    # Module 3: Database
+    if [[ -f "$script_dir/modules/database/install.sh" ]]; then
+        show_progress 3 "Installing Database Module"
+        echo -e "${BLUE}🗄️ Database - PostgreSQL, MariaDB, MongoDB with backup automation${NC}"
+        if bash "$script_dir/modules/database/install.sh"; then
+            show_success "Database module installed successfully"
+            COMPONENTS_INSTALLED+=("Database")
+        else
+            show_error "Database module installation failed"
+            COMPONENTS_FAILED+=("Database")
+        fi
+    fi
+    
+    # Module 4: Firewall & Security
+    if [[ -f "$script_dir/modules/firewall/install.sh" ]]; then
+        show_progress 4 "Installing Firewall & Security Module"
+        echo -e "${BLUE}🔒 Firewall & Security - UFW, Fail2Ban, ClamAV with security auditing${NC}"
+        if bash "$script_dir/modules/firewall/install.sh"; then
+            show_success "Firewall & Security module installed successfully"
+            COMPONENTS_INSTALLED+=("Firewall & Security")
+        else
+            show_error "Firewall & Security module installation failed"
+            COMPONENTS_FAILED+=("Firewall & Security")
+        fi
+    fi
+    
+    # Module 5: Backup System
+    if [[ -f "$script_dir/modules/backup/install.sh" ]]; then
+        show_progress 5 "Installing Backup System Module"
+        echo -e "${BLUE}💾 Backup System - Automated backups with encryption and remote sync${NC}"
+        if bash "$script_dir/modules/backup/install.sh"; then
+            show_success "Backup System module installed successfully"
+            COMPONENTS_INSTALLED+=("Backup System")
+        else
+            show_error "Backup System module installation failed"
+            COMPONENTS_FAILED+=("Backup System")
+        fi
+    fi
+    
+    # Show installation summary
+    show_installation_summary
 }
 
 # Script execution

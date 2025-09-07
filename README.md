@@ -43,50 +43,57 @@ Linux Setup is a **complete server management platform** that automates the inst
 
 ### **🔥 Quick Installation Methods**
 
-#### **⚡ One-Line Remote Installation:**
+#### **⚡ Complete System Installation:**
 ```bash
-# Install complete server stack from live repository
+# Install all 5 modules with one command
 curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
 ```
 
-#### **📦 Local Installation:**
+#### **🎯 Individual Module Installation:**
+
+##### **🔐 SSL Certificates Module**
 ```bash
-# Clone and install locally
-git clone https://github.com/anshulyadav32/linux-setup.git
-cd linux-setup
-sudo ./install.sh
+# Install SSL components with Let's Encrypt automation
+curl -sSL ls.r-u.live/modules/ssl/install.sh | sudo bash
+```
+
+##### **✉️ Mail System Module**
+```bash
+# Install mail components (Postfix, Dovecot, Roundcube)
+curl -sSL ls.r-u.live/modules/mail/install.sh | sudo bash
+```
+
+##### **🗄️ Database Module**
+```bash
+# Install database components (PostgreSQL, MariaDB, MongoDB)
+curl -sSL ls.r-u.live/modules/database/install.sh | sudo bash
+```
+
+##### **🔒 Firewall & Security Module**
+```bash
+# Install security components (UFW, Fail2Ban, ClamAV)
+curl -sSL ls.r-u.live/modules/firewall/install.sh | sudo bash
+```
+
+##### **💾 Backup System Module**
+```bash
+# Install backup components with encryption
+curl -sSL ls.r-u.live/modules/backup/install.sh | sudo bash
 ```
 
 **What this does:**
-- Downloads and runs the automated installer
+- Downloads and runs the automated installer from live repository
 - Installs all 25+ components with verification
 - Configures security, SSL, and performance optimization
 - Creates professional server management system
 - Takes 10-15 minutes for complete setup
 
-#### **🔧 Individual Module Installation:**
+### **�️ Local Development Installation:**
 ```bash
-# Each module includes the quick install command
-# SSL Module
-./modules/ssl/install.sh
-
-# Mail Module  
-./modules/mail/install.sh
-
-# Database Module
-./modules/database/install.sh
-
-# Firewall Module
-./modules/firewall/install.sh
-
-# Backup Module
-./modules/backup/install.sh
-```
-
-#### **Quick Component Install:**
-```bash
-# Install specific components only
-curl -sSL ls.r-u.live/sh/s1.sh | sudo bash -s -- --components="ssl,mail,database"
+# For customization and development
+git clone https://github.com/anshulyadav32/linux-setup.git
+cd linux-setup
+sudo ./install.sh
 ```
 
 ---
@@ -159,19 +166,13 @@ The system is organized into **5 specialized modules**, each handling essential 
 - **Auto-renewal** system
 - **Certificate monitoring**
 
-#### **Quick Guide:**
+#### **Quick Install:**
 ```bash
 # Install SSL components
-sudo ./modules/ssl/install.sh
+curl -sSL ls.r-u.live/modules/ssl/install.sh | sudo bash
 
-# Access SSL management
-sudo ./modules/ssl/menu.sh
-
-# Quick actions:
-# 1. Install SSL certificate → Option 1
-# 2. Setup auto-renewal     → Option 2
-# 3. Validate certificates  → Option 3
-# 4. Monitor SSL status     → Option 4
+# Access SSL management (after installation)
+./modules/ssl/menu.sh
 ```
 
 ---
@@ -186,19 +187,18 @@ sudo ./modules/ssl/menu.sh
 - **Anti-spam** protection (SpamAssassin)
 - **Webmail** interfaces (Roundcube)
 
-#### **Quick Guide:**
+#### **Quick Install:**
 ```bash
 # Install mail components
-sudo ./modules/mail/install.sh
+curl -sSL ls.r-u.live/modules/mail/install.sh | sudo bash
+
+# Access mail management (after installation)
+./modules/mail/menu.sh
+```
 
 # Access mail management
-sudo ./modules/mail/menu.sh
-
-# Quick actions:
-# 1. Install mail server    → Option 1
-# 2. Create email accounts  → Option 2
-# 3. Configure security     → Option 3
-# 4. Setup webmail         → Option 4
+# Access mail management (after installation)
+./modules/mail/menu.sh
 ```
 
 ---
@@ -213,52 +213,18 @@ sudo ./modules/mail/menu.sh
 - **Database backup** and restore tools
 - **Performance monitoring** and optimization
 
-#### **Quick Guide:**
+#### **Quick Install:**
 ```bash
 # Install database components
-sudo ./modules/database/install.sh
+curl -sSL ls.r-u.live/modules/database/install.sh | sudo bash
 
-# Access database management
-sudo ./modules/database/menu.sh
-
-# Quick actions:
-# 1. Install PostgreSQL     → Option 1
-# 2. Install MariaDB        → Option 2
-# 3. Install MongoDB        → Option 3
-# 4. Setup database backup  → Option 4
+# Access database management (after installation)
+./modules/database/menu.sh
 ```
 
 ---
 
-
-### **✉️ Mail Module**
-**Purpose**: Complete mail server with Postfix, Dovecot, and security features.
-
-#### **Components:**
-- **Postfix** SMTP server
-- **Dovecot** IMAP/POP3 server
-- **DKIM, SPF, DMARC** authentication
-- **Anti-spam** protection (SpamAssassin)
-- **Webmail** interfaces (Roundcube)
-
-#### **Quick Guide:**
-```bash
-# Install mail components
-sudo ./modules/mail/install.sh
-
-# Access mail management
-sudo ./modules/mail/menu.sh
-
-# Quick actions:
-# 1. Install mail server    → Option 1
-# 2. Create email accounts  → Option 2
-# 3. Configure security     → Option 3
-# 4. Setup webmail         → Option 4
-```
-
----
-
-### **🔒 Firewall Module**
+### **🔒 Firewall & Security Module**
 **Purpose**: Advanced security management with firewall, intrusion prevention, and monitoring.
 
 #### **Components:**
@@ -268,51 +234,18 @@ sudo ./modules/mail/menu.sh
 - **Security auditing** tools
 - **Real-time monitoring**
 
-#### **Quick Guide:**
+#### **Quick Install:**
 ```bash
 # Install security components
-sudo ./modules/firewall/install.sh
+curl -sSL ls.r-u.live/modules/firewall/install.sh | sudo bash
 
-# Access security management
-sudo ./modules/firewall/menu.sh
-
-# Quick actions:
-# 1. Configure firewall     → Option 1
-# 2. Setup intrusion prevention → Option 2
-# 3. Run security audit     → Option 3
-# 4. Monitor security logs  → Option 4
+# Access security management (after installation)
+./modules/firewall/menu.sh
 ```
 
 ---
 
-### **🔐 SSL Module**
-**Purpose**: SSL/TLS certificate management with Let's Encrypt automation.
-
-#### **Components:**
-- **Let's Encrypt** certificate automation
-- **Self-signed** certificate generation
-- **Multi-domain** certificate support
-- **Auto-renewal** system
-- **Certificate monitoring**
-
-#### **Quick Guide:**
-```bash
-# Install SSL components
-sudo ./modules/ssl/install.sh
-
-# Access SSL management
-sudo ./modules/ssl/menu.sh
-
-# Quick actions:
-# 1. Install SSL certificate → Option 1
-# 2. Setup auto-renewal     → Option 2
-# 3. Validate certificates  → Option 3
-# 4. Monitor SSL status     → Option 4
-```
-
----
-
-### **💾 Backup Module**
+### **💾 Backup System Module**
 **Purpose**: Comprehensive backup and restore system for all server components.
 
 #### **Components:**
@@ -322,19 +255,13 @@ sudo ./modules/ssl/menu.sh
 - **Point-in-time** restore
 - **Backup monitoring** and verification
 
-#### **Quick Guide:**
+#### **Quick Install:**
 ```bash
 # Install backup components
-sudo ./modules/backup/install.sh
+curl -sSL ls.r-u.live/modules/backup/install.sh | sudo bash
 
-# Access backup management
-sudo ./modules/backup/menu.sh
-
-# Quick actions:
-# 1. Configure backups      → Option 1
-# 2. Create backup now      → Option 2
-# 3. Restore from backup    → Option 3
-# 4. Schedule automated backups → Option 4
+# Access backup management (after installation)
+./modules/backup/menu.sh
 ```
 
 ---
