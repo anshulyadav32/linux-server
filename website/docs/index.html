@@ -72,7 +72,7 @@ sudo ./server-installer.sh</code></pre>
                     <h4>⚡ One-Line Quick Setup</h4>
                     <pre><code>curl -sSL <span class="domain-url">ls.r-u.live</span>/sh/s1.sh | sudo bash</code></pre>
                     
-                    <p>Both methods install the complete system with all 8 service modules and 12 automation workflows.</p>
+                    <p>Both methods install the complete system with all 5 service modules and essential automation workflows.</p>
                 </section>
                 
                 <section id="modular-architecture">
@@ -90,34 +90,23 @@ sudo ./server-installer.sh</code></pre>
                     <h3>Module Structure</h3>
                     <p>Each module follows a standardized interface:</p>
                     <pre><code>modules/
-├── web/          # Web server management
-├── dns/          # DNS configuration
-├── mail/         # Mail server setup
-├── db/           # Database management
-├── firewall/     # Security and firewall
 ├── ssl/          # SSL/TLS certificate management
-├── system/       # System optimization
+├── mail/         # Mail server setup
+├── database/     # Database management
+├── firewall/     # Security and firewall
 └── backup/       # Backup and recovery</code></pre>
                 </section>
                 
                 <section id="service-modules">
                     <h2>Service Modules</h2>
-                    <p>The system includes 8 specialized service modules, each responsible for specific server functions:</p>
+                    <p>The system includes 5 specialized service modules, each responsible for specific server functions:</p>
                     
-                    <h3>Web Module</h3>
+                    <h3>SSL Module</h3>
                     <ul>
-                        <li>Apache/Nginx installation and configuration</li>
-                        <li>PHP/Python/Node.js support</li>
-                        <li>Virtual host management</li>
-                        <li>Performance optimization</li>
-                    </ul>
-                    
-                    <h3>DNS Module</h3>
-                    <ul>
-                        <li>BIND DNS server setup</li>
-                        <li>Zone configuration and management</li>
-                        <li>DNSSEC support</li>
-                        <li>DNS record automation</li>
+                        <li>Let's Encrypt certificate automation</li>
+                        <li>Self-signed certificate generation</li>
+                        <li>Multi-domain certificate support</li>
+                        <li>Auto-renewal system</li>
                     </ul>
                     
                     <h3>Mail Module</h3>
@@ -130,7 +119,7 @@ sudo ./server-installer.sh</code></pre>
                     
                     <h3>Database Module</h3>
                     <ul>
-                        <li>MySQL/MariaDB/PostgreSQL installation</li>
+                        <li>PostgreSQL/MariaDB/MongoDB installation</li>
                         <li>Performance tuning and optimization</li>
                         <li>Backup and replication setup</li>
                         <li>Security hardening</li>
@@ -139,38 +128,28 @@ sudo ./server-installer.sh</code></pre>
                     <h3>Security & Other Modules</h3>
                     <ul>
                         <li><strong>Firewall:</strong> UFW/iptables configuration, intrusion prevention</li>
-                        <li><strong>SSL:</strong> Let's Encrypt automation, certificate management</li>
-                        <li><strong>System:</strong> Performance tuning, monitoring setup</li>
                         <li><strong>Backup:</strong> Automated backups, disaster recovery</li>
                     </ul>
                 </section>
                 
                 <section id="automation-workflows">
                     <h2>Automation Workflows</h2>
-                    <p>The system includes 12 pre-configured automation workflows for common server deployments:</p>
+                    <p>The system includes essential automation workflows for common server deployments:</p>
                     
-                    <h3>Web Stack Workflows</h3>
+                    <h3>Core Infrastructure</h3>
                     <ul>
-                        <li><strong>LAMP Stack:</strong> Linux + Apache + MySQL + PHP</li>
-                        <li><strong>LEMP Stack:</strong> Linux + Nginx + MySQL + PHP</li>
-                        <li><strong>Node.js Stack:</strong> Modern JavaScript backend deployment</li>
-                        <li><strong>Python Stack:</strong> Django/Flask application deployment</li>
-                    </ul>
-                    
-                    <h3>Service Workflows</h3>
-                    <ul>
+                        <li><strong>SSL Automation:</strong> Let's Encrypt certificate management</li>
                         <li><strong>Mail Server:</strong> Complete email solution with webmail</li>
-                        <li><strong>DNS Server:</strong> Authoritative DNS with security features</li>
-                        <li><strong>Database Server:</strong> High-performance database deployment</li>
-                        <li><strong>Reverse Proxy:</strong> Load balancing and SSL termination</li>
+                        <li><strong>Database Server:</strong> Multi-database deployment and management</li>
+                        <li><strong>Security Hardening:</strong> Comprehensive firewall and security configuration</li>
                     </ul>
                     
                     <h3>Management Workflows</h3>
                     <ul>
-                        <li><strong>Security Hardening:</strong> Comprehensive security configuration</li>
-                        <li><strong>Monitoring Setup:</strong> System and application monitoring</li>
                         <li><strong>Backup Configuration:</strong> Automated backup systems</li>
-                        <li><strong>Disaster Recovery:</strong> Recovery procedures and testing</li>
+                        <li><strong>Security Monitoring:</strong> Intrusion prevention and monitoring</li>
+                        <li><strong>System Maintenance:</strong> Automated maintenance and updates</li>
+                        <li><strong>Health Monitoring:</strong> Service monitoring and alerts</li>
                     </ul>
                 </section>
                 

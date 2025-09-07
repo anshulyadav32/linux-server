@@ -185,13 +185,10 @@ create_quick_start() {
 
 2. **Individual module access:**
    ```bash
-   ./modules/web/menu.sh      # Web server management
-   ./modules/dns/menu.sh      # DNS server management
-   ./modules/mail/menu.sh     # Mail server management
-   ./modules/db/menu.sh       # Database management
-   ./modules/firewall/menu.sh # Firewall management
    ./modules/ssl/menu.sh      # SSL certificate management
-   ./modules/system/menu.sh   # System administration
+   ./modules/mail/menu.sh     # Mail server management
+   ./modules/database/menu.sh # Database management
+   ./modules/firewall/menu.sh # Firewall management
    ./modules/backup/menu.sh   # Backup management
    ```
 

@@ -19,59 +19,44 @@ main_menu() {
         echo ""
         echo -e "${WHITE}Select a service to manage:${NC}"
         echo ""
-        echo -e "${CYAN}1)${NC} Web Server Management       ${BLUE}(Apache/Nginx, PHP, Node.js)${NC}"
-        echo -e "${CYAN}2)${NC} DNS Management              ${BLUE}(BIND9, zones, records)${NC}"
-        echo -e "${CYAN}3)${NC} Mail System Management      ${BLUE}(Postfix, Dovecot, DKIM)${NC}"
-        echo -e "${CYAN}4)${NC} Database Management         ${BLUE}(MySQL, PostgreSQL)${NC}"
-        echo -e "${CYAN}5)${NC} Firewall Management         ${BLUE}(UFW, Fail2Ban, security)${NC}"
-        echo -e "${CYAN}6)${NC} SSL Certificate Management  ${BLUE}(Let's Encrypt, self-signed)${NC}"
-        echo -e "${CYAN}7)${NC} System Administration       ${BLUE}(users, packages, monitoring)${NC}"
-        echo -e "${CYAN}8)${NC} Backup & Restore            ${BLUE}(automated backups, recovery)${NC}"
+        echo -e "${CYAN}1)${NC} SSL Certificate Management  ${BLUE}(Let's Encrypt, self-signed)${NC}"
+        echo -e "${CYAN}2)${NC} Mail System Management      ${BLUE}(Postfix, Dovecot, DKIM)${NC}"
+        echo -e "${CYAN}3)${NC} Database Management         ${BLUE}(PostgreSQL, MariaDB, MongoDB)${NC}"
+        echo -e "${CYAN}4)${NC} Firewall Management         ${BLUE}(UFW, Fail2Ban, security)${NC}"
+        echo -e "${CYAN}5)${NC} Backup & Restore            ${BLUE}(automated backups, recovery)${NC}"
         echo ""
-        echo -e "${YELLOW}9)${NC} Interdependent Automation   ${PURPLE}(full workflows, orchestration)${NC}"
+        echo -e "${YELLOW}6)${NC} System Status Check         ${PURPLE}(health monitoring, logs)${NC}"
         echo ""
         echo -e "${RED}0)${NC} Exit"
         echo ""
         echo "=============================="
         
-        local choice=$(get_menu_choice 9)
+        local choice=$(get_menu_choice 6)
         
         case $choice in
             1) 
-                log_info "Launching Web Server Management..."
-                bash "$BASE_DIR/web/menu.sh" 
-                ;;
-            2) 
-                log_info "Launching DNS Management..."
-                bash "$BASE_DIR/dns/menu.sh" 
-                ;;
-            3) 
-                log_info "Launching Mail System Management..."
-                bash "$BASE_DIR/mail/menu.sh" 
-                ;;
-            4) 
-                log_info "Launching Database Management..."
-                bash "$BASE_DIR/db/menu.sh" 
-                ;;
-            5) 
-                log_info "Launching Firewall Management..."
-                bash "$BASE_DIR/firewall/menu.sh" 
-                ;;
-            6) 
                 log_info "Launching SSL Certificate Management..."
                 bash "$BASE_DIR/ssl/menu.sh" 
                 ;;
-            7) 
-                log_info "Launching System Administration..."
-                bash "$BASE_DIR/system/menu.sh" 
+            2) 
+                log_info "Launching Mail System Management..."
+                bash "$BASE_DIR/mail/menu.sh" 
                 ;;
-            8) 
+            3) 
+                log_info "Launching Database Management..."
+                bash "$BASE_DIR/database/menu.sh" 
+                ;;
+            4) 
+                log_info "Launching Firewall Management..."
+                bash "$BASE_DIR/firewall/menu.sh" 
+                ;;
+            5) 
                 log_info "Launching Backup & Restore..."
                 bash "$BASE_DIR/backup/menu.sh" 
                 ;;
-            9) 
-                log_info "Launching Interdependent Automation..."
-                bash "$BASE_DIR/interdependent.sh" 
+            6) 
+                log_info "Checking System Status..."
+                bash "$BASE_DIR/../system-status-checker.sh" 
                 ;;
             0) 
                 log_info "Exiting Master Server Management"
@@ -91,15 +76,11 @@ welcome_message() {
     echo -e "${NC}"
     echo ""
     echo -e "${WHITE}This comprehensive system helps you manage:${NC}"
-    echo -e "${GREEN}✓${NC} Web servers (Apache, Nginx, PHP, Node.js)"
-    echo -e "${GREEN}✓${NC} DNS services (BIND9, zone management)"
+    echo -e "${GREEN}✓${NC} SSL certificates (Let's Encrypt, self-signed)"
     echo -e "${GREEN}✓${NC} Mail systems (Postfix, Dovecot, security)"
-    echo -e "${GREEN}✓${NC} Databases (MySQL, PostgreSQL)"
+    echo -e "${GREEN}✓${NC} Databases (PostgreSQL, MariaDB, MongoDB)"
     echo -e "${GREEN}✓${NC} Firewall & security (UFW, Fail2Ban)"
-    echo -e "${GREEN}✓${NC} SSL certificates (Let's Encrypt, custom)"
-    echo -e "${GREEN}✓${NC} System administration & monitoring"
     echo -e "${GREEN}✓${NC} Automated backups & disaster recovery"
-    echo -e "${GREEN}✓${NC} Interdependent automation workflows"
     echo ""
     echo -e "${YELLOW}Note: This system requires root privileges for most operations.${NC}"
     echo ""
