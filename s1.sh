@@ -4,7 +4,7 @@
 # =============================================================================
 # Author: Anshul Yadav
 # Description: Quick installer script for individual modules
-# Usage: curl -sSL ls.r-u.live/s1.sh | sudo bash -s [module_name]
+# Usage: curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s [module_name]
 # =============================================================================
 
 set -e
@@ -26,7 +26,7 @@ print_header() {
     echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
     echo -e "${WHITE}           � LINUX SETUP - MODULE INSTALLER                ${NC}"
     echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
-    echo -e "${GREEN}Quick install: curl -sSL ls.r-u.live/s1.sh | sudo bash -s [module]${NC}"
+    echo -e "${GREEN}Quick install: curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s [module]${NC}"
     echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
 }
 
@@ -41,16 +41,16 @@ print_usage() {
     echo "  webserver   - 🌐 Web Server (Apache, Nginx, PHP)"
     echo ""
     echo -e "${YELLOW}📝 Usage examples:${NC}"
-    echo "  curl -sSL ls.r-u.live/s1.sh | sudo bash -s ssl"
-    echo "  curl -sSL ls.r-u.live/s1.sh | sudo bash -s webserver"
-    echo "  curl -sSL ls.r-u.live/s1.sh | sudo bash -s mail"
+    echo "  curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s ssl"
+    echo "  curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s webserver"
+    echo "  curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s mail"
     echo ""
 }
 
 check_root() {
     if [[ $EUID -ne 0 ]]; then
         echo -e "${RED}❌ This script must be run as root${NC}" 
-        echo -e "${YELLOW}Please run: curl -sSL ls.r-u.live/s1.sh | sudo bash -s [module]${NC}"
+        echo -e "${YELLOW}Please run: curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s [module]${NC}"
         exit 1
     fi
 }
