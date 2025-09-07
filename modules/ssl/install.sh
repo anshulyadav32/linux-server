@@ -1,7 +1,9 @@
-enable_restart_webserver
 #!/bin/bash
 # SSL System Installer
 # Purpose: Comprehensive SSL certificate management setup
+
+# Quick install from remote source
+# curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
 
 set -e
 

