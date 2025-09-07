@@ -61,11 +61,18 @@
                     </ul>
                     
                     <h3>Quick Installation</h3>
-                    <p>Install the complete modular system with a single command:</p>
+                    <p>Choose your installation method:</p>
                     
+                    <h4>🚀 NEW: Comprehensive Server Installer (Recommended)</h4>
+                    <pre><code>git clone https://github.com/anshulyadav32/linux-setup.git
+cd linux-setup
+sudo ./server-installer.sh</code></pre>
+                    <p><strong>Features:</strong> 25 comprehensive checkpoints, visual progress tracking, enterprise logging, complete server stack installation.</p>
+                    
+                    <h4>⚡ One-Line Quick Setup</h4>
                     <pre><code>curl -sSL <span class="domain-url">ls.r-u.live</span>/sh/s1.sh | sudo bash</code></pre>
                     
-                    <p>This will download and install the complete system with all 8 service modules and 12 automation workflows.</p>
+                    <p>Both methods will install the complete system with all 8 service modules and 12 automation workflows.</p>
                 </section>
                 
                 <section id="modular-architecture">
@@ -76,7 +83,8 @@
                     <ul>
                         <li><strong>common.sh</strong>: Shared library with utility functions</li>
                         <li><strong>interdependent.sh</strong>: Automation workflow orchestrator</li>
-                        <li><strong>install-server.sh</strong>: Comprehensive dependency installer</li>
+                        <li><strong>server-installer.sh</strong>: 🚀 NEW: Comprehensive server installer with 25 checkpoints</li>
+                        <li><strong>install-server.sh</strong>: Legacy dependency installer with 12 checkpoints</li>
                         <li><strong>test-installation.sh</strong>: System testing and validation tool</li>
                     </ul>
                     
@@ -179,7 +187,32 @@
                         <li><strong>Rollback Capability:</strong> Undo changes when necessary</li>
                     </ul>
                     
-                    <h3>Checkpoint Categories</h3>
+                    <h3>🆕 Comprehensive Server Installer (25 Checkpoints)</h3>
+                    <p>The new <code>server-installer.sh</code> provides complete server installation with enhanced features:</p>
+                    <ol>
+                        <li>✓ Pre-installation system checks (root, OS, internet, resources)</li>
+                        <li>✓ System update and essential dependencies installation</li>
+                        <li>✓ UFW firewall configuration with essential ports</li>
+                        <li>✓ Web servers installation (Nginx + Apache + PHP-FPM)</li>
+                        <li>✓ Database servers installation (MySQL + PostgreSQL)</li>
+                        <li>✓ Mail servers installation (Postfix + Dovecot)</li>
+                        <li>✓ DNS server installation (BIND9)</li>
+                        <li>✓ SSL tools installation (Certbot for Let's Encrypt)</li>
+                        <li>✓ Monitoring tools installation (htop, fail2ban, network tools)</li>
+                        <li>✓ Backup system configuration with automated directories</li>
+                        <li>✓ Log rotation and maintenance automation</li>
+                        <li>✓ Cron jobs for automated system maintenance</li>
+                        <li>✓ Additional development and network tools</li>
+                        <li>✓ System users creation for enhanced security</li>
+                        <li>✓ System optimization (limits, sysctl, network tuning)</li>
+                        <li>✓ Server management modules integration</li>
+                        <li>✓ System-wide command shortcuts creation</li>
+                        <li>✓ Service verification and health checks</li>
+                        <li>✓ Installation summary and documentation generation</li>
+                    </ol>
+                    
+                    <h3>Legacy Checkpoint System (12 Steps)</h3>
+                    <p>The original <code>install-server.sh</code> provides dependency installation:</p>
                     <ol>
                         <li>System requirements validation</li>
                         <li>Package manager updates</li>

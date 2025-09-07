@@ -1,6 +1,6 @@
 # Linux Setup - Modular Server Management System
 
-A comprehensive, enterprise-grade server management system built with modular Bash scripts for Linux server administration. This professional solution provides a cohesive architecture with standardized interfaces, shared libraries, automated workflows, and a 12-checkpoint installation system for complete server setup and maintenance.
+A comprehensive, enterprise-grade server management system built with modular Bash scripts for Linux server administration. This professional solution provides a cohesive architecture with standardized interfaces, shared libraries, automated workflows, and a **25-checkpoint comprehensive installation system** for complete server setup and maintenance.
 
 ## 🌟 **Project Overview**
 
@@ -8,7 +8,7 @@ A comprehensive, enterprise-grade server management system built with modular Ba
 
 ### 🏆 **Key Highlights**
 - **Professional Architecture**: Enterprise-grade modular design with 8 specialized service modules
-- **Checkpoint System**: Advanced 12-checkpoint installation with automatic error recovery
+- **Advanced Installation**: Complete **server-installer.sh** with 25 comprehensive checkpoints and visual progress tracking
 - **Automation Workflows**: 12 pre-configured workflows for common server deployments
 - **Dual-Domain Website**: Professional documentation at [ls.r-u.live](https://ls.r-u.live) and [anshulyadav32.github.io/linux-setup](https://anshulyadav32.github.io/linux-setup)
 - **One-Line Installation**: Simple deployment with comprehensive dependency checking
@@ -24,8 +24,11 @@ A comprehensive, enterprise-grade server management system built with modular Ba
 - **Checkpoint System**: 12-step installation process with automatic resume capability
 
 ### **Installation System**
-- **Comprehensive Dependency Installer** (`install-server.sh`): Handles all prerequisites and dependencies
-- **12-Checkpoint System**: Granular progress tracking with automatic error recovery
+- **Comprehensive Server Installer** (`server-installer.sh`): Complete server setup with 25 installation checkpoints
+- **Advanced Progress Tracking**: Real-time progress bar with step-by-step checkpoint verification
+- **Enterprise Logging**: Detailed installation logs with error handling and recovery options
+- **Multi-Distribution Support**: Ubuntu, Debian, CentOS, RHEL, Fedora compatibility
+- **Legacy Installer** (`install-server.sh`): Handles specific dependencies and prerequisites
 - **Testing Framework** (`test-installation.sh`): Validates installations and manages checkpoints
 - **One-Line Deployment**: `curl -sSL ls.r-u.live/sh/s1.sh | sudo bash`
 
@@ -109,6 +112,18 @@ A comprehensive, enterprise-grade server management system built with modular Ba
 
 ## 📦 **Installation & Deployment**
 
+### **🚀 Comprehensive Server Installation**
+```bash
+# Complete server installation with 25 checkpoints
+sudo ./server-installer.sh
+
+# Quick pre-installation check
+sudo ./server-installer.sh --check
+
+# Show installer help and options
+./server-installer.sh --help
+```
+
 ### **🚀 One-Line Installation**
 ```bash
 # Complete system installation
@@ -124,10 +139,13 @@ curl -sSL ls.r-u.live/sh/master-server-cli.sh | sudo bash
 git clone https://github.com/anshulyadav32/linux-setup.git
 cd linux-setup
 
-# Run the comprehensive installer
+# Run the comprehensive server installer (recommended)
+sudo ./server-installer.sh
+
+# Or run the legacy dependency installer
 sudo ./install-server.sh
 
-# Start the system
+# Start the management system
 ./master.sh
 ```
 
@@ -147,7 +165,8 @@ sudo ./test-installation.sh --logs
 
 ```
 linux-setup/
-├── install-server.sh            # Comprehensive dependency installer with 12-checkpoint system
+├── server-installer.sh          # 🚀 NEW: Complete server installer with 25 checkpoints
+├── install-server.sh            # Legacy dependency installer with 12-checkpoint system
 ├── test-installation.sh         # Testing framework and checkpoint management
 ├── master.sh                    # Main entry point and system controller
 ├── setup.sh                     # Initial system setup and prerequisites
