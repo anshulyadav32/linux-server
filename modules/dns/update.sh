@@ -34,18 +34,73 @@ main() {
     echo "  Current version: $bind_version"
     echo ""
     
-    if confirm_action "Do you want to proceed with updating DNS server components?"; then
-        # Perform update
-        update_dns
-        
-        log_ok "DNS server update completed!"
-        echo ""
-        log_info "Update summary:"
-        echo "  ✓ Package cache refreshed"
-        echo "  ✓ BIND9 and utilities updated"
-        echo "  ✓ Root hints file updated"
-        echo "  ✓ DNS service restarted"
-        echo ""
+    # Check for available updates
+    echo "Checking for available updates..."
+    apt-get update -y >/dev/null
+    local updates=$(apt list --upgradable 2>/dev/null | grep -E "bind9|dnsutils")
+    
+    if [[ -n "$updates" ]]; then
+        echo -e "\nAvailable updates:"
+        echo "$updates"
+    else
+        echo -e "\nNo updates available for DNS components"
+    fi
+    
+    echo -e "\nUpdate Options:"
+    echo "1) Update DNS server packages only"
+    echo "2) Update root hints file only"
+    echo "3) Update security policies"
+    echo "4) Full system update"
+    echo "5) Cancel"
+    echo
+    
+    read -p "Select update option [1-5]: " update_choice
+    
+    case $update_choice in
+        1)
+            if confirm_action "Update DNS server packages?"; then
+                update_dns
+            fi
+            ;;
+        2)
+            echo "Updating root hints file..."
+            wget -O /etc/bind/db.root https://www.internic.net/domain/named.root
+            reload_dns
+            ;;
+        3)
+            echo "Updating security policies..."
+            # Update DNSSEC trust anchors
+            dnssec-keygen -a RSASHA256 -b 2048 -n ZONE example.com
+            reload_dns
+            ;;
+        4)
+            if confirm_action "Perform full system update? This may take some time."; then
+                # Create backup first
+                backup_dns_config
+                
+                # Full system update
+                apt-get update -y
+                apt-get upgrade -y
+                
+                # Update DNS components
+                update_dns
+                
+                echo "Full system update completed"
+            fi
+            ;;
+        5)
+            log_info "Update cancelled"
+            return
+            ;;
+        *)
+            log_error "Invalid option"
+            return
+            ;;
+    esac
+    
+    log_ok "Update process completed!"
+    echo ""
+    log_info "Update summary:"
         
         # Show updated version information
         show_updated_version_info
