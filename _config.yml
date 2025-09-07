@@ -4,5 +4,5 @@ theme: jekyll-theme-cayman
 show_downloads: true
 google_analytics:
 baseurl: ""
-url: "https://linux-setup.github.io"
-domain: linux-setup.github.io
+url: "https://ls.r-u.live"
+domain: ls.r-u.live
