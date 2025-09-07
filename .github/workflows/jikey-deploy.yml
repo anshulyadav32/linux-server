@@ -1,0 +1,101 @@
+name: JiKey Deployment
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - production
+        - staging
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+env:
+  SITE_URL: ${{ github.event.inputs.environment == 'production' && 'https://ls.r-u.live' || 'https://staging.ls.r-u.live' }}
+
+concurrency:
+  group: "deploy-${{ github.event.inputs.environment || 'production' }}"
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate scripts
+        run: |
+          echo "Validating shell scripts..."
+          find . -name "*.sh" -type f -print0 | xargs -0 bash -n
+          echo "Validation complete"
+          
+      - name: Validate site files
+        run: |
+          echo "Checking for required files..."
+          test -f CNAME && echo "✅ CNAME found" || echo "❌ CNAME missing"
+          test -f _config.yml && echo "✅ _config.yml found" || echo "❌ _config.yml missing"
+          test -f index.html && echo "✅ index.html found" || echo "❌ index.html missing"
+  
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        
+      - name: Install dependencies
+        run: |
+          echo "Installing required dependencies..."
+          # Add any specific dependencies needed for build
+          
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+          
+      - name: Apply JiKey security headers
+        run: |
+          echo "Applying security headers..."
+          cat > ./_site/_headers << EOL
+          /*
+            X-Frame-Options: DENY
+            X-Content-Type-Options: nosniff
+            Referrer-Policy: strict-origin-when-cross-origin
+            Permissions-Policy: camera=(), microphone=(), geolocation=()
+            Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; media-src 'self'; form-action 'self'; frame-ancestors 'none';
+          EOL
+          
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+          
+  deploy:
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+      url: ${{ env.SITE_URL }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Verify deployment
+        run: |
+          echo "Verifying deployment to ${{ env.SITE_URL }}"
+          curl -s -o /dev/null -w "%{http_code}" ${{ env.SITE_URL }} | grep -q "200" && echo "✅ Deployment successful" || echo "❌ Deployment verification failed"

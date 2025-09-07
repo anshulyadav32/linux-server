@@ -1,0 +1,49 @@
+{
+  "jikey": {
+    "version": "1.0",
+    "project": "linux-setup",
+    "domains": [
+      "ls.r-u.live"
+    ],
+    "environments": {
+      "production": {
+        "domain": "ls.r-u.live",
+        "branch": "main",
+        "protection": {
+          "required_reviews": 1,
+          "required_checks": ["validate", "build"]
+        }
+      },
+      "staging": {
+        "domain": "staging.ls.r-u.live",
+        "branch": "develop",
+        "auto_deploy": true
+      }
+    },
+    "security": {
+      "headers": true,
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'",
+      "xss_protection": true,
+      "content_type_options": true,
+      "frame_options": "DENY"
+    },
+    "build": {
+      "command": "jekyll build",
+      "output_dir": "_site"
+    },
+    "scripts": {
+      "server": {
+        "path": "setup-server/setup.sh",
+        "validation": "bash -n"
+      },
+      "mail": {
+        "path": "setup-mail/setup-mail.sh",
+        "validation": "bash -n"
+      },
+      "dns": {
+        "path": "setup-dns/setup-dns.sh",
+        "validation": "bash -n"
+      }
+    }
+  }
+}
