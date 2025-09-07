@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation - Server Setup Scripts</title>
-    <meta name="description" content="Comprehensive documentation for server setup scripts covering installation, configuration, and customization options.">
+    <title>Documentation - Modular Server Management System</title>
+    <meta name="description" content="Comprehensive documentation for the modular server management system covering installation, modules, workflows, and customization.">
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +14,7 @@
 <body>
     <header>
         <div class="container">
-            <h1>Server Setup Scripts</h1>
+            <h1>Modular Server Management System</h1>
             <p class="tagline">Documentation</p>
         </div>
     </header>
@@ -37,11 +37,11 @@
                 <h4>Documentation</h4>
                 <ul>
                     <li><a href="#getting-started">Getting Started</a></li>
-                    <li><a href="#server-setup">Server Setup</a></li>
-                    <li><a href="#mail-server">Mail Server</a></li>
-                    <li><a href="#dns-server">DNS Server</a></li>
-                    <li><a href="#windows-setup">Windows Setup</a></li>
-                    <li><a href="#security">Security Considerations</a></li>
+                    <li><a href="#modular-architecture">Modular Architecture</a></li>
+                    <li><a href="#service-modules">Service Modules</a></li>
+                    <li><a href="#automation-workflows">Automation Workflows</a></li>
+                    <li><a href="#checkpoint-system">Checkpoint System</a></li>
+                    <li><a href="#security">Security Features</a></li>
                     <li><a href="#customization">Customization</a></li>
                     <li><a href="#troubleshooting">Troubleshooting</a></li>
                 </ul>
@@ -50,146 +50,302 @@
             <div class="doc-content">
                 <section id="getting-started">
                     <h2>Getting Started</h2>
-                    <p>This documentation provides detailed information about the server setup scripts, how to use them, and how to customize them for your specific needs.</p>
+                    <p>The Modular Server Management System is a professional-grade solution for deploying and managing server infrastructure. It provides a comprehensive suite of modules, automated workflows, and enterprise-grade security features.</p>
                     
-                    <h3>Requirements</h3>
+                    <h3>System Requirements</h3>
                     <ul>
-                        <li>Ubuntu/Debian-based Linux distribution (for Linux scripts)</li>
-                        <li>Windows 10/11 or Windows Server 2019/2022 (for Windows scripts)</li>
-                        <li>Administrative privileges (root/sudo for Linux, Administrator for Windows)</li>
-                        <li>Internet connection for downloading packages</li>
+                        <li>Ubuntu/Debian-based Linux distribution</li>
+                        <li>Administrative privileges (root/sudo access)</li>
+                        <li>Internet connection for downloading packages and dependencies</li>
+                        <li>Minimum 1GB RAM and 10GB disk space</li>
                     </ul>
                     
                     <h3>Quick Installation</h3>
-                    <p>The fastest way to get started is to use our one-line installation commands:</p>
+                    <p>Install the complete modular system with a single command:</p>
                     
-                    <h4>For Linux (Basic Server Setup):</h4>
-                    <pre><code>curl -sSL ls.r-u.live/sh/s1.sh | sudo bash</code></pre>
+                    <pre><code>curl -sSL <span class="domain-url">ls.r-u.live</span>/sh/s1.sh | sudo bash</code></pre>
                     
-                    <h4>For Windows:</h4>
-                    <pre><code>iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex</code></pre>
+                    <p>This will download and install the complete system with all 8 service modules and 12 automation workflows.</p>
                 </section>
                 
-                <section id="server-setup">
-                    <h2>Server Setup</h2>
-                    <p>The basic server setup script (s1.sh) configures a solid foundation for your server with essential tools and security settings.</p>
+                <section id="modular-architecture">
+                    <h2>Modular Architecture</h2>
+                    <p>The system is built on a modular architecture with standardized interfaces, allowing for flexible deployment and easy maintenance.</p>
                     
-                    <h3>What It Installs</h3>
+                    <h3>Core Components</h3>
                     <ul>
-                        <li>Essential system utilities (curl, wget, git, unzip, etc.)</li>
-                        <li>UFW firewall with secure defaults</li>
-                        <li>Optimized system configurations</li>
+                        <li><strong>common.sh</strong>: Shared library with utility functions</li>
+                        <li><strong>interdependent.sh</strong>: Automation workflow orchestrator</li>
+                        <li><strong>install-server.sh</strong>: Comprehensive dependency installer</li>
+                        <li><strong>test-installation.sh</strong>: System testing and validation tool</li>
                     </ul>
                     
-                    <h3>Usage Options</h3>
-                    <p>The server setup script can be run with the following options:</p>
+                    <h3>Module Structure</h3>
+                    <p>Each module follows a standardized interface:</p>
+                    <pre><code>modules/
+├── web/          # Web server management
+├── dns/          # DNS configuration
+├── mail/         # Mail server setup
+├── db/           # Database management
+├── firewall/     # Security and firewall
+├── ssl/          # SSL/TLS certificate management
+├── system/       # System optimization
+└── backup/       # Backup and recovery</code></pre>
+                </section>
+                
+                <section id="service-modules">
+                    <h2>Service Modules</h2>
+                    <p>The system includes 8 specialized service modules, each responsible for specific server functions:</p>
                     
-                    <pre><code># Basic usage
-curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
-
-# With specific options (download first)
-curl -sSL ls.r-u.live/sh/s1.sh -o setup.sh
-chmod +x setup.sh
-sudo ./setup.sh --with-firewall --with-docker</code></pre>
-                    
-                    <h3>Available Options</h3>
+                    <h3>Web Module</h3>
                     <ul>
-                        <li><code>--with-firewall</code>: Configure UFW firewall with secure defaults</li>
-                        <li><code>--with-docker</code>: Install Docker and Docker Compose</li>
-                        <li><code>--with-db [mysql|postgres]</code>: Install specified database</li>
-                        <li><code>--help</code>: Display help information</li>
+                        <li>Apache/Nginx installation and configuration</li>
+                        <li>PHP/Python/Node.js support</li>
+                        <li>Virtual host management</li>
+                        <li>Performance optimization</li>
+                    </ul>
+                    
+                    <h3>DNS Module</h3>
+                    <ul>
+                        <li>BIND DNS server setup</li>
+                        <li>Zone configuration and management</li>
+                        <li>DNSSEC support</li>
+                        <li>DNS record automation</li>
+                    </ul>
+                    
+                    <h3>Mail Module</h3>
+                    <ul>
+                        <li>Postfix and Dovecot configuration</li>
+                        <li>DKIM, SPF, and DMARC setup</li>
+                        <li>Anti-spam and antivirus integration</li>
+                        <li>Webmail interface deployment</li>
+                    </ul>
+                    
+                    <h3>Database Module</h3>
+                    <ul>
+                        <li>MySQL/MariaDB/PostgreSQL installation</li>
+                        <li>Performance tuning and optimization</li>
+                        <li>Backup and replication setup</li>
+                        <li>Security hardening</li>
+                    </ul>
+                    
+                    <h3>Security & Other Modules</h3>
+                    <ul>
+                        <li><strong>Firewall:</strong> UFW/iptables configuration, intrusion prevention</li>
+                        <li><strong>SSL:</strong> Let's Encrypt automation, certificate management</li>
+                        <li><strong>System:</strong> Performance tuning, monitoring setup</li>
+                        <li><strong>Backup:</strong> Automated backups, disaster recovery</li>
                     </ul>
                 </section>
                 
-                <section id="mail-server">
-                    <h2>Mail Server</h2>
-                    <p>The mail server setup script (sh2.sh) configures a complete mail server with all necessary components.</p>
+                <section id="automation-workflows">
+                    <h2>Automation Workflows</h2>
+                    <p>The system includes 12 pre-configured automation workflows for common server deployments:</p>
                     
-                    <h3>Components Installed</h3>
+                    <h3>Web Stack Workflows</h3>
                     <ul>
-                        <li>Postfix (SMTP server)</li>
-                        <li>Dovecot (IMAP/POP3 server)</li>
-                        <li>SpamAssassin (spam filtering)</li>
-                        <li>Roundcube (webmail interface)</li>
+                        <li><strong>LAMP Stack:</strong> Linux + Apache + MySQL + PHP</li>
+                        <li><strong>LEMP Stack:</strong> Linux + Nginx + MySQL + PHP</li>
+                        <li><strong>Node.js Stack:</strong> Modern JavaScript backend deployment</li>
+                        <li><strong>Python Stack:</strong> Django/Flask application deployment</li>
                     </ul>
                     
-                    <h3>Usage</h3>
-                    <pre><code># Basic installation
-curl -sSL ls.r-u.live/sh/sh2.sh | sudo bash
-
-# With domain specification
-curl -sSL ls.r-u.live/sh/sh2.sh | sudo bash -s -- --domain example.com</code></pre>
+                    <h3>Service Workflows</h3>
+                    <ul>
+                        <li><strong>Mail Server:</strong> Complete email solution with webmail</li>
+                        <li><strong>DNS Server:</strong> Authoritative DNS with security features</li>
+                        <li><strong>Database Server:</strong> High-performance database deployment</li>
+                        <li><strong>Reverse Proxy:</strong> Load balancing and SSL termination</li>
+                    </ul>
                     
-                    <h3>Post-Installation Configuration</h3>
-                    <p>After installation, you'll need to:</p>
-                    <ol>
-                        <li>Configure DNS records for your domain (MX, SPF, DKIM, DMARC)</li>
-                        <li>Set up email accounts using the provided management tools</li>
-                        <li>Configure clients to connect to your mail server</li>
-                    </ol>
+                    <h3>Management Workflows</h3>
+                    <ul>
+                        <li><strong>Security Hardening:</strong> Comprehensive security configuration</li>
+                        <li><strong>Monitoring Setup:</strong> System and application monitoring</li>
+                        <li><strong>Backup Configuration:</strong> Automated backup systems</li>
+                        <li><strong>Disaster Recovery:</strong> Recovery procedures and testing</li>
+                    </ul>
                 </section>
                 
-                <section id="dns-server">
-                    <h2>DNS Server</h2>
-                    <p>The DNS server setup script (sh3.sh) configures BIND for domain name resolution.</p>
+                <section id="checkpoint-system">
+                    <h2>Checkpoint System</h2>
+                    <p>The advanced checkpoint system provides robust error handling and recovery capabilities:</p>
                     
                     <h3>Features</h3>
                     <ul>
-                        <li>BIND DNS server installation and configuration</li>
-                        <li>Basic security settings</li>
-                        <li>Forward and reverse zone configuration</li>
+                        <li><strong>12 Checkpoint System:</strong> Granular progress tracking</li>
+                        <li><strong>Automatic Resume:</strong> Continue from last successful checkpoint</li>
+                        <li><strong>Error Recovery:</strong> Intelligent error handling and retry logic</li>
+                        <li><strong>Rollback Capability:</strong> Undo changes when necessary</li>
                     </ul>
+                    
+                    <h3>Checkpoint Categories</h3>
+                    <ol>
+                        <li>System requirements validation</li>
+                        <li>Package manager updates</li>
+                        <li>Core dependency installation</li>
+                        <li>Service module downloads</li>
+                        <li>Configuration file setup</li>
+                        <li>Database initialization</li>
+                        <li>Security configuration</li>
+                        <li>SSL certificate setup</li>
+                        <li>Service activation</li>
+                        <li>Firewall configuration</li>
+                        <li>Testing and validation</li>
+                        <li>Final optimization</li>
+                    </ol>
                     
                     <h3>Usage</h3>
-                    <pre><code># Basic installation
-curl -sSL ls.r-u.live/sh/sh3.sh | sudo bash
+                    <pre><code># Check installation status
+sudo ./test-installation.sh --status
 
-# With specific options
-curl -sSL ls.r-u.live/sh/sh3.sh -o dns-setup.sh
-chmod +x dns-setup.sh
-sudo ./dns-setup.sh --domain example.com --forwarders "8.8.8.8,8.8.4.4"</code></pre>
-                    
-                    <h3>Zone Configuration</h3>
-                    <p>After installation, you'll need to configure your zone files for your domains. Example zone files are created in <code>/etc/bind/zones</code>.</p>
-                </section>
-                
-                <section id="windows-setup">
-                    <h2>Windows Setup</h2>
-                    <p>For Windows servers, we provide PowerShell scripts that automate common setup tasks.</p>
-                    
-                    <h3>Windows Server Setup</h3>
-                    <pre><code>iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex</code></pre>
-                    
-                    <p>This script installs:</p>
-                    <ul>
-                        <li>Chocolatey package manager</li>
-                        <li>Essential utilities</li>
-                        <li>Basic security configurations</li>
-                    </ul>
-                    
-                    <h3>Windows Mail Server</h3>
-                    <pre><code>iwr -useb ls.r-u.live/sh/windows-mail-setup.ps1 | iex</code></pre>
-                    
-                    <h3>Windows DNS Server</h3>
-                    <pre><code>iwr -useb ls.r-u.live/sh/windows-dns-setup.ps1 | iex</code></pre>
+# Resume from specific checkpoint
+sudo ./install-server.sh --resume-from 5
+
+# Reset and start fresh
+sudo ./test-installation.sh --reset</code></pre>
                 </section>
                 
                 <section id="security">
-                    <h2>Security Considerations</h2>
-                    <p>When using these scripts, keep the following security considerations in mind:</p>
+                    <h2>Security Features</h2>
+                    <p>The modular system incorporates enterprise-grade security features throughout all components:</p>
                     
+                    <h3>Core Security Features</h3>
                     <ul>
-                        <li><strong>Script Verification:</strong> Always verify script contents before execution with elevated privileges</li>
-                        <li><strong>Password Security:</strong> Use strong passwords for all accounts created during installation</li>
-                        <li><strong>Regular Updates:</strong> Keep your system updated with security patches</li>
-                        <li><strong>Firewall Rules:</strong> Review and customize firewall rules as needed for your environment</li>
-                        <li><strong>Log Monitoring:</strong> Implement log monitoring and review system logs regularly</li>
+                        <li><strong>Security Hardening:</strong> Automated system hardening with industry best practices</li>
+                        <li><strong>Firewall Management:</strong> Advanced UFW/iptables configuration with intrusion prevention</li>
+                        <li><strong>SSL/TLS Automation:</strong> Let's Encrypt integration with automatic renewal</li>
+                        <li><strong>Access Control:</strong> Role-based access control and privilege escalation protection</li>
+                        <li><strong>Audit Logging:</strong> Comprehensive logging and monitoring integration</li>
+                    </ul>
+                    
+                    <h3>Security Validation</h3>
+                    <pre><code># Run security audit
+sudo ./modules/firewall/security-audit.sh
+
+# Check SSL certificate status
+sudo ./modules/ssl/check-certificates.sh
+
+# Review access logs
+sudo ./modules/system/review-logs.sh</code></pre>
+                    
+                    <h3>Best Practices</h3>
+                    <ul>
+                        <li>Always review module configurations before deployment</li>
+                        <li>Use strong passwords and key-based authentication</li>
+                        <li>Regularly update the system using the built-in update mechanisms</li>
+                        <li>Monitor system logs and security alerts</li>
+                        <li>Implement backup and disaster recovery procedures</li>
                     </ul>
                 </section>
                 
                 <section id="customization">
                     <h2>Customization</h2>
-                    <p>All scripts are designed to be easily customizable for your specific needs.</p>
+                    <p>The modular architecture allows for extensive customization to meet specific requirements:</p>
+                    
+                    <h3>Module Customization</h3>
+                    <p>Each module can be customized by modifying its configuration files:</p>
+                    <pre><code># Edit web module configuration
+sudo nano modules/web/config.conf
+
+# Customize mail server settings
+sudo nano modules/mail/mail.conf
+
+# Modify database parameters
+sudo nano modules/db/database.conf</code></pre>
+                    
+                    <h3>Workflow Modification</h3>
+                    <p>Automation workflows can be customized by editing the interdependent.sh script:</p>
+                    <pre><code># Edit workflow definitions
+sudo nano interdependent.sh
+
+# Test custom workflow
+sudo ./test-installation.sh --test-workflow custom</code></pre>
+                    
+                    <h3>Adding Custom Modules</h3>
+                    <p>Create custom modules following the standardized interface:</p>
+                    <pre><code>modules/custom/
+├── install.sh      # Installation script
+├── configure.sh    # Configuration script
+├── test.sh         # Testing script
+└── config.conf     # Configuration file</code></pre>
+                </section>
+                
+                <section id="troubleshooting">
+                    <h2>Troubleshooting</h2>
+                    <p>Common issues and their solutions when using the modular system:</p>
+                    
+                    <h3>Installation Issues</h3>
+                    <dl>
+                        <dt>Installation fails at checkpoint X</dt>
+                        <dd>
+                            <p>Use the checkpoint system to diagnose and resume:</p>
+                            <pre><code># Check status
+sudo ./test-installation.sh --status
+
+# View detailed logs
+sudo ./test-installation.sh --logs checkpoint-X
+
+# Resume from previous checkpoint
+sudo ./install-server.sh --resume-from X</code></pre>
+                        </dd>
+                        
+                        <dt>Module dependencies missing</dt>
+                        <dd>
+                            <p>Install missing dependencies manually:</p>
+                            <pre><code># Check dependencies
+sudo ./install-server.sh --check-deps
+
+# Install specific module dependencies
+sudo ./modules/MODULE_NAME/install.sh --deps-only</code></pre>
+                        </dd>
+                    </dl>
+                    
+                    <h3>Service Issues</h3>
+                    <dl>
+                        <dt>Web server not starting</dt>
+                        <dd>
+                            <p>Check web module status and logs:</p>
+                            <pre><code># Module status
+sudo ./modules/web/test.sh --status
+
+# View service logs
+sudo ./modules/web/test.sh --logs</code></pre>
+                        </dd>
+                        
+                        <dt>Mail server configuration errors</dt>
+                        <dd>
+                            <p>Validate mail configuration:</p>
+                            <pre><code># Test mail configuration
+sudo ./modules/mail/test.sh --validate
+
+# Check DNS records
+sudo ./modules/dns/test.sh --check-mx</code></pre>
+                        </dd>
+                    </dl>
+                    
+                    <h3>Performance Issues</h3>
+                    <dl>
+                        <dt>System performance degradation</dt>
+                        <dd>
+                            <p>Run system optimization:</p>
+                            <pre><code># System analysis
+sudo ./modules/system/test.sh --performance
+
+# Apply optimizations
+sudo ./modules/system/configure.sh --optimize</code></pre>
+                        </dd>
+                    </dl>
+                    
+                    <h3>Getting Help</h3>
+                    <p>If you encounter issues not covered here:</p>
+                    <ul>
+                        <li>Check the GitHub repository for known issues and solutions</li>
+                        <li>Review system logs for detailed error information</li>
+                        <li>Use the built-in diagnostic tools provided with each module</li>
+                        <li>Contact support through the project's GitHub issues page</li>
+                    </ul>
+                </section>
                     
                     <h3>Modifying Scripts</h3>
                     <p>To customize a script:</p>
@@ -242,11 +398,30 @@ sudo ./dns-setup.sh --domain example.com --forwarders "8.8.8.8,8.8.4.4"</code></
 
     <footer>
         <div class="container">
-            <div class="text-center">
-                <p>© 2025 Server Setup Scripts | <a href="/">Home</a> | <a href="/sh">Scripts</a> | <a href="/docs">Documentation</a> | <a href="https://github.com/anshulyadav32/linux-setup" target="_blank">GitHub</a></p>
-                <p><small>Made with <i class="fas fa-heart"></i> for the server admin community.</small></p>
-            </div>
+            <p>&copy; 2024 Modular Server Management System. All rights reserved.</p>
+            <p>Domain: <span class="domain-url">ls.r-u.live</span> | Mirror: <span class="domain-url">anshulyadav32.github.io/linux-setup</span></p>
         </div>
     </footer>
+    
+    <script src="../assets/js/domain-switcher.js"></script>
+    <script>
+        // Update domain URLs in the page based on current domain
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentDomain = window.location.hostname;
+            const domainElements = document.querySelectorAll('.domain-url');
+            
+            domainElements.forEach(element => {
+                if (currentDomain === 'anshulyadav32.github.io') {
+                    if (element.textContent === 'ls.r-u.live') {
+                        element.textContent = 'anshulyadav32.github.io/linux-setup';
+                    }
+                } else {
+                    if (element.textContent === 'anshulyadav32.github.io/linux-setup') {
+                        element.textContent = 'ls.r-u.live';
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>

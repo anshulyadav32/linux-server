@@ -1,5 +1,5 @@
-title: Server Setup Scripts
-description: Automated scripts for server deployment and configuration
+title: Modular Server Management System
+description: Professional-grade server management with modular Bash scripts for Linux server administration
 theme: jekyll-theme-cayman
 show_downloads: true
 google_analytics:
@@ -13,3 +13,6 @@ github:
   owner_url: "https://github.com/anshulyadav32"
   owner_name: "anshulyadav32"
 alternate_url: "https://anshulyadav32.github.io/linux-setup"
+primary_domain: "ls.r-u.live"
+github_pages_domain: "anshulyadav32.github.io/linux-setup"
+enable_domain_switching: true
