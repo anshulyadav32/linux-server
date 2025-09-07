@@ -20,6 +20,10 @@ log_ok() {
     echo -e "${GREEN}[SUCCESS]${NC} $1" 
 }
 
+log_success() { 
+    echo -e "${GREEN}[SUCCESS]${NC} $1" 
+}
+
 log_error() { 
     echo -e "${RED}[ERROR]${NC} $1" 
 }
@@ -28,8 +32,64 @@ log_warn() {
     echo -e "${YELLOW}[WARNING]${NC} $1" 
 }
 
+log_warning() { 
+    echo -e "${YELLOW}[WARNING]${NC} $1" 
+}
+
 log_debug() { 
     echo -e "${PURPLE}[DEBUG]${NC} $1" 
+}
+
+# Display functions
+print_section_header() {
+    echo ""
+    echo -e "${BLUE}============================================${NC}"
+    echo -e "${CYAN}$1${NC}"
+    echo -e "${BLUE}============================================${NC}"
+    echo ""
+}
+
+print_step() {
+    echo -e "${YELLOW}>>> $1${NC}"
+}
+
+print_success() {
+    echo ""
+    echo -e "${GREEN}✅ $1${NC}"
+    echo ""
+}
+
+# System check functions
+check_root() {
+    if [[ $EUID -ne 0 ]]; then
+        log_error "This script must be run as root"
+        exit 1
+    fi
+}
+
+detect_system() {
+    if [[ -f /etc/os-release ]]; then
+        . /etc/os-release
+        OS=$NAME
+        VER=$VERSION_ID
+    elif type lsb_release >/dev/null 2>&1; then
+        OS=$(lsb_release -si)
+        VER=$(lsb_release -sr)
+    elif [[ -f /etc/redhat-release ]]; then
+        OS="Red Hat Enterprise Linux"
+        VER=$(cat /etc/redhat-release | grep -oE '[0-9]+\.[0-9]+')
+    else
+        OS=$(uname -s)
+        VER=$(uname -r)
+    fi
+    
+    log_info "Detected system: $OS $VER"
+}
+
+# Utility functions
+pause() {
+    echo ""
+    read -p "$1"
 }
 
 # Input helper functions

@@ -12,100 +12,17 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASE_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-# Debug information
+echo "[INFO] === Webserver Module Installation Started ==="
 echo "[INFO] Script directory: $SCRIPT_DIR"
 echo "[INFO] Base directory: $BASE_DIR"
-echo "[INFO] Looking for common.sh at: $BASE_DIR/modules/common.sh"
 
-# Source common functions with fallback
+# Source common functions
 if [[ -f "$BASE_DIR/modules/common.sh" ]]; then
     echo "[INFO] Sourcing common.sh from: $BASE_DIR/modules/common.sh"
     source "$BASE_DIR/modules/common.sh"
-elif [[ -f "$SCRIPT_DIR/../common.sh" ]]; then
-    echo "[INFO] Sourcing common.sh from: $SCRIPT_DIR/../common.sh"
-    source "$SCRIPT_DIR/../common.sh"
-elif [[ -f "./modules/common.sh" ]]; then
-    echo "[INFO] Sourcing common.sh from: ./modules/common.sh"
-    source "./modules/common.sh"
 else
-    echo "[ERROR] common.sh not found in any expected location"
-    echo "[ERROR] Tried:"
-    echo "  - $BASE_DIR/modules/common.sh"
-    echo "  - $SCRIPT_DIR/../common.sh" 
-    echo "  - ./modules/common.sh"
-    echo "[ERROR] Current working directory: $(pwd)"
-    echo "[ERROR] Directory contents:"
-    ls -la
-    
-    # Define basic functions as fallback
-    echo "[INFO] Using fallback functions..."
-    
-    # Basic color definitions
-    RED='\033[0;31m'
-    GREEN='\033[0;32m'
-    YELLOW='\033[1;33m'
-    BLUE='\033[0;34m'
-    CYAN='\033[0;36m'
-    NC='\033[0m'
-    
-    # Fallback function definitions
-    print_section_header() {
-        echo -e "${BLUE}============================================${NC}"
-        echo -e "${CYAN}$1${NC}"
-        echo -e "${BLUE}============================================${NC}"
-        echo ""
-    }
-    
-    log_info() {
-        echo -e "${CYAN}[INFO]${NC} $1"
-    }
-    
-    log_success() {
-        echo -e "${GREEN}[SUCCESS]${NC} $1"
-    }
-    
-    log_error() {
-        echo -e "${RED}[ERROR]${NC} $1"
-    }
-    
-    log_warning() {
-        echo -e "${YELLOW}[WARNING]${NC} $1"
-    }
-    
-    print_step() {
-        echo -e "${YELLOW}>>> $1${NC}"
-    }
-    
-    check_root() {
-        if [[ $EUID -ne 0 ]]; then
-            log_error "This script must be run as root"
-            exit 1
-        fi
-    }
-    
-    detect_system() {
-        if [[ -f /etc/os-release ]]; then
-            . /etc/os-release
-            OS=$NAME
-            VER=$VERSION_ID
-        elif type lsb_release >/dev/null 2>&1; then
-            OS=$(lsb_release -si)
-            VER=$(lsb_release -sr)
-        elif [[ -f /etc/redhat-release ]]; then
-            OS="Red Hat Enterprise Linux"
-            VER=$(cat /etc/redhat-release | grep -oE '[0-9]+\.[0-9]+')
-        else
-            OS=$(uname -s)
-            VER=$(uname -r)
-        fi
-        
-        log_info "Detected system: $OS $VER"
-    }
-    
-    pause() {
-        echo ""
-        read -p "$1"
-    }
+    echo "[ERROR] common.sh not found at: $BASE_DIR/modules/common.sh"
+    exit 1
 fi
 
 # Source webserver functions
