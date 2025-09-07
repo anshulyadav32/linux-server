@@ -67,41 +67,68 @@
             <h2 class="text-4xl font-bold text-center mb-12">Installation Methods</h2>
             
             <div class="grid md:grid-cols-2 gap-12">
-                <!-- Short Way -->
+                <!-- Quick Remote Install -->
                 <div class="bg-green-50 p-8 rounded-xl border border-green-200">
-                    <h3 class="text-2xl font-bold text-green-800 mb-6">🔥 Short Way (Recommended)</h3>
-                    <p class="text-gray-700 mb-6">One-click installation for quick setup:</p>
+                    <h3 class="text-2xl font-bold text-green-800 mb-6">⚡ Quick Remote Install</h3>
+                    <p class="text-gray-700 mb-6">One-line installation from live repository:</p>
                     <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm relative">
-                        <code>git clone https://github.com/anshulyadav32/linux-setup.git<br>
-cd linux-setup<br>
-sudo ./install.sh</code>
-                        <button class="copy-button absolute top-2 right-2" onclick="copyToClipboard('short-install')">Copy</button>
+                        <code>curl -sSL ls.r-u.live/sh/s1.sh | sudo bash</code>
+                        <button class="copy-button absolute top-2 right-2" onclick="copyToClipboard('quick-install')">Copy</button>
                     </div>
                     <div class="mt-4 text-sm text-gray-600">
                         <ul class="space-y-1">
-                            <li>✅ Installs all 25+ components</li>
-                            <li>✅ Takes 10-15 minutes</li>
-                            <li>✅ Automatic verification</li>
-                            <li>✅ Production ready</li>
+                            <li>✅ Fastest installation method</li>
+                            <li>✅ Always uses latest version</li>
+                            <li>✅ Automatic dependency handling</li>
+                            <li>✅ No local download required</li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Long Way -->
+                <!-- Local Installation -->
                 <div class="bg-blue-50 p-8 rounded-xl border border-blue-200">
-                    <h3 class="text-2xl font-bold text-blue-800 mb-6">🔧 Long Way (Manual)</h3>
-                    <p class="text-gray-700 mb-6">Step-by-step customizable installation:</p>
+                    <h3 class="text-2xl font-bold text-blue-800 mb-6">📦 Local Installation</h3>
+                    <p class="text-gray-700 mb-6">Clone and install locally for full control:</p>
                     <div class="bg-gray-900 text-blue-400 p-4 rounded-lg font-mono text-sm relative">
-                        <code># Update system and install dependencies<br>
-sudo apt update && sudo apt upgrade -y<br>
-sudo apt install -y curl wget git<br><br>
-# Clone and setup<br>
-git clone https://github.com/anshulyadav32/linux-setup.git<br>
+                        <code>git clone https://github.com/anshulyadav32/linux-setup.git<br>
 cd linux-setup<br>
-chmod +x *.sh modules/**/*.sh<br><br>
-# Choose installation type<br>
-sudo ./install.sh --type=production</code>
-                        <button class="copy-button absolute top-2 right-2" onclick="copyToClipboard('long-install')">Copy</button>
+sudo ./install.sh</code>
+                        <button class="copy-button absolute top-2 right-2" onclick="copyToClipboard('local-install')">Copy</button>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-600">
+                        <ul class="space-y-1">
+                            <li>✅ Full control over installation</li>
+                            <li>✅ Installs all 25+ components</li>
+                            <li>✅ Customizable configuration</li>
+                            <li>✅ Production ready</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 bg-gray-100 p-8 rounded-xl">
+                <h3 class="text-xl font-bold mb-4 text-center">🔧 Individual Module Installation</h3>
+                <p class="text-gray-600 mb-6 text-center">Each module includes the quick install reference for convenience:</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                    <div class="bg-white p-4 rounded-lg">
+                        <strong>SSL Module:</strong><br>
+                        <code>./modules/ssl/install.sh</code>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg">
+                        <strong>Mail Module:</strong><br>
+                        <code>./modules/mail/install.sh</code>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg">
+                        <strong>Database Module:</strong><br>
+                        <code>./modules/database/install.sh</code>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg">
+                        <strong>Firewall Module:</strong><br>
+                        <code>./modules/firewall/install.sh</code>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg">
+                        <strong>Backup Module:</strong><br>
+                        <code>./modules/backup/install.sh</code>
                     </div>
                 </div>
             </div>
@@ -241,25 +268,6 @@ sudo ./master.sh<br><br>
                             <td class="px-6 py-4 font-semibold">💾 Backup</td>
                             <td class="px-6 py-4 font-mono text-sm">./modules/backup/functions.sh create_backup</td>
                             <td class="px-6 py-4 text-gray-600">Create system backup</td>
-                        </tr>
-                            <td class="px-6 py-4 font-semibold">🔒 Firewall</td>
-                            <td class="px-6 py-4 font-mono text-sm">./modules/firewall/functions.sh allow_port 80,443</td>
-                            <td class="px-6 py-4 text-gray-600">Open web ports</td>
-                        </tr>
-                        <tr class="bg-gray-50">
-                            <td class="px-6 py-4 font-semibold">🔐 SSL</td>
-                            <td class="px-6 py-4 font-mono text-sm">./modules/ssl/functions.sh install_cert domain.com</td>
-                            <td class="px-6 py-4 text-gray-600">Install SSL certificate</td>
-                        </tr>
-                        <tr>
-                            <td class="px-6 py-4 font-semibold">🛠️ System</td>
-                            <td class="px-6 py-4 font-mono text-sm">./modules/system/functions.sh update_system</td>
-                            <td class="px-6 py-4 text-gray-600">Update all packages</td>
-                        </tr>
-                        <tr class="bg-gray-50">
-                            <td class="px-6 py-4 font-semibold">💾 Backup</td>
-                            <td class="px-6 py-4 font-mono text-sm">./modules/backup/functions.sh backup_all</td>
-                            <td class="px-6 py-4 text-gray-600">Create full backup</td>
                         </tr>
                     </tbody>
                 </table>

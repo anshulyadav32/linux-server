@@ -31,8 +31,8 @@ Linux Setup is a **complete server management platform** that automates the inst
 
 ### **🏆 Key Features:**
 - ✅ **25+ Components** automatically installed and configured
-- ✅ **25 Verification Checkpoints** ensure everything works perfectly
-- ✅ **8 Specialized Modules** for complete server management
+- ✅ **Professional Verification** systems ensure everything works perfectly
+- ✅ **5 Specialized Modules** for complete server management
 - ✅ **Real-time Progress Tracking** with color-coded status
 - ✅ **Enterprise Security** with automated hardening
 - ✅ **Professional Documentation** with live support
@@ -41,25 +41,52 @@ Linux Setup is a **complete server management platform** that automates the inst
 
 ## ⚡ **Installation Methods**
 
-### **🔥 Short Way (Recommended)**
+### **🔥 Quick Installation Methods**
 
-#### **One-Line Installation:**
+#### **⚡ One-Line Remote Installation:**
 ```bash
-# Install complete server stack instantly
-curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/install.sh | sudo bash
+# Install complete server stack from live repository
+curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+```
+
+#### **📦 Local Installation:**
+```bash
+# Clone and install locally
+git clone https://github.com/anshulyadav32/linux-setup.git
+cd linux-setup
+sudo ./install.sh
 ```
 
 **What this does:**
 - Downloads and runs the automated installer
 - Installs all 25+ components with verification
 - Configures security, SSL, and performance optimization
-- Creates a professional web dashboard
+- Creates professional server management system
 - Takes 10-15 minutes for complete setup
+
+#### **🔧 Individual Module Installation:**
+```bash
+# Each module includes the quick install command
+# SSL Module
+./modules/ssl/install.sh
+
+# Mail Module  
+./modules/mail/install.sh
+
+# Database Module
+./modules/database/install.sh
+
+# Firewall Module
+./modules/firewall/install.sh
+
+# Backup Module
+./modules/backup/install.sh
+```
 
 #### **Quick Component Install:**
 ```bash
 # Install specific components only
-curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/install.sh | sudo bash -s -- --components="ssl,mail,database"
+curl -sSL ls.r-u.live/sh/s1.sh | sudo bash -s -- --components="ssl,mail,database"
 ```
 
 ---
