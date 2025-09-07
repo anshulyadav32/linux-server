@@ -72,24 +72,40 @@
                 <div class="script-item">
                     <div class="script-name">Mail Server Setup</div>
                     <p>Installs and configures a complete mail server with Postfix, Dovecot, and webmail.</p>
-                    <div class="script-command">curl -sSL ls.r-u.live/sh/setup-mail.sh | sudo bash</div>
-                    <button class="copy-btn" onclick="copyToClipboard('curl -sSL ls.r-u.live/sh/setup-mail.sh | sudo bash')">Copy to Clipboard</button>
+                    <div class="script-command">curl -sSL ls.r-u.live/sh/setup-mail-quick.sh | sudo bash</div>
+                    <button class="copy-btn" onclick="copyToClipboard('curl -sSL ls.r-u.live/sh/setup-mail-quick.sh | sudo bash')">Copy to Clipboard</button>
                 </div>
                 
                 <div class="script-item">
                     <div class="script-name">DNS Server Setup</div>
                     <p>Sets up BIND DNS server in master, slave, or caching mode.</p>
-                    <div class="script-command">curl -sSL ls.r-u.live/sh/setup-dns.sh | sudo bash</div>
-                    <button class="copy-btn" onclick="copyToClipboard('curl -sSL ls.r-u.live/sh/setup-dns.sh | sudo bash')">Copy to Clipboard</button>
+                    <div class="script-command">curl -sSL ls.r-u.live/sh/setup-dns-quick.sh | sudo bash</div>
+                    <button class="copy-btn" onclick="copyToClipboard('curl -sSL ls.r-u.live/sh/setup-dns-quick.sh | sudo bash')">Copy to Clipboard</button>
                 </div>
             </div>
             
             <h3>PowerShell Install (Windows)</h3>
-            <div class="script-item">
-                <div class="script-name">Windows Server Setup</div>
-                <p>For Windows systems, use PowerShell to download and execute scripts.</p>
-                <div class="script-command">iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex</div>
-                <button class="copy-btn" onclick="copyToClipboard('iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex')">Copy to Clipboard</button>
+            <div class="script-list">
+                <div class="script-item">
+                    <div class="script-name">Windows Server Setup</div>
+                    <p>For Windows systems, use PowerShell to download and execute scripts for basic server configuration.</p>
+                    <div class="script-command">iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex</div>
+                    <button class="copy-btn" onclick="copyToClipboard('iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex')">Copy to Clipboard</button>
+                </div>
+                
+                <div class="script-item">
+                    <div class="script-name">Windows Mail Server Setup</div>
+                    <p>Sets up a mail server on Windows using hMailServer with optional webmail.</p>
+                    <div class="script-command">iwr -useb ls.r-u.live/sh/windows-mail-setup.ps1 | iex</div>
+                    <button class="copy-btn" onclick="copyToClipboard('iwr -useb ls.r-u.live/sh/windows-mail-setup.ps1 | iex')">Copy to Clipboard</button>
+                </div>
+                
+                <div class="script-item">
+                    <div class="script-name">Windows DNS Server Setup</div>
+                    <p>Installs and configures Windows DNS Server role with zone configuration.</p>
+                    <div class="script-command">iwr -useb ls.r-u.live/sh/windows-dns-setup.ps1 | iex</div>
+                    <button class="copy-btn" onclick="copyToClipboard('iwr -useb ls.r-u.live/sh/windows-dns-setup.ps1 | iex')">Copy to Clipboard</button>
+                </div>
             </div>
         </section>
         

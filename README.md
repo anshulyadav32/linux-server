@@ -2,7 +2,47 @@
 
 A collection of scripts for automating server setup and configuration across different operating systems.
 
-## 📁 Repository Structure
+## � One-Line Installation Commands
+
+### Linux Systems
+
+Quick and easy installation using bash:
+
+#### Basic Server Setup
+```bash
+curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+```
+
+#### Mail Server Setup
+```bash
+curl -sSL ls.r-u.live/sh/setup-mail-quick.sh | sudo bash
+```
+
+#### DNS Server Setup
+```bash
+curl -sSL ls.r-u.live/sh/setup-dns-quick.sh | sudo bash
+```
+
+### Windows Systems
+
+Quick and easy installation using PowerShell:
+
+#### Basic Windows Server Setup
+```powershell
+iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex
+```
+
+#### Windows Mail Server Setup
+```powershell
+iwr -useb ls.r-u.live/sh/windows-mail-setup.ps1 | iex
+```
+
+#### Windows DNS Server Setup
+```powershell
+iwr -useb ls.r-u.live/sh/windows-dns-setup.ps1 | iex
+```
+
+## �📁 Repository Structure
 
 - [`setup-server/`](./setup-server/) - Scripts for server setup and configuration
   - [`setup.sh`](./setup-server/setup.sh) - Ubuntu/Debian server setup script with checkpoints

@@ -53,6 +53,26 @@
         "path": "sh/windows-setup.ps1",
         "validation": "pwsh -c \"Test-Script -Path '%PATH%'\"",
         "onelineCommand": "iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex"
+      },
+      "dns-quick": {
+        "path": "sh/setup-dns-quick.sh",
+        "validation": "bash -n",
+        "onelineCommand": "curl -sSL ls.r-u.live/sh/setup-dns-quick.sh | sudo bash"
+      },
+      "mail-quick": {
+        "path": "sh/setup-mail-quick.sh",
+        "validation": "bash -n",
+        "onelineCommand": "curl -sSL ls.r-u.live/sh/setup-mail-quick.sh | sudo bash"
+      },
+      "windows-dns": {
+        "path": "sh/windows-dns-setup.ps1",
+        "validation": "pwsh -c \"Test-Script -Path '%PATH%'\"",
+        "onelineCommand": "iwr -useb ls.r-u.live/sh/windows-dns-setup.ps1 | iex"
+      },
+      "windows-mail": {
+        "path": "sh/windows-mail-setup.ps1",
+        "validation": "pwsh -c \"Test-Script -Path '%PATH%'\"",
+        "onelineCommand": "iwr -useb ls.r-u.live/sh/windows-mail-setup.ps1 | iex"
       }
     },
     "onelineInstalls": {
@@ -67,6 +87,26 @@
           "path": "/sh/windows-setup.ps1",
           "contentType": "text/plain",
           "description": "Windows server setup script"
+        },
+        {
+          "path": "/sh/setup-dns-quick.sh",
+          "contentType": "text/plain",
+          "description": "DNS server setup script"
+        },
+        {
+          "path": "/sh/setup-mail-quick.sh",
+          "contentType": "text/plain",
+          "description": "Mail server setup script"
+        },
+        {
+          "path": "/sh/windows-dns-setup.ps1",
+          "contentType": "text/plain",
+          "description": "Windows DNS server setup script"
+        },
+        {
+          "path": "/sh/windows-mail-setup.ps1",
+          "contentType": "text/plain",
+          "description": "Windows mail server setup script"
         }
       ],
       "statistics": {
