@@ -3,305 +3,429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linux Setup - Modular Server Management System</title>
-    <meta name="description" content="Professional-grade modular server management system with comprehensive Bash scripts, automated workflows, and advanced error handling for Linux server administration.">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <title>Linux Setup - Complete Server Management System</title>
+    <meta name="description" content="Automate Linux server setup with web hosting, databases, mail systems, DNS, and security tools">
+    
+    <!-- CSS Framework (Tailwind CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Styles -->
+    <style>
+        .hero-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .copy-button { background: #4CAF50; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .copy-button:hover { background: #45a049; }
+    </style>
 </head>
-<body>
-    <header>
-        <div class="container">
-            <h1>Linux Setup - Modular Server Management System</h1>
-            <p class="tagline">Professional-grade server management with modular architecture</p>
-        </div>
-    </header>
-
-    <nav>
-        <div class="container">
-            <a href="/" class="logo">LS.R-U.LIVE</a>
-            <ul>
-                <li><a href="/" class="active">Home</a></li>
-                <li><a href="/sh">Scripts</a></li>
-                <li><a href="/docs">Documentation</a></li>
-                <li><a href="https://github.com/anshulyadav32/linux-setup" target="_blank">GitHub</a></li>
-            </ul>
-            <div class="domain-switcher">
-                <button id="domain-switch-btn" class="btn-small">
-                    <i class="fas fa-globe"></i>
-                    <span id="current-domain">LS.R-U.LIVE</span>
-                </button>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-blue-600">🚀 Linux Setup</span>
+                </div>
+                <div class="flex items-center space-x-8">
+                    <a href="#home" class="text-gray-700 hover:text-blue-600 transition-colors">Home</a>
+                    <a href="#installation" class="text-gray-700 hover:text-blue-600 transition-colors">Installation</a>
+                    <a href="#usage" class="text-gray-700 hover:text-blue-600 transition-colors">Usage</a>
+                    <a href="#components" class="text-gray-700 hover:text-blue-600 transition-colors">Components</a>
+                    <a href="#modules" class="text-gray-700 hover:text-blue-600 transition-colors">Modules</a>
+                    <a href="#maintenance" class="text-gray-700 hover:text-blue-600 transition-colors">Maintenance</a>
+                    <a href="https://github.com/anshulyadav32/linux-setup" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">GitHub</a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <main>
-        <section class="hero container">
-            <h2>Professional server management made simple</h2>
-            <p>Enterprise-grade modular system with 8 specialized service modules, automated workflows, and comprehensive error handling. Deploy and manage Linux servers like a pro.</p>
-            <div class="hero-buttons">
-                <a href="/sh" class="btn">Get Started</a>
-                <a href="/docs" class="btn btn-secondary">Documentation</a>
+    <!-- Project Overview -->
+    <section id="home" class="hero-gradient text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-5xl font-bold mb-6">Complete Server Management System</h1>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">
+                Automate Linux server setup with web hosting, databases, mail systems, DNS, security tools, 
+                and monitoring. Deploy enterprise-grade infrastructure in minutes.
+            </p>
+            <div class="bg-gray-800 text-green-400 p-4 rounded-lg font-mono text-sm max-w-2xl mx-auto mb-8">
+                <strong>Tech Stack:</strong> Bash scripting • Apache/Nginx • PHP/MySQL/Redis • DNS/Mail • SSL automation • Security hardening
             </div>
-        </section>
+            <div class="space-x-4">
+                <a href="#installation" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    Get Started
+                </a>
+                <a href="https://github.com/anshulyadav32/linux-setup" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+                    View on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
 
-        <section class="container">
-            <div id="quick-install">
-                <h2>🚀 Complete Server Installation</h2>
-                <div class="feature-card">
-                    <h3><i class="fas fa-rocket"></i> Comprehensive Server Installer (25 Checkpoints)</h3>
-                    <pre><code>git clone https://github.com/anshulyadav32/linux-setup.git
-cd linux-setup
-sudo ./server-installer.sh</code></pre>
-                    <p><strong>Complete server stack with web servers, databases, mail, DNS, security, monitoring, and more!</strong></p>
-                    <p><a href="/docs" class="btn">View Installation Documentation</a></p>
+    <!-- Installation Page -->
+    <section id="installation" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-bold text-center mb-12">Installation Methods</h2>
+            
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Short Way -->
+                <div class="bg-green-50 p-8 rounded-xl border border-green-200">
+                    <h3 class="text-2xl font-bold text-green-800 mb-6">🔥 Short Way (Recommended)</h3>
+                    <p class="text-gray-700 mb-6">One-click installation for quick setup:</p>
+                    <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm relative">
+                        <code>git clone https://github.com/anshulyadav32/linux-setup.git<br>
+cd linux-setup<br>
+sudo ./install.sh</code>
+                        <button class="copy-button absolute top-2 right-2" onclick="copyToClipboard('short-install')">Copy</button>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-600">
+                        <ul class="space-y-1">
+                            <li>✅ Installs all 45+ components</li>
+                            <li>✅ Takes 10-15 minutes</li>
+                            <li>✅ Automatic verification</li>
+                            <li>✅ Production ready</li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="feature-card">
-                    <h3><i class="fas fa-server"></i> One-Line Quick Setup</h3>
-                    <pre><code id="install-command">curl -sSL <span class="domain-url">ls.r-u.live</span>/sh/s1.sh | sudo bash</code></pre>
-                    <p>Automated download and installation of the complete system</p>
-                    <p><a href="/sh" class="btn">View All Installation Scripts</a></p>
-                </div>
-                <div class="feature-card">
-                    <h3><i class="fab fa-windows"></i> Windows Setup (PowerShell)</h3>
-                    <pre><code>iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex</code></pre>
-                    <p><small>Run in PowerShell as Administrator</small></p>
-                    <p><a href="/sh" class="btn">View All Windows Scripts</a></p>
+
+                <!-- Long Way -->
+                <div class="bg-blue-50 p-8 rounded-xl border border-blue-200">
+                    <h3 class="text-2xl font-bold text-blue-800 mb-6">🔧 Long Way (Manual)</h3>
+                    <p class="text-gray-700 mb-6">Step-by-step customizable installation:</p>
+                    <div class="bg-gray-900 text-blue-400 p-4 rounded-lg font-mono text-sm relative">
+                        <code># Update system and install dependencies<br>
+sudo apt update && sudo apt upgrade -y<br>
+sudo apt install -y curl wget git<br><br>
+# Clone and setup<br>
+git clone https://github.com/anshulyadav32/linux-setup.git<br>
+cd linux-setup<br>
+chmod +x *.sh modules/**/*.sh<br><br>
+# Choose installation type<br>
+sudo ./install.sh --type=production</code>
+                        <button class="copy-button absolute top-2 right-2" onclick="copyToClipboard('long-install')">Copy</button>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="container">
-            <div id="status-check">
-                <h2>🔍 Installation Status Checkers</h2>
-                <div class="feature-card">
-                    <h3><i class="fas fa-tachometer-alt"></i> Quick Status Check</h3>
-                    <pre><code>./quick-check.sh</code></pre>
-                    <p><strong>Fast overview:</strong> Essential services, completion percentage, and recommendations</p>
+    <!-- Usage Methods -->
+    <section id="usage" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-bold text-center mb-12">Usage Methods</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">📦 Installation Method</h3>
+                    <p class="text-gray-600 mb-4">Complete server setup with automated installation and configuration.</p>
+                    <div class="bg-gray-900 text-white p-4 rounded-lg font-mono text-sm">
+                        <code># Complete installation<br>
+sudo ./install.sh<br><br>
+# Verify installation<br>
+sudo ./system-status-checker.sh<br><br>
+# Quick status check<br>
+./quick-check.sh</code>
+                    </div>
                 </div>
-                <div class="feature-card">
-                    <h3><i class="fas fa-microscope"></i> Comprehensive System Checker</h3>
-                    <pre><code>./system-status-checker.sh</code></pre>
-                    <p><strong>Detailed analysis:</strong> All components, versions, ports, configurations, and health status</p>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">⚡ CLI Method</h3>
+                    <p class="text-gray-600 mb-4">Interactive command-line interface for module management.</p>
+                    <div class="bg-gray-900 text-white p-4 rounded-lg font-mono text-sm">
+                        <code># Main management interface<br>
+sudo ./master.sh<br><br>
+# Quick module access<br>
+./master.sh --module web<br>
+./master.sh --module db<br>
+./master.sh --status</code>
+                    </div>
                 </div>
-                <div class="feature-card">
-                    <h3><i class="fas fa-clipboard-check"></i> What Gets Verified</h3>
-                    <ul style="text-align: left; margin: 0; padding-left: 20px;">
-                        <li>✅ Web servers (Nginx, Apache, PHP)</li>
-                        <li>✅ Database servers (MySQL, PostgreSQL)</li>
-                        <li>✅ Mail servers (Postfix, Dovecot)</li>
-                        <li>✅ Security tools (UFW, Fail2Ban, SSL)</li>
-                        <li>✅ All system configurations and modules</li>
+            </div>
+        </div>
+    </section>
+
+    <!-- Components Page -->
+    <section id="components" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-bold text-center mb-12">Server Components</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Web Server -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border card-hover">
+                    <div class="text-3xl mb-4">🌐</div>
+                    <h3 class="text-xl font-bold mb-3">Web Server</h3>
+                    <p class="text-gray-600 mb-4">Apache/Nginx with PHP, virtual hosts, SSL integration</p>
+                    <div class="bg-gray-100 p-3 rounded text-sm font-mono">
+                        <code>./modules/web/menu.sh</code>
+                    </div>
+                </div>
+
+                <!-- Mail System -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border card-hover">
+                    <div class="text-3xl mb-4">✉️</div>
+                    <h3 class="text-xl font-bold mb-3">Mail System</h3>
+                    <p class="text-gray-600 mb-4">Postfix, Dovecot, Roundcube with DKIM/SPF/DMARC</p>
+                    <div class="bg-gray-100 p-3 rounded text-sm font-mono">
+                        <code>./modules/mail/menu.sh</code>
+                    </div>
+                </div>
+
+                <!-- DNS Management -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border card-hover">
+                    <div class="text-3xl mb-4">🌍</div>
+                    <h3 class="text-xl font-bold mb-3">DNS Management</h3>
+                    <p class="text-gray-600 mb-4">BIND9 with zone management and DNSSEC support</p>
+                    <div class="bg-gray-100 p-3 rounded text-sm font-mono">
+                        <code>./modules/dns/menu.sh</code>
+                    </div>
+                </div>
+
+                <!-- Database -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border card-hover">
+                    <div class="text-3xl mb-4">🗄️</div>
+                    <h3 class="text-xl font-bold mb-3">Database</h3>
+                    <p class="text-gray-600 mb-4">MySQL, PostgreSQL, Redis with backup automation</p>
+                    <div class="bg-gray-100 p-3 rounded text-sm font-mono">
+                        <code>./modules/db/menu.sh</code>
+                    </div>
+                </div>
+
+                <!-- Firewall & Security -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border card-hover">
+                    <div class="text-3xl mb-4">🔒</div>
+                    <h3 class="text-xl font-bold mb-3">Firewall & Security</h3>
+                    <p class="text-gray-600 mb-4">UFW, Fail2Ban, ClamAV with security auditing</p>
+                    <div class="bg-gray-100 p-3 rounded text-sm font-mono">
+                        <code>./modules/firewall/menu.sh</code>
+                    </div>
+                </div>
+
+                <!-- SSL/TLS -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border card-hover">
+                    <div class="text-3xl mb-4">🔐</div>
+                    <h3 class="text-xl font-bold mb-3">SSL/TLS</h3>
+                    <p class="text-gray-600 mb-4">Let's Encrypt automation with multi-domain support</p>
+                    <div class="bg-gray-100 p-3 rounded text-sm font-mono">
+                        <code>./modules/ssl/menu.sh</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modules Page -->
+    <section id="modules" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-bold text-center mb-12">Modules Quick Guide</h2>
+            
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-6 py-4 text-left font-semibold">Module</th>
+                            <th class="px-6 py-4 text-left font-semibold">Quick Commands</th>
+                            <th class="px-6 py-4 text-left font-semibold">Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 font-semibold">🌐 Web</td>
+                            <td class="px-6 py-4 font-mono text-sm">./modules/web/functions.sh create_vhost domain.com</td>
+                            <td class="px-6 py-4 text-gray-600">Add website with SSL</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 font-semibold">🌍 DNS</td>
+                            <td class="px-6 py-4 font-mono text-sm">./modules/dns/functions.sh add_zone domain.com</td>
+                            <td class="px-6 py-4 text-gray-600">Create DNS zone</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 font-semibold">✉️ Mail</td>
+                            <td class="px-6 py-4 font-mono text-sm">./modules/mail/functions.sh add_user user@domain.com</td>
+                            <td class="px-6 py-4 text-gray-600">Add email account</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 font-semibold">🗄️ Database</td>
+                            <td class="px-6 py-4 font-mono text-sm">./modules/db/functions.sh create_db myapp_db</td>
+                            <td class="px-6 py-4 text-gray-600">Create database</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 font-semibold">🔒 Firewall</td>
+                            <td class="px-6 py-4 font-mono text-sm">./modules/firewall/functions.sh allow_port 80,443</td>
+                            <td class="px-6 py-4 text-gray-600">Open web ports</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 font-semibold">🔐 SSL</td>
+                            <td class="px-6 py-4 font-mono text-sm">./modules/ssl/functions.sh install_cert domain.com</td>
+                            <td class="px-6 py-4 text-gray-600">Install SSL certificate</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 font-semibold">🛠️ System</td>
+                            <td class="px-6 py-4 font-mono text-sm">./modules/system/functions.sh update_system</td>
+                            <td class="px-6 py-4 text-gray-600">Update all packages</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 font-semibold">💾 Backup</td>
+                            <td class="px-6 py-4 font-mono text-sm">./modules/backup/functions.sh backup_all</td>
+                            <td class="px-6 py-4 text-gray-600">Create full backup</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    <!-- Maintenance & Update -->
+    <section id="maintenance" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-bold text-center mb-12">Maintenance & Update</h2>
+            
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Update Guide -->
+                <div class="bg-blue-50 p-8 rounded-xl border border-blue-200">
+                    <h3 class="text-2xl font-bold text-blue-800 mb-6">📦 Update System</h3>
+                    <div class="bg-gray-900 text-blue-400 p-4 rounded-lg font-mono text-sm mb-4">
+                        <code># Update Linux Setup<br>
+cd /path/to/linux-setup<br>
+git pull origin main<br>
+sudo ./setup.sh --update<br><br>
+# Update individual modules<br>
+sudo ./modules/system/functions.sh update_system</code>
+                    </div>
+                </div>
+
+                <!-- Error Handling -->
+                <div class="bg-red-50 p-8 rounded-xl border border-red-200">
+                    <h3 class="text-2xl font-bold text-red-800 mb-6">🔧 Fix Common Issues</h3>
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <strong>Permission Issues:</strong>
+                            <div class="bg-gray-900 text-red-400 p-2 rounded font-mono mt-1">
+                                <code>chmod +x *.sh modules/**/*.sh</code>
+                            </div>
+                        </div>
+                        <div>
+                            <strong>Service Problems:</strong>
+                            <div class="bg-gray-900 text-red-400 p-2 rounded font-mono mt-1">
+                                <code>sudo systemctl restart apache2</code>
+                            </div>
+                        </div>
+                        <div>
+                            <strong>SSL Issues:</strong>
+                            <div class="bg-gray-900 text-red-400 p-2 rounded font-mono mt-1">
+                                <code>sudo certbot renew --dry-run</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Security Note -->
+            <div class="mt-12 bg-yellow-50 p-8 rounded-xl border border-yellow-200">
+                <h3 class="text-2xl font-bold text-yellow-800 mb-4">🔒 Security Note</h3>
+                <p class="text-gray-700 mb-4">
+                    <strong>Always review scripts before running with elevated privileges.</strong>
+                    You can inspect any script by opening its URL in your browser before execution.
+                </p>
+                <div class="bg-gray-900 text-yellow-400 p-3 rounded font-mono text-sm">
+                    <code>https://github.com/anshulyadav32/linux-setup</code>
+                </div>
+                <p class="text-gray-600 mt-3">All scripts are open source and available for review on our GitHub repository.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">🚀 Linux Setup</h3>
+                    <p class="text-gray-400">Complete server management platform for Linux infrastructure automation.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Links</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="https://github.com/anshulyadav32/linux-setup" class="hover:text-white transition-colors">GitHub Repo</a></li>
+                        <li><a href="https://ls.r-u.live" class="hover:text-white transition-colors">Documentation</a></li>
+                        <li><a href="https://github.com/anshulyadav32/linux-setup/issues" class="hover:text-white transition-colors">Issues</a></li>
+                        <li><a href="mailto:support@ls.r-u.live" class="hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Components</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Web Server Management</li>
+                        <li>Database Systems</li>
+                        <li>Mail Server Setup</li>
+                        <li>DNS Management</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Security</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Firewall Configuration</li>
+                        <li>SSL/TLS Automation</li>
+                        <li>Intrusion Prevention</li>
+                        <li>Security Auditing</li>
                     </ul>
                 </div>
             </div>
-        </section>
-
-        <section class="container features">
-            <h2>🎯 Core Features</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-cubes"></i></div>
-                    <h3>Modular Architecture</h3>
-                    <p>8 specialized service modules with standardized interfaces. Each module handles specific server functions independently or combined.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-robot"></i></div>
-                    <h3>Automated Workflows</h3>
-                    <p>12 pre-configured automation scenarios including LAMP/LEMP stacks, complete mail servers, and full website deployments.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-                    <h3>Enterprise Security</h3>
-                    <p>Professional security hardening, SSL automation, firewall configuration, and intrusion prevention built-in.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-check-double"></i></div>
-                    <h3>25-Checkpoint Installation</h3>
-                    <p>Advanced comprehensive server installer with visual progress tracking, enterprise logging, and automatic service verification.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-cogs"></i></div>
-                    <h3>Professional UI</h3>
-                    <p>Color-coded menus, structured logging, input validation, and comprehensive error handling for production use.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-code-branch"></i></div>
-                    <h3>Open Source</h3>
-                    <p>Completely open source with modern Bash scripting best practices and infrastructure-as-code principles.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="container">
-            <h2>🚀 Service Modules</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3><i class="fas fa-globe"></i> Web Server</h3>
-                    <p>Apache & Nginx with PHP, Node.js, Python support. Virtual hosts, SSL integration, and performance optimization.</p>
-                    <a href="/sh#web" class="btn">Web Module</a>
-                </div>
-                
-                <div class="feature-card">
-                    <h3><i class="fas fa-network-wired"></i> DNS Server</h3>
-                    <p>BIND9 with zone management, DNS records, resolution testing, DNSSEC, and DNS over HTTPS support.</p>
-                    <a href="/sh#dns" class="btn">DNS Module</a>
-                </div>
-                
-                <div class="feature-card">
-                    <h3><i class="fas fa-envelope"></i> Mail Server</h3>
-                    <p>Postfix & Dovecot with DKIM, SPF, DMARC configuration, user management, and spam protection.</p>
-                    <a href="/sh#mail" class="btn">Mail Module</a>
-                </div>
-                
-                <div class="feature-card">
-                    <h3><i class="fas fa-database"></i> Database</h3>
-                    <p>MySQL & PostgreSQL with automated backups, performance monitoring, and security configuration.</p>
-                    <a href="/sh#database" class="btn">Database Module</a>
-                </div>
-                
-                <div class="feature-card">
-                    <h3><i class="fas fa-fire"></i> Firewall</h3>
-                    <p>UFW & Fail2Ban with intrusion prevention, security templates, and attack monitoring.</p>
-                    <a href="/sh#firewall" class="btn">Firewall Module</a>
-                </div>
-                
-                <div class="feature-card">
-                    <h3><i class="fas fa-lock"></i> SSL Management</h3>
-                    <p>Let's Encrypt automation, certificate renewal, multi-domain support, and security best practices.</p>
-                    <a href="/sh#ssl" class="btn">SSL Module</a>
-                </div>
-                
-                <div class="feature-card">
-                    <h3><i class="fas fa-tools"></i> System Admin</h3>
-                    <p>User management, package operations, system monitoring, performance optimization, and hardening.</p>
-                    <a href="/sh#system" class="btn">System Module</a>
-                </div>
-                
-                <div class="feature-card">
-                    <h3><i class="fas fa-hdd"></i> Backup</h3>
-                    <p>Automated scheduling, system/database/file backups, remote sync, and disaster recovery.</p>
-                    <a href="/sh#backup" class="btn">Backup Module</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="container">
-            <h2>⚡ Automated Workflows</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3>🔥 LAMP Stack</h3>
-                    <p>Complete Linux + Apache + MySQL + PHP deployment with SSL and security configuration.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>⚡ LEMP Stack</h3>
-                    <p>Linux + Nginx + MySQL + PHP setup with performance optimization and SSL automation.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>📧 Mail Server</h3>
-                    <p>Complete mail server with DNS records, DKIM, security hardening, and user management.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🌐 Website Deploy</h3>
-                    <p>Full website deployment with DNS, SSL, firewall, and security hardening.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="container">
-            <h2>How It Works</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3>1. Install Dependencies</h3>
-                    <p>Run the comprehensive installer with checkpoint-based error recovery and component testing.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>2. Choose Your Workflow</h3>
-                    <p>Select from 12 automated scenarios or configure individual modules as needed.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>3. Follow Prompts</h3>
-                    <p>Answer any configuration questions that appear during the setup process.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>4. Server Ready!</h3>
-                    <p>Your server is configured with all the necessary components and security settings.</p>
-                </div>
-            </div>
-            <div class="text-center mt-2">
-                <a href="/docs" class="btn">Read the Documentation</a>
-            </div>
-        </section>
-                <li>Caching-only DNS server - For improved lookup performance</li>
-            </ul>
-        </section>
-        
-        <section id="getting-started">
-            <h2>Getting Started</h2>
-            <p>To use these scripts:</p>
-            <ol>
-                <li>Clone the repository: <code>git clone https://github.com/yourusername/server-setup-scripts.git</code></li>
-                <li>Make scripts executable: <code>chmod +x setup-*/setup*.sh</code></li>
-                <li>Run the appropriate script with your desired options</li>
-            </ol>
-        <section class="container">
-            <h2>Security Note</h2>
-            <div class="feature-card">
-                <p><i class="fas fa-lock"></i> <strong>Always review scripts before running with elevated privileges.</strong></p>
-                <p>You can inspect any script by opening its URL in your browser before execution:</p>
-                <pre><code>https://ls.r-u.live/sh/s1.sh</code></pre>
-                <p>All scripts are open source and available for review on our <a href="https://github.com/anshulyadav32/linux-setup" target="_blank">GitHub repository</a>.</p>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <div class="text-center">
-                <p>© 2025 Server Setup Scripts | <a href="/">Home</a> | <a href="/sh">Scripts</a> | <a href="/docs">Documentation</a> | <a href="https://github.com/anshulyadav32/linux-setup" target="_blank">GitHub</a></p>
-                <p><small>Made with <i class="fas fa-heart"></i> for the server admin community.</small></p>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Linux Setup. MIT License. Built with ❤️ for the Linux community.</p>
             </div>
         </div>
     </footer>
 
-    <script src="assets/js/domain-switcher.js"></script>
+    <!-- JavaScript for copy functionality and smooth scrolling -->
     <script>
-        // Add copy to clipboard functionality
+        function copyToClipboard(elementId) {
+            const codeBlocks = {
+                'short-install': 'git clone https://github.com/anshulyadav32/linux-setup.git\ncd linux-setup\nsudo ./install.sh',
+                'long-install': '# Update system and install dependencies\nsudo apt update && sudo apt upgrade -y\nsudo apt install -y curl wget git\n\n# Clone and setup\ngit clone https://github.com/anshulyadav32/linux-setup.git\ncd linux-setup\nchmod +x *.sh modules/**/*.sh\n\n# Choose installation type\nsudo ./install.sh --type=production'
+            };
+            
+            navigator.clipboard.writeText(codeBlocks[elementId]).then(function() {
+                // Show success feedback
+                event.target.textContent = 'Copied!';
+                setTimeout(() => {
+                    event.target.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Add copy functionality to all code blocks
         document.addEventListener('DOMContentLoaded', function() {
             const codeBlocks = document.querySelectorAll('pre code');
             codeBlocks.forEach(block => {
-                const copyBtn = document.createElement('button');
-                copyBtn.classList.add('copy-btn');
-                copyBtn.textContent = 'Copy';
-                copyBtn.style.position = 'absolute';
-                copyBtn.style.right = '10px';
-                copyBtn.style.top = '10px';
-                
-                const pre = block.parentNode;
-                pre.style.position = 'relative';
-                pre.appendChild(copyBtn);
-                
-                copyBtn.addEventListener('click', function() {
-                    navigator.clipboard.writeText(block.textContent).then(function() {
-                        copyBtn.textContent = 'Copied!';
-                        setTimeout(function() {
-                            copyBtn.textContent = 'Copy';
-                        }, 2000);
+                if (!block.parentNode.querySelector('.copy-button')) {
+                    const copyBtn = document.createElement('button');
+                    copyBtn.classList.add('copy-button');
+                    copyBtn.textContent = 'Copy';
+                    copyBtn.style.position = 'absolute';
+                    copyBtn.style.right = '10px';
+                    copyBtn.style.top = '10px';
+                    
+                    const pre = block.parentNode;
+                    pre.style.position = 'relative';
+                    pre.appendChild(copyBtn);
+                    
+                    copyBtn.addEventListener('click', function() {
+                        navigator.clipboard.writeText(block.textContent).then(function() {
+                            copyBtn.textContent = 'Copied!';
+                            setTimeout(function() {
+                                copyBtn.textContent = 'Copy';
+                            }, 2000);
+                        });
                     });
-                });
+                }
             });
         });
     </script>

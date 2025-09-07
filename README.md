@@ -1,53 +1,304 @@
 # 🚀 Linux Setup - Complete Server Management System
 
-A comprehensive, enterprise-grade modular server management platform for Linux system administration. This professional solution provides automated installation, configuration, and management of web servers, databases, security tools, and complete infrastructure with **45+ components** and **25 verification checkpoints**.
+A comprehensive server management platform that automates installation and configuration of enterprise-grade Linux infrastructure. Deploy complete server stacks with web servers, databases, security tools, and monitoring in minutes.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Linux-green.svg)
 ![Bash](https://img.shields.io/badge/shell-bash-yellow.svg)
 ![Status](https://img.shields.io/badge/status-production--ready-brightgreen.svg)
 
-## 📖 **Table of Contents**
-- [📘 Introduction](#-introduction)
-- [⚡ Installation Methods](#-installation-methods)
-- [🧩 Components & Modules](#-components--modules)
-- [🔧 Configuration](#-configuration)
-- [📊 Monitoring & Maintenance](#-monitoring--maintenance)
-- [🌐 Live Documentation](#-live-documentation)
-- [🤝 Contributing](#-contributing)
+## 📖 Table of Contents
+- [📘 Project Overview](#-project-overview)
+- [⚡ Installation (Two Ways)](#-installation-two-ways)
+- [🛠️ Usage Methods](#️-usage-methods)
+- [🧩 Components](#-components)
+- [📋 Modules (Quick Guide)](#-modules-quick-guide)
+- [🔧 Maintenance & Update](#-maintenance--update)
 
 ---
 
-## 📘 **Introduction**
+## 📘 Project Overview
 
-Linux Setup is a **complete server management platform** that automates the installation and configuration of enterprise-grade server infrastructure. Whether you're deploying a simple web server or complex multi-service environments, this system provides the tools and automation you need.
+**What this project does:**
+Automates the complete setup of Linux servers with web hosting, databases, mail systems, DNS, security, and monitoring tools.
 
-### **🎯 What This Project Does:**
-- **Automated Installation**: Deploy complete server stacks in minutes
-- **Modular Architecture**: 8 specialized modules for different server components
-- **Enterprise Security**: Built-in security hardening and monitoring
-- **Professional Management**: CLI and web-based management interfaces
-- **Production Ready**: Tested configurations for production environments
-
-### **🏆 Key Features:**
-- ✅ **45+ Components** automatically installed and configured
-- ✅ **25 Verification Checkpoints** ensure everything works perfectly
-- ✅ **8 Specialized Modules** for complete server management
-- ✅ **Real-time Progress Tracking** with color-coded status
-- ✅ **Enterprise Security** with automated hardening
-- ✅ **Professional Documentation** with live support
+**Tech stack:**
+- **Shell/Bash** - Core automation scripts
+- **Apache/Nginx** - Web servers
+- **MySQL/PostgreSQL/Redis** - Database systems
+- **Postfix/Dovecot** - Mail server components
+- **BIND9** - DNS management
+- **Let's Encrypt** - SSL certificate automation
+- **UFW/Fail2Ban** - Security and firewall
+- **Systemd** - Service management
 
 ---
 
-## ⚡ **Installation Methods**
+## ⚡ Installation (Two Ways)
 
-### **🔥 Short Way (Recommended)**
+### **Quick Install (Short Way)**
 
-#### **One-Line Installation:**
 ```bash
-# Install complete server stack instantly
-curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/install.sh | sudo bash
+git clone https://github.com/anshulyadav32/linux-setup.git
+cd linux-setup
+sudo ./install.sh
 ```
+
+### **Step-by-Step Install (Long Way)**
+
+```bash
+# Update system and install dependencies
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y curl wget git
+
+# Clone repository
+git clone https://github.com/anshulyadav32/linux-setup.git
+cd linux-setup
+
+# Make scripts executable
+chmod +x *.sh
+chmod +x modules/**/*.sh
+
+# Choose installation type
+sudo ./install.sh --type=full          # Complete installation
+sudo ./install.sh --type=basic         # Basic components only
+sudo ./install.sh --type=development   # Development environment
+sudo ./install.sh --type=production    # Production optimized
+
+# Verify installation
+sudo ./system-status-checker.sh
+```
+
+---
+
+## 🛠️ Usage Methods
+
+### **Method 1: Installation Method**
+
+After installation, access your server:
+- **Web Interface**: `http://your-server-ip`
+- **Admin Dashboard**: `http://your-server-ip/admin`
+- **System Status**: `sudo ./system-status-checker.sh`
+- **Quick Health Check**: `./quick-check.sh`
+
+### **Method 2: CLI Method**
+
+```bash
+# Main management interface
+sudo ./master.sh
+
+# Quick CLI commands
+./master.sh --help                    # Show all options
+./master.sh --status                  # System status
+./master.sh --update                  # Update all components
+./master.sh --backup                  # Create system backup
+./master.sh --module web              # Access web module
+./master.sh --module db               # Access database module
+```
+
+---
+
+## 🧩 Components
+
+### **Web Server** (Apache/Nginx options)
+- Apache 2.4 or Nginx web server
+- PHP 8.x with extensions
+- Virtual host management
+- SSL/TLS integration
+
+### **Mail System** (Postfix/Dovecot/Roundcube)
+- Postfix SMTP server
+- Dovecot IMAP/POP3
+- Roundcube webmail
+- DKIM/SPF/DMARC authentication
+
+### **DNS Management** (BIND9/PowerDNS)
+- BIND9 DNS server
+- Zone file management
+- Record management (A, AAAA, CNAME, MX, TXT)
+- DNSSEC support
+
+### **Database** (MySQL/PostgreSQL/Redis)
+- MySQL 8.0 relational database
+- PostgreSQL advanced database
+- Redis in-memory cache
+- Database backup automation
+
+### **Firewall & Security** (UFW/Fail2Ban)
+- UFW firewall with security rules
+- Fail2Ban intrusion prevention
+- ClamAV antivirus
+- Security auditing tools
+
+### **SSL/TLS** (Let's Encrypt/Certbot)
+- Let's Encrypt certificate automation
+- Multi-domain SSL support
+- Auto-renewal system
+- Certificate monitoring
+
+---
+
+## 📋 Modules (Quick Guide)
+
+### Web Module
+```bash
+./modules/web/menu.sh                  # Web management interface
+./modules/web/functions.sh create_vhost domain.com  # Add website
+./modules/web/functions.sh install_ssl domain.com   # Enable SSL
+```
+
+### DNS Module
+```bash
+./modules/dns/menu.sh                  # DNS management interface
+./modules/dns/functions.sh add_zone domain.com      # Add DNS zone
+./modules/dns/functions.sh add_record domain.com A 192.168.1.100  # Add A record
+```
+
+### Mail Module
+```bash
+./modules/mail/menu.sh                 # Mail management interface
+./modules/mail/functions.sh add_user user@domain.com  # Add email user
+./modules/mail/functions.sh setup_dkim domain.com     # Configure DKIM
+```
+
+### Database Module
+```bash
+./modules/db/menu.sh                   # Database management interface
+./modules/db/functions.sh create_db myapp_db          # Create database
+./modules/db/functions.sh create_user dbuser myapp_db # Create DB user
+```
+
+### Firewall Module
+```bash
+./modules/firewall/menu.sh             # Security management interface
+./modules/firewall/functions.sh allow_port 80,443     # Open web ports
+./modules/firewall/functions.sh block_ip 192.168.1.50 # Block IP
+```
+
+### SSL Module
+```bash
+./modules/ssl/menu.sh                  # SSL management interface
+./modules/ssl/functions.sh install_cert domain.com    # Install SSL cert
+./modules/ssl/functions.sh renew_all                  # Renew all certs
+```
+
+### Backup Module
+```bash
+./modules/backup/menu.sh               # Backup management interface
+./modules/backup/functions.sh backup_all              # Backup everything
+./modules/backup/functions.sh restore_backup 2024-01-01  # Restore backup
+```
+
+### System Module
+```bash
+./modules/system/menu.sh               # System management interface
+./modules/system/functions.sh add_user john admin     # Add system user
+./modules/system/functions.sh monitor_performance     # Monitor system
+```
+
+---
+
+## 🔧 Maintenance & Update
+
+### **Update Commands**
+```bash
+# Update the Linux Setup system
+cd /path/to/linux-setup
+git pull origin main
+sudo ./setup.sh --update
+
+# Update individual modules
+sudo ./modules/web/functions.sh update_components
+sudo ./modules/db/functions.sh update_databases
+sudo ./modules/system/functions.sh update_system
+```
+
+### **Troubleshooting Common Errors**
+
+**Permission Issues:**
+```bash
+# Fix script permissions
+chmod +x *.sh modules/**/*.sh
+```
+
+**Service Not Starting:**
+```bash
+# Check service status
+sudo systemctl status apache2
+sudo systemctl status mysql
+
+# Restart services
+sudo systemctl restart apache2
+sudo systemctl restart mysql
+```
+
+**SSL Certificate Issues:**
+```bash
+# Check SSL certificates
+sudo certbot certificates
+
+# Renew certificates
+sudo certbot renew --dry-run
+```
+
+**Database Connection Problems:**
+```bash
+# Check MySQL status
+sudo systemctl status mysql
+
+# Reset MySQL root password
+sudo mysql_secure_installation
+```
+
+**Firewall Blocking Access:**
+```bash
+# Check firewall status
+sudo ufw status
+
+# Allow web traffic
+sudo ufw allow 80,443/tcp
+```
+
+### **System Health Monitoring**
+```bash
+# Comprehensive system check
+sudo ./system-status-checker.sh
+
+# Monitor logs
+sudo tail -f /var/log/linux-setup/installation.log
+
+# Performance monitoring
+sudo ./modules/system/functions.sh monitor_resources
+```
+
+### **Backup & Recovery**
+```bash
+# Create full system backup
+sudo ./modules/backup/functions.sh backup_all
+
+# Schedule automated backups
+sudo ./modules/backup/functions.sh setup_cron_backup
+
+# Restore from backup
+sudo ./modules/backup/functions.sh restore_backup [backup-name]
+```
+
+---
+
+## 📚 Additional Resources
+
+- **GitHub Repository**: [https://github.com/anshulyadav32/linux-setup](https://github.com/anshulyadav32/linux-setup)
+- **Documentation**: [https://ls.r-u.live](https://ls.r-u.live)
+- **Issues**: [https://github.com/anshulyadav32/linux-setup/issues](https://github.com/anshulyadav32/linux-setup/issues)
+- **Support**: support@ls.r-u.live
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+**Ready to deploy your server?** Start with the [Quick Install](#-installation-two-ways) above! 🚀
 
 **What this does:**
 - Downloads and runs the automated installer
