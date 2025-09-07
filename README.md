@@ -28,7 +28,6 @@ A comprehensive, enterprise-grade server management system built with modular Ba
 - **Advanced Progress Tracking**: Real-time progress bar with step-by-step checkpoint verification
 - **Enterprise Logging**: Detailed installation logs with error handling and recovery options
 - **Multi-Distribution Support**: Ubuntu, Debian, CentOS, RHEL, Fedora compatibility
-- **Legacy Installer** (`install-server.sh`): Handles specific dependencies and prerequisites
 - **Testing Framework** (`test-installation.sh`): Validates installations and manages checkpoints
 - **One-Line Deployment**: `curl -sSL ls.r-u.live/sh/s1.sh | sudo bash`
 
@@ -112,7 +111,7 @@ A comprehensive, enterprise-grade server management system built with modular Ba
 
 ## 📦 **Installation & Deployment**
 
-### **🚀 Comprehensive Server Installation**
+### **🚀 Complete Server Installation**
 ```bash
 # Complete server installation with 25 checkpoints
 sudo ./server-installer.sh
@@ -139,11 +138,8 @@ curl -sSL ls.r-u.live/sh/master-server-cli.sh | sudo bash
 git clone https://github.com/anshulyadav32/linux-setup.git
 cd linux-setup
 
-# Run the comprehensive server installer (recommended)
+# Run the comprehensive server installer
 sudo ./server-installer.sh
-
-# Or run the legacy dependency installer
-sudo ./install-server.sh
 
 # Start the management system
 ./master.sh
@@ -165,8 +161,7 @@ sudo ./test-installation.sh --logs
 
 ```
 linux-setup/
-├── server-installer.sh          # 🚀 NEW: Complete server installer with 25 checkpoints
-├── install-server.sh            # Legacy dependency installer with 12-checkpoint system
+├── server-installer.sh          # Complete server installer with 25 comprehensive checkpoints
 ├── test-installation.sh         # Testing framework and checkpoint management
 ├── master.sh                    # Main entry point and system controller
 ├── setup.sh                     # Initial system setup and prerequisites
@@ -522,14 +517,17 @@ sudo ./modules/firewall/test-rules.sh
 
 ### **Common Issues & Solutions**
 ```bash
-# Installation fails at checkpoint X
-sudo ./test-installation.sh --status
-sudo ./test-installation.sh --logs checkpoint-X
-sudo ./install-server.sh --resume-from X
+# Re-run installation if issues occur
+sudo ./server-installer.sh
 
-# Module dependencies missing
-sudo ./install-server.sh --check-deps
-sudo ./modules/MODULE_NAME/install.sh --deps-only
+# Check system compatibility
+sudo ./server-installer.sh --check
+
+# View installation logs
+sudo ./test-installation.sh --logs
+
+# Test specific modules
+sudo ./test-installation.sh --test-module MODULE_NAME
 
 # Service not starting
 sudo ./modules/MODULE_NAME/test.sh --status
