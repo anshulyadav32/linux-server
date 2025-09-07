@@ -1,203 +1,791 @@
-# Modular Server Management System
+# Linux Setup - Modular Server Management System
 
-A comprehensive, professional-grade server management system built with modular Bash scripts for Linux server administration. This system provides a cohesive design with standardized interfaces, shared libraries, and automated workflows for complete server setup and maintenance.
+A comprehensive, enterprise-grade server management system built with modular Bash scripts for Linux server administration. This professional solution provides a cohesive architecture with standardized interfaces, shared libraries, automated workflows, and a 12-checkpoint installation system for complete server setup and maintenance.
 
-## 🚀 Features
+## 🌟 **Project Overview**
 
-### Core Architecture
+**Linux Setup** is more than just a collection of scripts—it's a complete infrastructure management platform designed for modern server administration. Whether you're deploying a single web server or managing complex multi-service environments, this system provides the tools and automation you need.
+
+### 🏆 **Key Highlights**
+- **Professional Architecture**: Enterprise-grade modular design with 8 specialized service modules
+- **Checkpoint System**: Advanced 12-checkpoint installation with automatic error recovery
+- **Automation Workflows**: 12 pre-configured workflows for common server deployments
+- **Dual-Domain Website**: Professional documentation at [ls.r-u.live](https://ls.r-u.live) and [anshulyadav32.github.io/linux-setup](https://anshulyadav32.github.io/linux-setup)
+- **One-Line Installation**: Simple deployment with comprehensive dependency checking
+- **Enterprise Security**: Built-in security hardening, SSL automation, and intrusion prevention
+
+## 🚀 **Features & Capabilities**
+
+### **Core Architecture**
 - **Modular Design**: 8 specialized service modules with standardized interfaces
-- **Shared Library**: Common functions for logging, validation, and user interaction
+- **Shared Library (`common.sh`)**: Centralized functions for logging, validation, and user interaction
 - **Interdependent Automation**: Pre-configured workflows for complex server setups
 - **Professional UI**: Color-coded menus with comprehensive error handling
+- **Checkpoint System**: 12-step installation process with automatic resume capability
 
-### Service Modules
+### **Installation System**
+- **Comprehensive Dependency Installer** (`install-server.sh`): Handles all prerequisites and dependencies
+- **12-Checkpoint System**: Granular progress tracking with automatic error recovery
+- **Testing Framework** (`test-installation.sh`): Validates installations and manages checkpoints
+- **One-Line Deployment**: `curl -sSL ls.r-u.live/sh/s1.sh | sudo bash`
 
-#### 🌐 Web Server Management
-- Apache & Nginx installation and configuration
-- PHP, Node.js, and Python support
-- Virtual host management
-- SSL integration
-- Performance optimization
+### **Service Modules**
 
-#### 🌍 DNS Server Management
-- BIND9 installation and configuration
-- Zone creation and management
-- DNS record operations (A, AAAA, CNAME, MX, TXT, PTR, SRV)
-- DNS resolution testing
-- DNSSEC and DNS over HTTPS support
+#### 🌐 **Web Server Management Module**
+- **Technologies**: Apache & Nginx installation and configuration
+- **Language Support**: PHP, Node.js, Python, and static sites
+- **Features**: Virtual host management, SSL integration, performance optimization
+- **Security**: Hardened configurations, access controls, and monitoring
+- **Automation**: Automated deployments, updates, and maintenance
 
-#### ✉️ Mail Server Management
-- Postfix & Dovecot installation
-- DKIM, SPF, and DMARC configuration
-- Mail user and domain management
-- Security hardening
-- Spam and virus protection
+#### 🌍 **DNS Server Management Module**
+- **Technology**: BIND9 installation and configuration
+- **Capabilities**: Zone creation and management, DNS record operations (A, AAAA, CNAME, MX, TXT, PTR, SRV)
+- **Features**: DNS resolution testing, DNSSEC support, DNS over HTTPS
+- **Security**: Secure DNS configurations, DDoS protection
+- **Automation**: Automated zone file generation and record management
 
-#### 🗄️ Database Management
-- MySQL & PostgreSQL support
-- Database and user creation
-- Backup and restore operations
-- Performance monitoring
-- Security configuration
+#### ✉️ **Mail Server Management Module**
+- **Technologies**: Postfix & Dovecot installation and configuration
+- **Security**: DKIM, SPF, and DMARC configuration with security hardening
+- **Features**: Mail user and domain management, spam and virus protection
+- **Automation**: Automated mail server deployment with webmail interface
+- **Monitoring**: Mail queue monitoring and performance optimization
 
-#### 🔥 Firewall Management
-- UFW (Uncomplicated Firewall) configuration
-- Fail2Ban intrusion prevention
-- Port management
-- Security rule templates
-- Attack monitoring
+#### 🗄️ **Database Management Module**
+- **Technologies**: MySQL, MariaDB & PostgreSQL support
+- **Features**: Database and user creation, backup and restore operations
+- **Monitoring**: Performance monitoring and optimization
+- **Security**: Security configuration, access controls, and encryption
+- **Automation**: Automated database deployments and maintenance
 
-#### 🔒 SSL Certificate Management
-- Let's Encrypt automation
-- Self-signed certificate generation
-- Certificate renewal automation
-- Multiple domain support
-- Security best practices
+#### 🔥 **Firewall Management Module**
+- **Technology**: UFW (Uncomplicated Firewall) configuration
+- **Security**: Fail2Ban intrusion prevention, port management
+- **Features**: Security rule templates, attack monitoring
+- **Automation**: Automated security hardening and rule deployment
+- **Monitoring**: Real-time security monitoring and alerting
 
-#### ⚙️ System Administration
-- User and group management
-- Package management
-- System monitoring
-- Performance optimization
-- Security hardening
+#### 🔒 **SSL Certificate Management Module**
+- **Technology**: Let's Encrypt automation and management
+- **Features**: Self-signed certificate generation, certificate renewal automation
+- **Capabilities**: Multiple domain support, wildcard certificates
+- **Security**: Security best practices, certificate monitoring
+- **Automation**: Fully automated certificate lifecycle management
 
-#### 💾 Backup Management
-- Automated backup scheduling
-- System, database, and file backups
-- Remote backup synchronization
-- Restore operations
-- Disaster recovery planning
+#### ⚙️ **System Administration Module**
+- **Features**: User and group management, package management
+- **Monitoring**: System monitoring, performance optimization
+- **Security**: Security hardening, access controls
+- **Automation**: Automated system maintenance and updates
+- **Optimization**: Performance tuning and resource management
 
-## 📁 Directory Structure
+#### 💾 **Backup Management Module**
+- **Features**: Automated backup scheduling, system and database backups
+- **Storage**: Remote backup synchronization, multiple storage backends
+- **Recovery**: Restore operations, disaster recovery planning
+- **Automation**: Fully automated backup lifecycle management
+- **Monitoring**: Backup verification and health monitoring
 
-```
-script/
-├── master.sh                    # Main entry point
-├── setup.sh                     # Initial system setup
-├── QUICK_START.md               # Quick start guide
-├── README.md                    # This file
-├── logs/                        # System logs
-├── backups/                     # Backup storage
-├── configs/                     # Configuration files
-└── modules/
-    ├── common.sh                # Shared library
-    ├── interdependent.sh        # Automation workflows
-    ├── web/
-    │   ├── functions.sh         # Web module functions
-    │   ├── install.sh           # Installation script
-    │   ├── maintain.sh          # Maintenance operations
-    │   ├── update.sh            # Update operations
-    │   └── menu.sh              # Interactive menu
-    ├── dns/
-    │   ├── functions.sh         # DNS module functions
-    │   ├── install.sh           # Installation script
-    │   ├── maintain.sh          # Maintenance operations
-    │   ├── update.sh            # Update operations
-    │   └── menu.sh              # Interactive menu
-    ├── mail/
-    │   ├── functions.sh         # Mail module functions
-    │   ├── install.sh           # Installation script
-    │   ├── maintain.sh          # Maintenance operations
-    │   ├── update.sh            # Update operations
-    │   └── menu.sh              # Interactive menu
-    ├── db/
-    │   ├── functions.sh         # Database module functions
-    │   ├── install.sh           # Installation script
-    │   ├── maintain.sh          # Maintenance operations
-    │   ├── update.sh            # Update operations
-    │   └── menu.sh              # Interactive menu
-    ├── firewall/
-    │   ├── functions.sh         # Firewall module functions
-    │   ├── install.sh           # Installation script
-    │   ├── maintain.sh          # Maintenance operations
-    │   ├── update.sh            # Update operations
-    │   └── menu.sh              # Interactive menu
-    ├── ssl/
-    │   ├── functions.sh         # SSL module functions
-    │   ├── install.sh           # Installation script
-    │   ├── maintain.sh          # Maintenance operations
-    │   ├── update.sh            # Update operations
-    │   └── menu.sh              # Interactive menu
-    ├── system/
-    │   ├── functions.sh         # System module functions
-    │   ├── install.sh           # Installation script
-    │   ├── maintain.sh          # Maintenance operations
-    │   ├── update.sh            # Update operations
-    │   └── menu.sh              # Interactive menu
-    └── backup/
-        ├── functions.sh         # Backup module functions
-        ├── install.sh           # Installation script
-        ├── maintain.sh          # Maintenance operations
-        ├── update.sh            # Update operations
-        └── menu.sh              # Interactive menu
+## 🎯 **Automation Workflows**
+
+### **Web Stack Workflows**
+1. **LAMP Stack**: Complete Linux + Apache + MySQL + PHP deployment
+2. **LEMP Stack**: Linux + Nginx + MySQL + PHP with optimizations
+3. **Node.js Stack**: Modern JavaScript backend with PM2 and monitoring
+4. **Python Stack**: Django/Flask application deployment with WSGI
+
+### **Service Workflows**
+5. **Mail Server**: Complete email solution with Postfix, Dovecot, and webmail
+6. **DNS Server**: Authoritative DNS with BIND9 and security features
+7. **Database Server**: High-performance database deployment with replication
+8. **Reverse Proxy**: Load balancing and SSL termination with Nginx
+
+### **Management Workflows**
+9. **Security Hardening**: Comprehensive security configuration and monitoring
+10. **Monitoring Setup**: System and application monitoring with alerting
+11. **Backup Configuration**: Automated backup systems with disaster recovery
+12. **Website Deployment**: Complete website deployment with CI/CD integration
+
+## 📦 **Installation & Deployment**
+
+### **🚀 One-Line Installation**
+```bash
+# Complete system installation
+curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+
+# Master CLI tool
+curl -sSL ls.r-u.live/sh/master-server-cli.sh | sudo bash
 ```
 
-## 🛠️ Installation
+### **🔧 Manual Installation**
+```bash
+# Clone the repository
+git clone https://github.com/anshulyadav32/linux-setup.git
+cd linux-setup
 
-### Prerequisites
-- Ubuntu 18.04+ or Debian 10+ (recommended)
-- Root or sudo access
-- Internet connectivity
-- Basic understanding of Linux server administration
+# Run the comprehensive installer
+sudo ./install-server.sh
 
-### Quick Install
+# Start the system
+./master.sh
+```
 
-1. **Clone or download the repository:**
-   ```bash
-   git clone <your-repo-url> server-management
-   cd server-management
-   ```
+### **🧪 Testing & Validation**
+```bash
+# Check installation status
+sudo ./test-installation.sh --status
 
-2. **Run the setup script:**
-   ```bash
-   chmod +x setup.sh
-   ./setup.sh
-   ```
+# Run comprehensive tests
+sudo ./test-installation.sh --test-all
 
-3. **Start the main menu:**
-   ```bash
-   ./master.sh
-   ```
+# View detailed logs
+sudo ./test-installation.sh --logs
+```
 
-## 🚀 Quick Start
+## 📁 **Project Structure**
 
-### Basic Usage
+```
+linux-setup/
+├── install-server.sh            # Comprehensive dependency installer with 12-checkpoint system
+├── test-installation.sh         # Testing framework and checkpoint management
+├── master.sh                    # Main entry point and system controller
+├── setup.sh                     # Initial system setup and prerequisites
+├── README.md                    # This comprehensive documentation
+├── QUICK_START.md              # Quick start guide and common tasks
+├── _config.yml                 # Project configuration
+├── .gitignore                  # Git ignore patterns
+├── logs/                       # System logs and installation history
+│   └── .gitkeep
+├── backups/                    # Backup storage and recovery files
+│   └── .gitkeep
+├── configs/                    # Configuration templates and files
+│   └── .gitkeep
+├── website/                    # Professional documentation website
+│   ├── index.html              # Main homepage
+│   ├── _config.yml             # Jekyll configuration
+│   ├── CNAME                   # Custom domain configuration
+│   ├── robots.txt              # SEO configuration
+│   ├── README.md               # Website documentation
+│   ├── docs/                   # Documentation pages
+│   │   └── index.html          # Comprehensive system documentation
+│   ├── sh/                     # Installation scripts and examples
+│   │   └── index.html          # Installation scripts showcase
+│   ├── assets/                 # Website assets
+│   │   ├── css/                # Stylesheets
+│   │   ├── js/                 # JavaScript and domain switcher
+│   │   └── images/             # Images and graphics
+│   ├── _layouts/               # Jekyll layout templates
+│   └── _includes/              # Jekyll partial templates
+└── modules/                    # Modular service architecture
+    ├── common.sh               # Shared library with utility functions
+    ├── interdependent.sh       # Automation workflow orchestrator
+    ├── web/                    # Web server management module
+    │   ├── functions.sh        # Web module core functions
+    │   ├── install.sh          # Installation and setup scripts
+    │   ├── maintain.sh         # Maintenance and update operations
+    │   ├── update.sh           # Update and upgrade procedures
+    │   └── menu.sh             # Interactive management interface
+    ├── dns/                    # DNS server management module
+    │   ├── functions.sh        # DNS module core functions
+    │   ├── install.sh          # BIND9 installation and configuration
+    │   ├── maintain.sh         # Zone and record management
+    │   ├── update.sh           # DNS server updates and security
+    │   └── menu.sh             # DNS management interface
+    ├── mail/                   # Mail server management module
+    │   ├── functions.sh        # Mail module core functions
+    │   ├── install.sh          # Postfix/Dovecot installation
+    │   ├── maintain.sh         # Mail server maintenance
+    │   ├── update.sh           # Mail server updates and security
+    │   └── menu.sh             # Mail management interface
+    ├── db/                     # Database management module
+    │   ├── functions.sh        # Database module core functions
+    │   ├── install.sh          # Database server installation
+    │   ├── maintain.sh         # Database maintenance and optimization
+    │   ├── update.sh           # Database updates and security
+    │   └── menu.sh             # Database management interface
+    ├── firewall/               # Firewall and security module
+    │   ├── functions.sh        # Security module core functions
+    │   ├── install.sh          # Firewall and security setup
+    │   ├── maintain.sh         # Security maintenance and monitoring
+    │   ├── update.sh           # Security updates and hardening
+    │   └── menu.sh             # Security management interface
+    ├── ssl/                    # SSL certificate management module
+    │   ├── functions.sh        # SSL module core functions
+    │   ├── install.sh          # Certificate authority setup
+    │   ├── maintain.sh         # Certificate management and renewal
+    │   ├── update.sh           # SSL updates and security
+    │   └── menu.sh             # Certificate management interface
+    ├── system/                 # System administration module
+    │   ├── functions.sh        # System module core functions
+    │   ├── install.sh          # System optimization and setup
+    │   ├── maintain.sh         # System maintenance and monitoring
+    │   ├── update.sh           # System updates and optimization
+    │   └── menu.sh             # System management interface
+    └── backup/                 # Backup and recovery module
+        ├── functions.sh        # Backup module core functions
+        ├── install.sh          # Backup system setup
+        ├── maintain.sh         # Backup operations and monitoring
+        ├── update.sh           # Backup system updates
+        └── menu.sh             # Backup management interface
+```
 
-1. **Main Menu Access:**
-   ```bash
-   ./master.sh
-   ```
-   - Interactive main menu with all modules
-   - System prerequisites check
-   - Color-coded navigation
+## 🌐 **Website & Documentation**
 
-2. **Individual Module Access:**
-   ```bash
-   ./modules/web/menu.sh      # Web server management
-   ./modules/dns/menu.sh      # DNS management
-   ./modules/mail/menu.sh     # Mail server management
-   # ... etc for other modules
-   ```
+### **Dual-Domain Access**
+- **Primary Domain**: [https://ls.r-u.live](https://ls.r-u.live)
+- **GitHub Pages Mirror**: [https://anshulyadav32.github.io/linux-setup](https://anshulyadav32.github.io/linux-setup)
 
-3. **Automated Workflows:**
-   ```bash
-   ./modules/interdependent.sh
-   ```
-   - Pre-configured server setups
-   - LAMP/LEMP stack installation
-   - Complete mail server setup
-   - Full website deployment
+### **Professional Documentation**
+- **Homepage**: Complete system overview and features showcase
+- **Installation Scripts**: `/sh/` - One-line installation commands and examples
+- **Documentation**: `/docs/` - Comprehensive guides, tutorials, and troubleshooting
+- **Domain Switcher**: Automatic domain switching with professional notifications
 
-### Common Tasks
+### **Website Features**
+- **Responsive Design**: Professional, mobile-friendly interface
+- **Smart Copy-to-Clipboard**: Domain-aware URL copying for installation commands
+- **SEO Optimized**: Enhanced search engine visibility and performance
+- **Professional Branding**: Consistent enterprise-grade messaging and design
 
-#### Deploy a LAMP Stack
+## 🛠️ **Installation & Setup**
+
+### **System Requirements**
+- **Operating System**: Ubuntu 18.04+ or Debian 10+ (recommended)
+- **Privileges**: Root or sudo access
+- **Network**: Internet connectivity for package downloads
+- **Resources**: Minimum 1GB RAM, 10GB disk space
+- **Knowledge**: Basic understanding of Linux server administration
+
+### **🚀 Quick Installation (Recommended)**
+
+#### **Complete System Installation**
+```bash
+# One-line installation with all modules and dependencies
+curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+```
+
+#### **Master CLI Tool Installation**
+```bash
+# Install the master CLI for direct system access
+curl -sSL ls.r-u.live/sh/master-server-cli.sh | sudo bash
+```
+
+### **📋 Manual Installation**
+
+#### **Step 1: Clone Repository**
+```bash
+# Clone the repository
+git clone https://github.com/anshulyadav32/linux-setup.git
+cd linux-setup
+
+# Make scripts executable
+chmod +x install-server.sh test-installation.sh master.sh setup.sh
+```
+
+#### **Step 2: Run Comprehensive Installer**
+```bash
+# Install all dependencies and modules
+sudo ./install-server.sh
+
+# This will run through all 12 checkpoints:
+# 1. System requirements validation
+# 2. Package manager updates  
+# 3. Core dependency installation
+# 4. Service module downloads
+# 5. Configuration file setup
+# 6. Database initialization
+# 7. Security configuration
+# 8. SSL certificate setup
+# 9. Service activation
+# 10. Firewall configuration
+# 11. Testing and validation
+# 12. Final optimization
+```
+
+#### **Step 3: Start the System**
+```bash
+# Launch the main management interface
+./master.sh
+```
+
+### **🔧 Installation Management**
+
+#### **Checkpoint System**
+```bash
+# Check installation status
+sudo ./test-installation.sh --status
+
+# Resume from specific checkpoint (if interrupted)
+sudo ./install-server.sh --resume-from 5
+
+# Reset installation and start fresh
+sudo ./test-installation.sh --reset
+
+# View detailed installation logs
+sudo ./test-installation.sh --logs
+```
+
+#### **Testing & Validation**
+```bash
+# Run comprehensive system tests
+sudo ./test-installation.sh --test-all
+
+# Test specific modules
+sudo ./test-installation.sh --test-module web
+sudo ./test-installation.sh --test-module mail
+
+# Performance testing
+sudo ./test-installation.sh --performance
+```
+
+## 🚀 **Quick Start Guide**
+
+### **Basic System Operation**
+
+#### **Main Menu Access**
+```bash
+# Launch the main management interface
+./master.sh
+```
+- Interactive main menu with all 8 modules
+- System prerequisites check and validation
+- Color-coded navigation and status indicators
+- Professional error handling and logging
+
+#### **Individual Module Access**
+```bash
+# Access specific modules directly
+./modules/web/menu.sh      # Web server management
+./modules/dns/menu.sh      # DNS server management  
+./modules/mail/menu.sh     # Mail server management
+./modules/db/menu.sh       # Database management
+./modules/firewall/menu.sh # Security and firewall
+./modules/ssl/menu.sh      # SSL certificate management
+./modules/system/menu.sh   # System administration
+./modules/backup/menu.sh   # Backup and recovery
+```
+
+#### **Automated Workflows**
+```bash
+# Access pre-configured automation workflows
+./modules/interdependent.sh
+```
+- 12 professional automation workflows
+- LAMP/LEMP stack deployments
+- Complete mail server setup
+- Full website deployment with CI/CD
+- Security hardening and monitoring
+
+### **Common Deployment Scenarios**
+
+#### **🌐 Deploy a LAMP Stack**
 1. Run `./master.sh`
 2. Choose "Interdependent Automation"
 3. Select "Full LAMP Stack Setup"
-4. Follow the prompts for domain and database configuration
+4. Follow prompts for domain and database configuration
+5. System automatically configures Apache, MySQL, PHP with SSL
 
-#### Setup a Mail Server
+#### **✉️ Setup a Complete Mail Server**
 1. Run `./master.sh`
+2. Choose "Interdependent Automation"
+3. Select "Complete Mail Server Setup"
+4. Provide domain and administrator details
+5. System configures Postfix, Dovecot, DKIM, SPF, DMARC
+
+#### **🔒 Deploy with Enhanced Security**
+1. Run `./master.sh`
+2. Choose "Interdependent Automation"
+3. Select "Security Hardening Workflow"
+4. System applies enterprise security configurations
+5. Automated firewall, fail2ban, and monitoring setup
+
+#### **🗄️ Database Server Deployment**
+1. Run `./master.sh`
+2. Choose "Database Management"
+3. Select database type (MySQL/PostgreSQL)
+4. Configure users, databases, and security
+5. Automated backup and monitoring setup
+
+## 🔧 **Advanced Usage**
+
+### **Custom Automation Workflows**
+```bash
+# Create custom workflow
+nano modules/custom-workflow.sh
+
+# Test custom workflow
+sudo ./test-installation.sh --test-workflow custom
+
+# Deploy custom configuration
+./modules/interdependent.sh --custom-config
+```
+
+### **Module Customization**
+```bash
+# Edit module configurations
+sudo nano modules/web/config.conf
+sudo nano modules/mail/mail.conf
+sudo nano modules/db/database.conf
+
+# Apply custom configurations
+./modules/web/install.sh --custom-config
+```
+
+### **System Monitoring & Maintenance**
+```bash
+# Check system health
+./master.sh --health-check
+
+# View system logs
+./master.sh --view-logs
+
+# Update all modules
+./master.sh --update-all
+
+# Backup system configuration
+./modules/backup/menu.sh --backup-config
+```
+
+## 🔒 **Security Features**
+
+### **Enterprise Security Implementation**
+- **System Hardening**: Automated security configurations following industry best practices
+- **Firewall Management**: Advanced UFW/iptables with fail2ban intrusion prevention
+- **SSL/TLS Automation**: Let's Encrypt integration with automatic certificate renewal
+- **Access Control**: Role-based access control with privilege escalation protection
+- **Audit Logging**: Comprehensive logging and monitoring with real-time alerts
+
+### **Security Validation**
+```bash
+# Run comprehensive security audit
+sudo ./modules/firewall/security-audit.sh
+
+# Check SSL certificate status
+sudo ./modules/ssl/check-certificates.sh
+
+# Review security logs and alerts
+sudo ./modules/system/review-logs.sh
+
+# Test firewall configuration
+sudo ./modules/firewall/test-rules.sh
+```
+
+## 📊 **Monitoring & Maintenance**
+
+### **System Health Monitoring**
+- **Real-time Monitoring**: System performance, resource usage, and service health
+- **Automated Alerts**: Email and log-based notifications for critical events
+- **Performance Optimization**: Automated performance tuning and resource management
+- **Log Analysis**: Comprehensive log aggregation and analysis tools
+
+### **Maintenance Operations**
+```bash
+# System health check
+./master.sh --health-check
+
+# Update all modules and dependencies
+./master.sh --update-all
+
+# Optimize system performance
+./modules/system/optimize.sh
+
+# Generate system reports
+./modules/system/generate-report.sh
+```
+
+## 🆘 **Support & Troubleshooting**
+
+### **Documentation Resources**
+- **Online Documentation**: [ls.r-u.live/docs](https://ls.r-u.live/docs)
+- **Installation Guides**: [ls.r-u.live/sh](https://ls.r-u.live/sh)
+- **GitHub Repository**: [github.com/anshulyadav32/linux-setup](https://github.com/anshulyadav32/linux-setup)
+
+### **Common Issues & Solutions**
+```bash
+# Installation fails at checkpoint X
+sudo ./test-installation.sh --status
+sudo ./test-installation.sh --logs checkpoint-X
+sudo ./install-server.sh --resume-from X
+
+# Module dependencies missing
+sudo ./install-server.sh --check-deps
+sudo ./modules/MODULE_NAME/install.sh --deps-only
+
+# Service not starting
+sudo ./modules/MODULE_NAME/test.sh --status
+sudo ./modules/MODULE_NAME/test.sh --logs
+
+# Performance issues
+sudo ./modules/system/test.sh --performance
+sudo ./modules/system/configure.sh --optimize
+```
+
+### **Getting Help**
+- **GitHub Issues**: Report bugs and request features
+- **Documentation**: Comprehensive guides and troubleshooting
+- **Community Support**: Professional community assistance
+- **Diagnostic Tools**: Built-in diagnostic and testing tools
+
+## 📈 **Project Status & Roadmap**
+
+### **Current Version Features**
+- ✅ 8 Complete Service Modules
+- ✅ 12 Automation Workflows  
+- ✅ 12-Checkpoint Installation System
+- ✅ Professional Documentation Website
+- ✅ Dual-Domain Support
+- ✅ Enterprise Security Features
+- ✅ Comprehensive Testing Framework
+
+### **Upcoming Features**
+- 🔄 Windows PowerShell Version
+- 🔄 Container/Docker Support
+- 🔄 Cloud Provider Integration
+- 🔄 Advanced Monitoring Dashboard
+- 🔄 API Integration Support
+- 🔄 Multi-Server Management
+
+## 🤝 **Contributing**
+
+We welcome contributions to the Linux Setup project! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
+
+### **How to Contribute**
+1. **Fork the Repository**: Create your own fork of the project
+2. **Create Feature Branch**: `git checkout -b feature/amazing-feature`
+3. **Make Changes**: Implement your improvements
+4. **Test Thoroughly**: Ensure all tests pass
+5. **Submit Pull Request**: Describe your changes and improvements
+
+### **Development Guidelines**
+- Follow existing code style and conventions
+- Add comprehensive tests for new features
+- Update documentation for any changes
+- Ensure compatibility with supported Linux distributions
+
+## 📄 **License**
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 **Acknowledgments**
+
+- **Community Contributors**: Thanks to all contributors who help improve this project
+- **Open Source Projects**: Built on the foundation of excellent open source tools
+- **Linux Community**: Dedicated to the professional Linux server administration community
+- **Security Community**: Following best practices from security professionals
+
+---
+
+## 📞 **Contact & Links**
+
+- **Website**: [ls.r-u.live](https://ls.r-u.live)
+- **GitHub**: [github.com/anshulyadav32/linux-setup](https://github.com/anshulyadav32/linux-setup)
+- **Documentation**: [ls.r-u.live/docs](https://ls.r-u.live/docs)
+- **Installation**: [ls.r-u.live/sh](https://ls.r-u.live/sh)
+
+---
+
+**Linux Setup - Modular Server Management System**  
+*Professional server management made simple*
+
+## 🛠️ **Installation & Setup**
+
+### **System Requirements**
+- **Operating System**: Ubuntu 18.04+ or Debian 10+ (recommended)
+- **Privileges**: Root or sudo access
+- **Network**: Internet connectivity for package downloads
+- **Resources**: Minimum 1GB RAM, 10GB disk space
+- **Knowledge**: Basic understanding of Linux server administration
+
+### **🚀 Quick Installation (Recommended)**
+
+#### **Complete System Installation**
+```bash
+# One-line installation with all modules and dependencies
+curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+```
+
+#### **Master CLI Tool Installation**
+```bash
+# Install the master CLI for direct system access
+curl -sSL ls.r-u.live/sh/master-server-cli.sh | sudo bash
+```
+
+### **📋 Manual Installation**
+
+#### **Step 1: Clone Repository**
+```bash
+# Clone the repository
+git clone https://github.com/anshulyadav32/linux-setup.git
+cd linux-setup
+
+# Make scripts executable
+chmod +x install-server.sh test-installation.sh master.sh setup.sh
+```
+
+#### **Step 2: Run Comprehensive Installer**
+```bash
+# Install all dependencies and modules
+sudo ./install-server.sh
+
+# This will run through all 12 checkpoints:
+# 1. System requirements validation
+# 2. Package manager updates  
+# 3. Core dependency installation
+# 4. Service module downloads
+# 5. Configuration file setup
+# 6. Database initialization
+# 7. Security configuration
+# 8. SSL certificate setup
+# 9. Service activation
+# 10. Firewall configuration
+# 11. Testing and validation
+# 12. Final optimization
+```
+
+#### **Step 3: Start the System**
+```bash
+# Launch the main management interface
+./master.sh
+```
+
+### **🔧 Installation Management**
+
+#### **Checkpoint System**
+```bash
+# Check installation status
+sudo ./test-installation.sh --status
+
+# Resume from specific checkpoint (if interrupted)
+sudo ./install-server.sh --resume-from 5
+
+# Reset installation and start fresh
+sudo ./test-installation.sh --reset
+
+# View detailed installation logs
+sudo ./test-installation.sh --logs
+```
+
+#### **Testing & Validation**
+```bash
+# Run comprehensive system tests
+sudo ./test-installation.sh --test-all
+
+# Test specific modules
+sudo ./test-installation.sh --test-module web
+sudo ./test-installation.sh --test-module mail
+
+# Performance testing
+sudo ./test-installation.sh --performance
+```
+
+## 🚀 **Quick Start Guide**
+
+### **Basic System Operation**
+
+#### **Main Menu Access**
+```bash
+# Launch the main management interface
+./master.sh
+```
+- Interactive main menu with all 8 modules
+- System prerequisites check and validation
+- Color-coded navigation and status indicators
+- Professional error handling and logging
+
+#### **Individual Module Access**
+```bash
+# Access specific modules directly
+./modules/web/menu.sh      # Web server management
+./modules/dns/menu.sh      # DNS server management  
+./modules/mail/menu.sh     # Mail server management
+./modules/db/menu.sh       # Database management
+./modules/firewall/menu.sh # Security and firewall
+./modules/ssl/menu.sh      # SSL certificate management
+./modules/system/menu.sh   # System administration
+./modules/backup/menu.sh   # Backup and recovery
+```
+
+#### **Automated Workflows**
+```bash
+# Access pre-configured automation workflows
+./modules/interdependent.sh
+```
+- 12 professional automation workflows
+- LAMP/LEMP stack deployments
+- Complete mail server setup
+- Full website deployment with CI/CD
+- Security hardening and monitoring
+
+### **Common Deployment Scenarios**
+
+#### **🌐 Deploy a LAMP Stack**
+1. Run `./master.sh`
+2. Choose "Interdependent Automation"
+3. Select "Full LAMP Stack Setup"
+4. Follow prompts for domain and database configuration
+5. System automatically configures Apache, MySQL, PHP with SSL
+
+#### **✉️ Setup a Complete Mail Server**
+1. Run `./master.sh`
+2. Choose "Interdependent Automation"
+3. Select "Complete Mail Server Setup"
+4. Provide domain and administrator details
+5. System configures Postfix, Dovecot, DKIM, SPF, DMARC
+
+#### **🔒 Deploy with Enhanced Security**
+1. Run `./master.sh`
+2. Choose "Interdependent Automation"
+3. Select "Security Hardening Workflow"
+4. System applies enterprise security configurations
+5. Automated firewall, fail2ban, and monitoring setup
+
+#### **🗄️ Database Server Deployment**
+1. Run `./master.sh`
+2. Choose "Database Management"
+3. Select database type (MySQL/PostgreSQL)
+4. Configure users, databases, and security
+5. Automated backup and monitoring setup
+
+## 🔧 **Advanced Usage**
+
+### **Custom Automation Workflows**
+```bash
+# Create custom workflow
+nano modules/custom-workflow.sh
+
+# Test custom workflow
+sudo ./test-installation.sh --test-workflow custom
+
+# Deploy custom configuration
+./modules/interdependent.sh --custom-config
+```
+
+### **Module Customization**
+```bash
+# Edit module configurations
+sudo nano modules/web/config.conf
+sudo nano modules/mail/mail.conf
+sudo nano modules/db/database.conf
+
+# Apply custom configurations
+./modules/web/install.sh --custom-config
+```
+
+### **System Monitoring & Maintenance**
+```bash
+# Check system health
+./master.sh --health-check
+
+# View system logs
+./master.sh --view-logs
+
+# Update all modules
+./master.sh --update-all
+
+# Backup system configuration
+./modules/backup/menu.sh --backup-config
+```
 2. Choose "Interdependent Automation"
 3. Select "Complete Mail Server Setup"
 4. Configure domain, DNS, and user accounts

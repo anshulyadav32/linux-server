@@ -1,5 +1,5 @@
-title: Modular Server Management System
-description: Professional-grade server management with modular Bash scripts for Linux server administration
+title: Linux Setup - Modular Server Management System
+description: Enterprise-grade modular server management system with 8 service modules, 12 automation workflows, and professional installation system for Linux server administration
 theme: jekyll-theme-cayman
 show_downloads: true
 google_analytics:
