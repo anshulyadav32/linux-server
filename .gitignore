@@ -1,0 +1,42 @@
+# Logs
+logs/*.log
+logs/*.txt
+*.log
+
+# Backups
+backups/*
+!backups/.gitkeep
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Config files with sensitive data
+configs/*.conf
+configs/*.cfg
+!configs/templates/
+!configs/examples/
+
+# Runtime files
+*.pid
+*.lock
+
+# Cache files
+.cache/
+cache/
+
+# Local test files
+test-*
+local-*
