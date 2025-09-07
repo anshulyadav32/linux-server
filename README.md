@@ -46,7 +46,7 @@ Linux Setup is a **complete server management platform** that automates the inst
 #### **⚡ Complete System Installation:**
 ```bash
 # Install all 5 modules with one command
-curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+curl -sSL ls.r-u.live/s1.sh | sudo bash
 ```
 
 #### **🎯 Individual Module Installation:**

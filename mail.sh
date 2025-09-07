@@ -22,7 +22,7 @@ echo -e "${BLUE}═════════════════════�
 # Check if running as root
 if [[ $EUID -ne 0 ]]; then
    echo -e "${RED}This script must be run as root${NC}" 
-   echo -e "${YELLOW}Please run: curl -sSL ls.r-u.live/sh/mail.sh | sudo bash${NC}"
+   echo -e "${YELLOW}Please run: curl -sSL ls.r-u.live/mail.sh | sudo bash${NC}"
    exit 1
 fi
 
@@ -84,10 +84,10 @@ echo -e "${WHITE}Management Commands:${NC}"
 echo -e "  ${CYAN}./modules/mail/menu.sh${NC}          - Mail system management"
 echo ""
 echo -e "${WHITE}Quick install other modules:${NC}"
-echo -e "  ${CYAN}curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}      - SSL Certificates"
-echo -e "  ${CYAN}curl -sSL ls.r-u.live/sh/database.sh | sudo bash${NC} - Database"
-echo -e "  ${CYAN}curl -sSL ls.r-u.live/sh/firewall.sh | sudo bash${NC} - Firewall"
-echo -e "  ${CYAN}curl -sSL ls.r-u.live/sh/backup.sh | sudo bash${NC}   - Backup"
+echo -e "  ${CYAN}curl -sSL ls.r-u.live/s1.sh | sudo bash${NC}      - SSL Certificates"
+echo -e "  ${CYAN}curl -sSL ls.r-u.live/database.sh | sudo bash${NC} - Database"
+echo -e "  ${CYAN}curl -sSL ls.r-u.live/firewall.sh | sudo bash${NC} - Firewall"
+echo -e "  ${CYAN}curl -sSL ls.r-u.live/backup.sh | sudo bash${NC}   - Backup"
 
 # Copy to permanent location
 if [[ ! -d "/opt/server-management" ]]; then

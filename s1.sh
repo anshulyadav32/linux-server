@@ -1,6 +1,6 @@
 #!/bin/bash
 # Quick SSL Module Installer
-# curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+# curl -sSL ls.r-u.live/s1.sh | sudo bash
 
 set -e
 
@@ -16,13 +16,13 @@ NC='\033[0m' # No Color
 echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
 echo -e "${WHITE}           🔐 SSL CERTIFICATE MODULE INSTALLER               ${NC}"
 echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
-echo -e "${GREEN}Quick install: curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
+echo -e "${GREEN}Quick install: curl -sSL ls.r-u.live/s1.sh | sudo bash${NC}"
 echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
 
 # Check if running as root
 if [[ $EUID -ne 0 ]]; then
    echo -e "${RED}This script must be run as root${NC}" 
-   echo -e "${YELLOW}Please run: curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
+   echo -e "${YELLOW}Please run: curl -sSL ls.r-u.live/s1.sh | sudo bash${NC}"
    exit 1
 fi
 
@@ -97,7 +97,7 @@ echo -e "  ${CYAN}./modules/database/install.sh${NC}   - Database systems"
 echo -e "  ${CYAN}./modules/firewall/install.sh${NC}   - Firewall & Security"
 echo -e "  ${CYAN}./modules/backup/install.sh${NC}     - Backup system"
 echo ""
-echo -e "${BLUE}Quick reinstall: curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
+echo -e "${BLUE}Quick reinstall: curl -sSL ls.r-u.live/s1.sh | sudo bash${NC}"
 echo -e "${GREEN}Thank you for using the SSL Certificate Module!${NC}"
 
 # Copy files to a permanent location (optional)

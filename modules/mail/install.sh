@@ -3,7 +3,7 @@
 # Purpose: Complete mail server setup with Postfix, Dovecot, Roundcube, and security
 
 # Quick install from remote source
-# curl -sSL ls.r-u.live/sh/mail.sh | sudo bash
+# curl -sSL ls.r-u.live/mail.sh | sudo bash
 
 set -e
 
@@ -61,7 +61,7 @@ if [[ -f "$SCRIPT_DIR/../ssl/functions.sh" ]]; then
     echo -e "${GREEN}SSL module found, configuring certificates...${NC}"
 else
     echo -e "${YELLOW}SSL module not found, you can install it later with:${NC}"
-    echo -e "${YELLOW}curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
+    echo -e "${YELLOW}curl -sSL ls.r-u.live/s1.sh | sudo bash${NC}"
 fi
 
 # Configure basic settings
@@ -98,7 +98,7 @@ if [[ -n "$mail_domain" && -n "$primary_domain" ]]; then
     if [[ ! -f "/etc/letsencrypt/live/$mail_domain/fullchain.pem" ]]; then
         echo -e "${YELLOW}SSL certificates not found for $mail_domain${NC}"
         echo -e "${YELLOW}To install SSL certificates, run:${NC}"
-        echo -e "${BLUE}curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
+        echo -e "${BLUE}curl -sSL ls.r-u.live/s1.sh | sudo bash${NC}"
         echo -e "${YELLOW}Then use the SSL module to generate certificates${NC}"
     else
         echo -e "${GREEN}SSL certificates found and configured${NC}"
@@ -145,7 +145,7 @@ echo -e "${GREEN}Mail server domain: $mail_domain${NC}"
 echo -e "${GREEN}Primary domain: $primary_domain${NC}"
 echo -e "${GREEN}Webmail: https://$mail_domain/roundcube${NC}"
 echo -e "${YELLOW}Next steps:${NC}"
-echo -e "${YELLOW}1. Install SSL certificates: ${BLUE}curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
+echo -e "${YELLOW}1. Install SSL certificates: ${BLUE}curl -sSL ls.r-u.live/s1.sh | sudo bash${NC}"
 echo -e "${YELLOW}2. Configure DNS records (MX, A, SPF, DKIM)${NC}"
 echo -e "${YELLOW}3. Configure user accounts${NC}"
 echo -e "${YELLOW}4. Test email sending and receiving${NC}"

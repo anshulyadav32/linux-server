@@ -1,6 +1,6 @@
 #!/bin/bash
 # Complete Server Management System Installer
-# Quick install: curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+# Quick install: curl -sSL ls.r-u.live/s1.sh | sudo bash
 
 set -e  # Exit on any error
 
@@ -17,7 +17,7 @@ NC='\033[0m' # No Color
 echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
 echo -e "${WHITE}           COMPLETE SERVER MANAGEMENT SYSTEM                   ${NC}"
 echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
-echo -e "${GREEN}Quick Install: ${CYAN}curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
+echo -e "${GREEN}Quick Install: ${CYAN}curl -sSL ls.r-u.live/s1.sh | sudo bash${NC}"
 echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
 echo ""
 echo -e "${WHITE}Available Modules:${NC}"
@@ -84,7 +84,7 @@ case $install_option in
         echo -e "${CYAN}./modules/backup/install.sh${NC}   - Backup System"
         echo ""
         echo -e "${YELLOW}Or use the quick install command:${NC}"
-        echo -e "${CYAN}curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
+        echo -e "${CYAN}curl -sSL ls.r-u.live/s1.sh | sudo bash${NC}"
         exit 0
         ;;
     4)
@@ -1052,7 +1052,7 @@ main() {
     echo -e "  ${GREEN}💾${NC} Backup System - Automated backups with encryption and remote sync"
     echo ""
     echo -e "${YELLOW}⚠ This script requires sudo privileges and will modify system configuration${NC}"
-    echo -e "${BLUE}💡 Quick install command: curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
+    echo -e "${BLUE}💡 Quick install command: curl -sSL ls.r-u.live/s1.sh | sudo bash${NC}"
     echo ""
     
     # Only proceed if INSTALL_ALL is true (from menu selection)
@@ -1094,7 +1094,7 @@ main() {
     echo -e "  ${CYAN}./modules/firewall/menu.sh${NC}      - Firewall & Security management"
     echo -e "  ${CYAN}./modules/backup/menu.sh${NC}        - Backup system management"
     echo ""
-    echo -e "${BLUE}Quick Install Command: curl -sSL ls.r-u.live/sh/s1.sh | sudo bash${NC}"
+    echo -e "${BLUE}Quick Install Command: curl -sSL ls.r-u.live/s1.sh | sudo bash${NC}"
     echo -e "${CYAN}Thank you for using the Complete Server Management System!${NC}"
 }
 

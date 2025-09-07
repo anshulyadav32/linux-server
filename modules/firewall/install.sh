@@ -3,7 +3,7 @@
 # Purpose: Automated setup of firewall and security infrastructure
 
 # Quick install from remote source
-# curl -sSL ls.r-u.live/sh/firewall.sh | sudo bash
+# curl -sSL ls.r-u.live/firewall.sh | sudo bash
 
 set -e
 

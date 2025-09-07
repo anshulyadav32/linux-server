@@ -112,22 +112,31 @@ The website provides professional one-line installation commands for various dep
 ### **Complete System Installation**
 ```bash
 # Install complete modular system with all modules
-curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+curl -sSL ls.r-u.live/s1.sh | sudo bash
 ```
 
 ### **Master CLI Tool**
 ```bash
 # Install master CLI for direct system access
-curl -sSL ls.r-u.live/sh/master-server-cli.sh | sudo bash
+curl -sSL ls.r-u.live/install.sh | sudo bash
 ```
 
-### **Automation Workflows**
+### **Individual Modules**
 ```bash
-# LAMP Stack deployment
-curl -sSL ls.r-u.live/sh/sh2.sh | sudo bash
+# SSL Certificates
+curl -sSL ls.r-u.live/s1.sh | sudo bash
 
-# Complete Mail Server setup
-curl -sSL ls.r-u.live/sh/sh3.sh | sudo bash
+# Mail Server
+curl -sSL ls.r-u.live/mail.sh | sudo bash
+
+# Database 
+curl -sSL ls.r-u.live/database.sh | sudo bash
+
+# Firewall
+curl -sSL ls.r-u.live/firewall.sh | sudo bash
+
+# Backup
+curl -sSL ls.r-u.live/backup.sh | sudo bash
 ```
 
 ## 🔧 **Website Development**

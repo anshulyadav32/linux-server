@@ -3,7 +3,7 @@
 # Purpose: Comprehensive SSL certificate management setup
 
 # Quick install from remote source
-# curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+# curl -sSL ls.r-u.live/s1.sh | sudo bash
 
 set -e
 
