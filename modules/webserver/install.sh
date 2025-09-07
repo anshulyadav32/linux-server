@@ -58,13 +58,13 @@ if ! command -v check_port_availability >/dev/null 2>&1; then
         
         if command -v netstat >/dev/null 2>&1; then
             if netstat -tuln | grep -q ":$port "; then
-                log_warning "$service_name port $port is already in use"
-                return 1
+                log_warning "$service_name port $port is already in use - existing service detected"
+                return 0  # Don't fail installation for port conflicts
             fi
         elif command -v ss >/dev/null 2>&1; then
             if ss -tuln | grep -q ":$port "; then
-                log_warning "$service_name port $port is already in use"
-                return 1
+                log_warning "$service_name port $port is already in use - existing service detected"
+                return 0  # Don't fail installation for port conflicts
             fi
         else
             log_info "Cannot check port availability. Proceeding..."
@@ -368,7 +368,7 @@ check_webserver_requirements() {
         exit 1
     fi
     
-    # Check if ports are available
+    # Check if ports are available (informational only)
     check_port_availability 80 "HTTP"
     check_port_availability 443 "HTTPS"
     
