@@ -25,6 +25,56 @@ else
     exit 1
 fi
 
+# Ensure critical functions are available (fallback definitions)
+if ! command -v get_total_memory >/dev/null 2>&1; then
+    get_total_memory() {
+        local memory_kb
+        if [[ -f /proc/meminfo ]]; then
+            memory_kb=$(grep "MemTotal:" /proc/meminfo | awk '{print $2}')
+            echo $((memory_kb / 1024))  # Convert to MB
+        else
+            echo "1024"  # Default fallback
+        fi
+    }
+fi
+
+if ! command -v get_available_space >/dev/null 2>&1; then
+    get_available_space() {
+        local path="${1:-/}"
+        if command -v df >/dev/null 2>&1; then
+            # Get available space in KB and convert to GB
+            local space_kb=$(df "$path" | tail -1 | awk '{print $4}')
+            echo $((space_kb / 1024 / 1024))  # Convert KB to GB
+        else
+            echo "10"  # Default fallback
+        fi
+    }
+fi
+
+if ! command -v check_port_availability >/dev/null 2>&1; then
+    check_port_availability() {
+        local port="$1"
+        local service_name="${2:-Service}"
+        
+        if command -v netstat >/dev/null 2>&1; then
+            if netstat -tuln | grep -q ":$port "; then
+                log_warning "$service_name port $port is already in use"
+                return 1
+            fi
+        elif command -v ss >/dev/null 2>&1; then
+            if ss -tuln | grep -q ":$port "; then
+                log_warning "$service_name port $port is already in use"
+                return 1
+            fi
+        else
+            log_info "Cannot check port availability. Proceeding..."
+        fi
+        
+        log_info "$service_name port $port is available"
+        return 0
+    }
+fi
+
 # Source webserver functions
 if [[ -f "$SCRIPT_DIR/functions.sh" ]]; then
     source "$SCRIPT_DIR/functions.sh"
