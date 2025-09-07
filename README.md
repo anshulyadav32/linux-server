@@ -1,6 +1,6 @@
 # 🚀 Linux Setup - Complete Server Management System
 
-A comprehensive, enterprise-grade modular server management platform for Linux system administration. This professional solution provides automated installation, configuration, and management of web servers, databases, security tools, and complete infrastructure with **45+ components** and **25 verification checkpoints**.
+A comprehensive, enterprise-grade modular server management platform for Linux system administration. This professional solution provides automated installation, configuration, and management of essential server infrastructure with **5 core modules**, **25+ components** and **professional verification systems**.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Linux-green.svg)
@@ -20,17 +20,17 @@ A comprehensive, enterprise-grade modular server management platform for Linux s
 
 ## 📘 **Introduction**
 
-Linux Setup is a **complete server management platform** that automates the installation and configuration of enterprise-grade server infrastructure. Whether you're deploying a simple web server or complex multi-service environments, this system provides the tools and automation you need.
+Linux Setup is a **complete server management platform** that automates the installation and configuration of enterprise-grade server infrastructure. Whether you're deploying SSL certificates, mail servers, databases, security systems, or backup solutions, this system provides the tools and automation you need.
 
 ### **🎯 What This Project Does:**
 - **Automated Installation**: Deploy complete server stacks in minutes
-- **Modular Architecture**: 8 specialized modules for different server components
+- **Modular Architecture**: 5 specialized modules for essential server components
 - **Enterprise Security**: Built-in security hardening and monitoring
-- **Professional Management**: CLI and web-based management interfaces
+- **Professional Management**: CLI-based management interfaces with colored output
 - **Production Ready**: Tested configurations for production environments
 
 ### **🏆 Key Features:**
-- ✅ **45+ Components** automatically installed and configured
+- ✅ **25+ Components** automatically installed and configured
 - ✅ **25 Verification Checkpoints** ensure everything works perfectly
 - ✅ **8 Specialized Modules** for complete server management
 - ✅ **Real-time Progress Tracking** with color-coded status
@@ -51,7 +51,7 @@ curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/insta
 
 **What this does:**
 - Downloads and runs the automated installer
-- Installs all 45+ components with verification
+- Installs all 25+ components with verification
 - Configures security, SSL, and performance optimization
 - Creates a professional web dashboard
 - Takes 10-15 minutes for complete setup
@@ -59,7 +59,7 @@ curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/insta
 #### **Quick Component Install:**
 ```bash
 # Install specific components only
-curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/install.sh | sudo bash -s -- --components="web,db,ssl"
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/install.sh | sudo bash -s -- --components="ssl,mail,database"
 ```
 
 ---
@@ -120,88 +120,89 @@ http://your-server-ip
 
 ## 🧩 **Components & Modules**
 
-The system is organized into **8 specialized modules**, each handling specific server components:
+The system is organized into **5 specialized modules**, each handling essential server components:
 
-### **🌐 Web Server Module**
-**Purpose**: Complete web server management with Apache/Nginx, PHP, and performance optimization.
+### **🔐 SSL Module**
+**Purpose**: SSL/TLS certificate management with Let's Encrypt automation.
 
 #### **Components:**
-- **Apache 2.4** or **Nginx** web servers
-- **PHP 8.x** with 19+ essential extensions
-- **SSL/TLS** certificate automation
-- **Performance optimization** (caching, compression)
-- **Virtual host management**
+- **Let's Encrypt** certificate automation
+- **Self-signed** certificate generation  
+- **Multi-domain** certificate support
+- **Auto-renewal** system
+- **Certificate monitoring**
 
 #### **Quick Guide:**
 ```bash
-# Install web server components
-sudo ./modules/web/install.sh
+# Install SSL components
+sudo ./modules/ssl/install.sh
 
-# Access web management
-sudo ./modules/web/menu.sh
+# Access SSL management
+sudo ./modules/ssl/menu.sh
 
 # Quick actions:
-# 1. Install Apache + PHP    → Option 1
-# 2. Create virtual host     → Option 2  
-# 3. Install SSL certificate → Option 3
-# 4. Performance optimization → Option 4
+# 1. Install SSL certificate → Option 1
+# 2. Setup auto-renewal     → Option 2
+# 3. Validate certificates  → Option 3
+# 4. Monitor SSL status     → Option 4
+```
+
+---
+
+### **✉️ Mail Module**
+**Purpose**: Complete mail server with Postfix, Dovecot, and security features.
+
+#### **Components:**
+- **Postfix** SMTP server
+- **Dovecot** IMAP/POP3 server
+- **DKIM, SPF, DMARC** authentication
+- **Anti-spam** protection (SpamAssassin)
+- **Webmail** interfaces (Roundcube)
+
+#### **Quick Guide:**
+```bash
+# Install mail components
+sudo ./modules/mail/install.sh
+
+# Access mail management
+sudo ./modules/mail/menu.sh
+
+# Quick actions:
+# 1. Install mail server    → Option 1
+# 2. Create email accounts  → Option 2
+# 3. Configure security     → Option 3
+# 4. Setup webmail         → Option 4
 ```
 
 ---
 
 ### **🗄️ Database Module**
-**Purpose**: Comprehensive database management for MySQL, PostgreSQL, Redis, and more.
+**Purpose**: Comprehensive database management for PostgreSQL, MariaDB, and MongoDB.
 
 #### **Components:**
-- **MySQL 8.0** relational database
-- **PostgreSQL** advanced database
-- **Redis** in-memory cache
-- **SQLite** lightweight database
+- **PostgreSQL** advanced relational database
+- **MariaDB** MySQL-compatible database
+- **MongoDB** NoSQL document database
 - **Database backup** and restore tools
+- **Performance monitoring** and optimization
 
 #### **Quick Guide:**
 ```bash
 # Install database components
-sudo ./modules/db/install.sh
+sudo ./modules/database/install.sh
 
 # Access database management
-sudo ./modules/db/menu.sh
+sudo ./modules/database/menu.sh
 
 # Quick actions:
-# 1. Install MySQL          → Option 1
-# 2. Create database        → Option 2
-# 3. Setup database backup  → Option 3
-# 4. Monitor performance    → Option 4
+# 1. Install PostgreSQL     → Option 1
+# 2. Install MariaDB        → Option 2
+# 3. Install MongoDB        → Option 3
+# 4. Setup database backup  → Option 4
 ```
 
 ---
 
-### **🌍 DNS Module**
-**Purpose**: BIND9 DNS server management with zone and record operations.
-
-#### **Components:**
-- **BIND9** DNS server
-- **Zone management** tools
-- **DNS record** operations (A, AAAA, CNAME, MX, TXT, PTR, SRV)
-- **DNSSEC** security features
-- **DNS monitoring** and testing
-
-#### **Quick Guide:**
-```bash
-# Install DNS components
-sudo ./modules/dns/install.sh
-
-# Access DNS management
-sudo ./modules/dns/menu.sh
-
-# Quick actions:
-# 1. Install BIND9          → Option 1
-# 2. Create DNS zone        → Option 2
-# 3. Add DNS records        → Option 3
-# 4. Test DNS resolution    → Option 4
-```
-
----
 
 ### **✉️ Mail Module**
 **Purpose**: Complete mail server with Postfix, Dovecot, and security features.
@@ -311,32 +312,7 @@ sudo ./modules/backup/menu.sh
 
 ---
 
-### **⚙️ System Module**
-**Purpose**: System administration tools for users, packages, and monitoring.
 
-#### **Components:**
-- **User management** (accounts, groups, permissions)
-- **Package management** (installation, updates)
-- **System monitoring** (performance, resources)
-- **Log management** (centralized logging, analysis)
-- **Maintenance automation**
-
-#### **Quick Guide:**
-```bash
-# Install system components
-sudo ./modules/system/install.sh
-
-# Access system management
-sudo ./modules/system/menu.sh
-
-# Quick actions:
-# 1. User management        → Option 1
-# 2. System monitoring      → Option 2
-# 3. Package updates        → Option 3
-# 4. System maintenance     → Option 4
-```
-
----
 
 ## 🔧 **Configuration**
 
@@ -362,11 +338,9 @@ sudo yum install git -y                 # CentOS/RHEL
 ```bash
 # Global configuration
 configs/
-├── apache.conf           # Apache configuration templates
-├── nginx.conf           # Nginx configuration templates  
-├── php.ini              # PHP optimization settings
-├── mysql.cnf            # MySQL configuration
 ├── ssl.conf             # SSL/TLS settings
+├── mail.conf            # Mail server configuration
+├── database.conf        # Database settings
 ├── firewall.rules       # UFW firewall rules
 └── backup.conf          # Backup configuration
 ```
@@ -384,8 +358,9 @@ sudo ./system-status-checker.sh
 ./quick-check.sh
 
 # Service-specific monitoring
-sudo ./modules/web/functions.sh monitor_services
-sudo ./modules/db/functions.sh check_database_health
+sudo ./modules/ssl/functions.sh monitor_certificates
+sudo ./modules/database/functions.sh check_database_health
+sudo ./modules/firewall/functions.sh check_security_status
 ```
 
 ### **Log Management:**
@@ -393,7 +368,8 @@ sudo ./modules/db/functions.sh check_database_health
 # System logs location
 /var/log/linux-setup/
 ├── installation.log     # Installation progress and errors
-├── web-server.log      # Web server operations
+├── ssl.log             # SSL certificate operations
+├── mail.log            # Mail server operations
 ├── database.log        # Database operations
 ├── security.log        # Security events
 ├── backup.log          # Backup operations
@@ -403,12 +379,12 @@ sudo ./modules/db/functions.sh check_database_health
 ### **Maintenance Tasks:**
 ```bash
 # Weekly maintenance (runs automatically via cron)
-sudo ./modules/system/functions.sh weekly_maintenance
+sudo ./modules/backup/functions.sh weekly_maintenance
 
 # Manual maintenance tasks
-sudo ./modules/system/functions.sh update_system
-sudo ./modules/system/functions.sh clean_logs
-sudo ./modules/system/functions.sh optimize_database
+sudo ./modules/ssl/functions.sh renew_certificates
+sudo ./modules/database/functions.sh optimize_database
+sudo ./modules/firewall/functions.sh update_security_rules
 ```
 
 ---
@@ -473,14 +449,14 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 📈 **Project Statistics**
 
-- 📊 **Lines of Code**: 10,000+ lines across all modules
-- 🧩 **Components**: 45+ software components
-- 🔍 **Tests**: 25+ verification checkpoints
+- 📊 **Lines of Code**: 6,000+ lines across all modules
+- 🧩 **Components**: 25+ software components
+- 🔍 **Tests**: Professional verification systems
 - 📚 **Documentation**: Professional documentation
 - 🌟 **GitHub Stars**: Growing community support
 - 🍴 **Forks**: Active development community
 - 🐛 **Issues Resolved**: Rapid issue resolution
-- 📈 **Downloads**: Thousands of installations
+- 📈 **Downloads**: Growing installation base
 
 ---
 
