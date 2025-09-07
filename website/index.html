@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Setup Scripts</title>
+    <title>Server Setup Scripts - Automated Linux & Windows Server Configuration</title>
+    <meta name="description" content="Free and open source scripts for automating server setup, including DNS, mail, and web servers. One-line installation for both Linux and Windows.">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -14,131 +19,142 @@
         </div>
     </header>
 
-    <main class="container">
-        <section id="quick-install">
-            <h2>Quick Install</h2>
-            <div class="feature-card">
-                <h3>Linux Setup (One Command)</h3>
-                <pre><code>curl -sSL ls.r-u.live/sh/s1.sh | sudo bash</code></pre>
-                <p><a href="/sh" class="btn">View All Scripts</a></p>
-            </div>
-            <div class="feature-card">
-                <h3>Windows Setup (PowerShell)</h3>
-                <pre><code>iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex</code></pre>
-                <p><small>Run in PowerShell as Administrator</small></p>
-            </div>
-        </section>
-        
-        <section id="overview">
-            <h2>Overview</h2>
-            <p>A collection of scripts for automating server setup and configuration across different operating systems, focusing on Ubuntu/Debian systems.</p>
-            <p>These scripts provide comprehensive solutions for:</p>
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">LS.R-U.LIVE</a>
             <ul>
-                <li>Base server setup with essential packages and security</li>
-                <li>Complete mail server configuration with multiple component options</li>
-                <li>BIND DNS server setup for domain management</li>
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/sh">Scripts</a></li>
+                <li><a href="/docs">Documentation</a></li>
+                <li><a href="https://github.com/anshulyadav32/linux-setup" target="_blank">GitHub</a></li>
             </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero container">
+            <h2>Server setup made simple</h2>
+            <p>Open-source scripts for quick and efficient server configuration. Set up your server environment in minutes, not hours.</p>
+            <div class="hero-buttons">
+                <a href="/sh" class="btn">Get Started</a>
+                <a href="/docs" class="btn btn-secondary">Documentation</a>
+            </div>
         </section>
 
-        <section id="features">
-            <h2>Key Features</h2>
+        <section class="container">
+            <div id="quick-install">
+                <h2>Quick Install</h2>
+                <div class="feature-card">
+                    <h3><i class="fas fa-server"></i> Linux Setup (One Command)</h3>
+                    <pre><code>curl -sSL ls.r-u.live/sh/s1.sh | sudo bash</code></pre>
+                    <p><a href="/sh" class="btn">View All Linux Scripts</a></p>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fab fa-windows"></i> Windows Setup (PowerShell)</h3>
+                    <pre><code>iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex</code></pre>
+                    <p><small>Run in PowerShell as Administrator</small></p>
+                    <p><a href="/sh" class="btn">View All Windows Scripts</a></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="container features">
+            <h2>Features</h2>
             <div class="feature-grid">
                 <div class="feature-card">
-                    <h3>Server Setup</h3>
-                    <ul>
-                        <li>Built-in installation checkpoints</li>
-                        <li>Distribution detection for compatibility</li>
-                        <li>Comprehensive error handling</li>
-                        <li>Docker and database setup</li>
-                        <li>Security hardening with Fail2Ban</li>
-                    </ul>
-                    <a href="#server-setup" class="btn">Learn More</a>
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Secure by Default</h3>
+                    <p>All scripts implement best security practices, including firewall configuration, secure SSH setup, and proper permissions.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <h3>Mail Server</h3>
-                    <ul>
-                        <li>Multiple IMAP/POP3 server options</li>
-                        <li>Webmail interface configuration</li>
-                        <li>Anti-spam and anti-virus integration</li>
-                        <li>DKIM, SPF, and DMARC support</li>
-                        <li>Secure mail transfer setup</li>
-                    </ul>
-                    <a href="#mail-setup" class="btn">Learn More</a>
+                    <div class="feature-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <h3>Performance Optimized</h3>
+                    <p>Servers are configured for optimal performance with the right settings for your hardware and expected workload.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <h3>DNS Server</h3>
-                    <ul>
-                        <li>Primary/Master DNS configuration</li>
-                        <li>Secondary/Slave DNS replication</li>
-                        <li>Caching DNS setup</li>
-                        <li>DNSSEC validation</li>
-                        <li>Zone file management</li>
-                    </ul>
-                    <a href="#dns-setup" class="btn">Learn More</a>
+                    <div class="feature-icon"><i class="fas fa-check-circle"></i></div>
+                    <h3>Fully Tested</h3>
+                    <p>Every script is thoroughly tested on multiple environments to ensure reliable operation across different setups.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-cogs"></i></div>
+                    <h3>Easy Customization</h3>
+                    <p>Scripts are designed to be easily modified for your specific needs with well-documented configuration options.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-code"></i></div>
+                    <h3>Open Source</h3>
+                    <p>All scripts are free and open source. Contribute to the project or fork it to suit your own requirements.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+                    <h3>Detailed Documentation</h3>
+                    <p>Comprehensive documentation explains every aspect of the scripts and their configuration options.</p>
                 </div>
             </div>
         </section>
 
-        <section id="server-setup">
-            <h2>Server Setup</h2>
-            <h3>Usage</h3>
-            <div class="code-block">
-                <pre><code>chmod +x setup-server/setup.sh
-./setup-server/setup.sh</code></pre>
+        <section class="container">
+            <h2>Available Server Types</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3><i class="fas fa-server"></i> Basic Server</h3>
+                    <p>Essential packages, security configurations, and optimizations for a solid server foundation.</p>
+                    <a href="/sh#basic" class="btn">Setup Script</a>
+                </div>
+                
+                <div class="feature-card">
+                    <h3><i class="fas fa-envelope"></i> Mail Server</h3>
+                    <p>Complete mail server setup with Postfix, Dovecot, SpamAssassin, and webmail interface.</p>
+                    <a href="/sh#mail" class="btn">Setup Script</a>
+                </div>
+                
+                <div class="feature-card">
+                    <h3><i class="fas fa-globe"></i> DNS Server</h3>
+                    <p>BIND DNS server configuration for hosting your own domains with master, slave, or caching options.</p>
+                    <a href="/sh#dns" class="btn">Setup Script</a>
+                </div>
+                
+                <div class="feature-card">
+                    <h3><i class="fab fa-windows"></i> Windows Server</h3>
+                    <p>Windows server configuration scripts for essential services and security best practices.</p>
+                    <a href="/sh#windows" class="btn">Setup Script</a>
+                </div>
             </div>
-            <p>The server setup script automates the installation of:</p>
-            <ul>
-                <li>Git and GitHub CLI</li>
-                <li>Node.js (LTS version)</li>
-                <li>PostgreSQL and MySQL databases</li>
-                <li>Docker with Docker Compose</li>
-                <li>Security tools like Fail2Ban</li>
-                <li>SSL tools (OpenSSL and Certbot)</li>
-            </ul>
         </section>
 
-        <section id="mail-setup">
-            <h2>Mail Server Setup</h2>
-            <h3>Usage</h3>
-            <div class="code-block">
-                <pre><code># Basic setup
-./setup-mail/setup-mail.sh --domain example.com
-
-# Advanced setup with options
-./setup-mail/setup-mail.sh \
-  --domain example.com \
-  --hostname mail.example.com \
-  --imap-server courier \
-  --webmail-type roundcube</code></pre>
+        <section class="container">
+            <h2>How It Works</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>1. Choose a Script</h3>
+                    <p>Select the appropriate script for your server type and operating system.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>2. Run One Command</h3>
+                    <p>Execute the one-line installation command in your terminal.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>3. Follow Prompts</h3>
+                    <p>Answer any configuration questions that appear during the setup process.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>4. Server Ready!</h3>
+                    <p>Your server is configured with all the necessary components and security settings.</p>
+                </div>
             </div>
-            <p>Configure your mail server with multiple component options:</p>
-            <ul>
-                <li>SMTP Server: Postfix (default)</li>
-                <li>IMAP/POP3: Choose between Dovecot or Courier</li>
-                <li>Webmail: Roundcube or SquirrelMail</li>
-                <li>Security: SpamAssassin, ClamAV, DKIM, SPF</li>
-            </ul>
+            <div class="text-center mt-2">
+                <a href="/docs" class="btn">Read the Documentation</a>
+            </div>
         </section>
-
-        <section id="dns-setup">
-            <h2>DNS Server Setup</h2>
-            <h3>Usage</h3>
-            <div class="code-block">
-                <pre><code># Setup as Primary DNS server
-./setup-dns/setup-dns.sh --domain example.com --server-ip 192.168.1.10
-
-# Setup as Secondary DNS server
-./setup-dns/setup-dns.sh --setup-slave --domain example.com --master-dns 192.168.1.10
-
-# Setup as Caching DNS server
-./setup-dns/setup-dns.sh --setup-caching</code></pre>
-            </div>
-            <p>Configure BIND DNS server in various roles:</p>
-            <ul>
-                <li>Master/Primary DNS server - Authoritative for your domain</li>
-                <li>Slave/Secondary DNS server - Backup with automatic zone transfers</li>
                 <li>Caching-only DNS server - For improved lookup performance</li>
             </ul>
         </section>
@@ -151,19 +167,53 @@
                 <li>Make scripts executable: <code>chmod +x setup-*/setup*.sh</code></li>
                 <li>Run the appropriate script with your desired options</li>
             </ol>
-            <p>Each script includes detailed help. Just run with <code>--help</code> to see available options.</p>
+        <section class="container">
+            <h2>Security Note</h2>
+            <div class="feature-card">
+                <p><i class="fas fa-lock"></i> <strong>Always review scripts before running with elevated privileges.</strong></p>
+                <p>You can inspect any script by opening its URL in your browser before execution:</p>
+                <pre><code>https://ls.r-u.live/sh/s1.sh</code></pre>
+                <p>All scripts are open source and available for review on our <a href="https://github.com/anshulyadav32/linux-setup" target="_blank">GitHub repository</a>.</p>
+            </div>
         </section>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Server Setup Scripts. All scripts licensed under MIT.</p>
-            <p>
-                <a href="https://github.com/yourusername/server-setup-scripts">GitHub Repository</a> |
-                <a href="docs.html">Documentation</a> |
-                <a href="about.html">About</a>
-            </p>
+            <div class="text-center">
+                <p>© 2025 Server Setup Scripts | <a href="/">Home</a> | <a href="/sh">Scripts</a> | <a href="/docs">Documentation</a> | <a href="https://github.com/anshulyadav32/linux-setup" target="_blank">GitHub</a></p>
+                <p><small>Made with <i class="fas fa-heart"></i> for the server admin community.</small></p>
+            </div>
         </div>
     </footer>
+
+    <script src="assets/js/domain-switcher.js"></script>
+    <script>
+        // Add copy to clipboard functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeBlocks = document.querySelectorAll('pre code');
+            codeBlocks.forEach(block => {
+                const copyBtn = document.createElement('button');
+                copyBtn.classList.add('copy-btn');
+                copyBtn.textContent = 'Copy';
+                copyBtn.style.position = 'absolute';
+                copyBtn.style.right = '10px';
+                copyBtn.style.top = '10px';
+                
+                const pre = block.parentNode;
+                pre.style.position = 'relative';
+                pre.appendChild(copyBtn);
+                
+                copyBtn.addEventListener('click', function() {
+                    navigator.clipboard.writeText(block.textContent).then(function() {
+                        copyBtn.textContent = 'Copied!';
+                        setTimeout(function() {
+                            copyBtn.textContent = 'Copy';
+                        }, 2000);
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>

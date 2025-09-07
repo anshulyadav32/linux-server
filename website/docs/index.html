@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - Server Setup Scripts</title>
+    <meta name="description" content="Comprehensive documentation for server setup scripts covering installation, configuration, and customization options.">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Server Setup Scripts</h1>
+            <p class="tagline">Documentation</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">LS.R-U.LIVE</a>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/sh">Scripts</a></li>
+                <li><a href="/docs" class="active">Documentation</a></li>
+                <li><a href="https://github.com/anshulyadav32/linux-setup" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container doc-grid">
+            <aside class="doc-sidebar">
+                <h4>Documentation</h4>
+                <ul>
+                    <li><a href="#getting-started">Getting Started</a></li>
+                    <li><a href="#server-setup">Server Setup</a></li>
+                    <li><a href="#mail-server">Mail Server</a></li>
+                    <li><a href="#dns-server">DNS Server</a></li>
+                    <li><a href="#windows-setup">Windows Setup</a></li>
+                    <li><a href="#security">Security Considerations</a></li>
+                    <li><a href="#customization">Customization</a></li>
+                    <li><a href="#troubleshooting">Troubleshooting</a></li>
+                </ul>
+            </aside>
+            
+            <div class="doc-content">
+                <section id="getting-started">
+                    <h2>Getting Started</h2>
+                    <p>This documentation provides detailed information about the server setup scripts, how to use them, and how to customize them for your specific needs.</p>
+                    
+                    <h3>Requirements</h3>
+                    <ul>
+                        <li>Ubuntu/Debian-based Linux distribution (for Linux scripts)</li>
+                        <li>Windows 10/11 or Windows Server 2019/2022 (for Windows scripts)</li>
+                        <li>Administrative privileges (root/sudo for Linux, Administrator for Windows)</li>
+                        <li>Internet connection for downloading packages</li>
+                    </ul>
+                    
+                    <h3>Quick Installation</h3>
+                    <p>The fastest way to get started is to use our one-line installation commands:</p>
+                    
+                    <h4>For Linux (Basic Server Setup):</h4>
+                    <pre><code>curl -sSL ls.r-u.live/sh/s1.sh | sudo bash</code></pre>
+                    
+                    <h4>For Windows:</h4>
+                    <pre><code>iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex</code></pre>
+                </section>
+                
+                <section id="server-setup">
+                    <h2>Server Setup</h2>
+                    <p>The basic server setup script (s1.sh) configures a solid foundation for your server with essential tools and security settings.</p>
+                    
+                    <h3>What It Installs</h3>
+                    <ul>
+                        <li>Essential system utilities (curl, wget, git, unzip, etc.)</li>
+                        <li>UFW firewall with secure defaults</li>
+                        <li>Optimized system configurations</li>
+                    </ul>
+                    
+                    <h3>Usage Options</h3>
+                    <p>The server setup script can be run with the following options:</p>
+                    
+                    <pre><code># Basic usage
+curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+
+# With specific options (download first)
+curl -sSL ls.r-u.live/sh/s1.sh -o setup.sh
+chmod +x setup.sh
+sudo ./setup.sh --with-firewall --with-docker</code></pre>
+                    
+                    <h3>Available Options</h3>
+                    <ul>
+                        <li><code>--with-firewall</code>: Configure UFW firewall with secure defaults</li>
+                        <li><code>--with-docker</code>: Install Docker and Docker Compose</li>
+                        <li><code>--with-db [mysql|postgres]</code>: Install specified database</li>
+                        <li><code>--help</code>: Display help information</li>
+                    </ul>
+                </section>
+                
+                <section id="mail-server">
+                    <h2>Mail Server</h2>
+                    <p>The mail server setup script (sh2.sh) configures a complete mail server with all necessary components.</p>
+                    
+                    <h3>Components Installed</h3>
+                    <ul>
+                        <li>Postfix (SMTP server)</li>
+                        <li>Dovecot (IMAP/POP3 server)</li>
+                        <li>SpamAssassin (spam filtering)</li>
+                        <li>Roundcube (webmail interface)</li>
+                    </ul>
+                    
+                    <h3>Usage</h3>
+                    <pre><code># Basic installation
+curl -sSL ls.r-u.live/sh/sh2.sh | sudo bash
+
+# With domain specification
+curl -sSL ls.r-u.live/sh/sh2.sh | sudo bash -s -- --domain example.com</code></pre>
+                    
+                    <h3>Post-Installation Configuration</h3>
+                    <p>After installation, you'll need to:</p>
+                    <ol>
+                        <li>Configure DNS records for your domain (MX, SPF, DKIM, DMARC)</li>
+                        <li>Set up email accounts using the provided management tools</li>
+                        <li>Configure clients to connect to your mail server</li>
+                    </ol>
+                </section>
+                
+                <section id="dns-server">
+                    <h2>DNS Server</h2>
+                    <p>The DNS server setup script (sh3.sh) configures BIND for domain name resolution.</p>
+                    
+                    <h3>Features</h3>
+                    <ul>
+                        <li>BIND DNS server installation and configuration</li>
+                        <li>Basic security settings</li>
+                        <li>Forward and reverse zone configuration</li>
+                    </ul>
+                    
+                    <h3>Usage</h3>
+                    <pre><code># Basic installation
+curl -sSL ls.r-u.live/sh/sh3.sh | sudo bash
+
+# With specific options
+curl -sSL ls.r-u.live/sh/sh3.sh -o dns-setup.sh
+chmod +x dns-setup.sh
+sudo ./dns-setup.sh --domain example.com --forwarders "8.8.8.8,8.8.4.4"</code></pre>
+                    
+                    <h3>Zone Configuration</h3>
+                    <p>After installation, you'll need to configure your zone files for your domains. Example zone files are created in <code>/etc/bind/zones</code>.</p>
+                </section>
+                
+                <section id="windows-setup">
+                    <h2>Windows Setup</h2>
+                    <p>For Windows servers, we provide PowerShell scripts that automate common setup tasks.</p>
+                    
+                    <h3>Windows Server Setup</h3>
+                    <pre><code>iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex</code></pre>
+                    
+                    <p>This script installs:</p>
+                    <ul>
+                        <li>Chocolatey package manager</li>
+                        <li>Essential utilities</li>
+                        <li>Basic security configurations</li>
+                    </ul>
+                    
+                    <h3>Windows Mail Server</h3>
+                    <pre><code>iwr -useb ls.r-u.live/sh/windows-mail-setup.ps1 | iex</code></pre>
+                    
+                    <h3>Windows DNS Server</h3>
+                    <pre><code>iwr -useb ls.r-u.live/sh/windows-dns-setup.ps1 | iex</code></pre>
+                </section>
+                
+                <section id="security">
+                    <h2>Security Considerations</h2>
+                    <p>When using these scripts, keep the following security considerations in mind:</p>
+                    
+                    <ul>
+                        <li><strong>Script Verification:</strong> Always verify script contents before execution with elevated privileges</li>
+                        <li><strong>Password Security:</strong> Use strong passwords for all accounts created during installation</li>
+                        <li><strong>Regular Updates:</strong> Keep your system updated with security patches</li>
+                        <li><strong>Firewall Rules:</strong> Review and customize firewall rules as needed for your environment</li>
+                        <li><strong>Log Monitoring:</strong> Implement log monitoring and review system logs regularly</li>
+                    </ul>
+                </section>
+                
+                <section id="customization">
+                    <h2>Customization</h2>
+                    <p>All scripts are designed to be easily customizable for your specific needs.</p>
+                    
+                    <h3>Modifying Scripts</h3>
+                    <p>To customize a script:</p>
+                    <ol>
+                        <li>Download the script to your local system</li>
+                        <li>Open it in a text editor</li>
+                        <li>Modify the configuration variables at the top of the script</li>
+                        <li>Save and run the modified script</li>
+                    </ol>
+                    
+                    <h3>Configuration Files</h3>
+                    <p>Key configuration files for each component are located in standard system locations:</p>
+                    <ul>
+                        <li>Postfix: <code>/etc/postfix/main.cf</code></li>
+                        <li>Dovecot: <code>/etc/dovecot/dovecot.conf</code></li>
+                        <li>BIND: <code>/etc/bind/named.conf</code></li>
+                    </ul>
+                </section>
+                
+                <section id="troubleshooting">
+                    <h2>Troubleshooting</h2>
+                    <p>If you encounter issues with the scripts, try the following troubleshooting steps:</p>
+                    
+                    <h3>Common Issues</h3>
+                    <ul>
+                        <li><strong>Script execution permission:</strong> Make sure the script is executable (<code>chmod +x script.sh</code>)</li>
+                        <li><strong>Repository access:</strong> Ensure your system can access required package repositories</li>
+                        <li><strong>Disk space:</strong> Verify you have sufficient disk space for installation</li>
+                        <li><strong>Network issues:</strong> Check your network connectivity</li>
+                    </ul>
+                    
+                    <h3>Logs</h3>
+                    <p>Check relevant log files for error messages:</p>
+                    <ul>
+                        <li>System log: <code>/var/log/syslog</code></li>
+                        <li>Mail log: <code>/var/log/mail.log</code></li>
+                        <li>BIND DNS log: <code>/var/log/named/named.log</code></li>
+                    </ul>
+                    
+                    <h3>Getting Help</h3>
+                    <p>If you need assistance, you can:</p>
+                    <ul>
+                        <li>Open an issue on <a href="https://github.com/anshulyadav32/linux-setup/issues" target="_blank">GitHub</a></li>
+                        <li>Review existing issues for similar problems and solutions</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="text-center">
+                <p>© 2025 Server Setup Scripts | <a href="/">Home</a> | <a href="/sh">Scripts</a> | <a href="/docs">Documentation</a> | <a href="https://github.com/anshulyadav32/linux-setup" target="_blank">GitHub</a></p>
+                <p><small>Made with <i class="fas fa-heart"></i> for the server admin community.</small></p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
