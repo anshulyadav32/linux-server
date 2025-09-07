@@ -1,6 +1,6 @@
 #!/bin/bash
 # Quick Backup Module Installer
-# curl -sSL ls.r-u.live/sh/backup.sh | sudo bash
+# curl -sSL ls.r-u.live/modules/backup/install.sh | sudo bash
 
 set -e
 
@@ -15,7 +15,7 @@ NC='\033[0m'
 echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
 echo -e "${WHITE}           💾 BACKUP SYSTEM MODULE INSTALLER                 ${NC}"
 echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
-echo -e "${GREEN}Quick install: curl -sSL ls.r-u.live/sh/backup.sh | sudo bash${NC}"
+echo -e "${GREEN}Quick install: curl -sSL ls.r-u.live/modules/backup/install.sh | sudo bash${NC}"
 echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
 
 if [[ $EUID -ne 0 ]]; then

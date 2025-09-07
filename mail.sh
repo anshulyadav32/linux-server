@@ -1,6 +1,6 @@
 #!/bin/bash
 # Quick Mail Module Installer
-# curl -sSL ls.r-u.live/sh/mail.sh | sudo bash
+# curl -sSL ls.r-u.live/modules/mail/install.sh | sudo bash
 
 set -e
 
@@ -16,7 +16,7 @@ NC='\033[0m' # No Color
 echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
 echo -e "${WHITE}           ✉️  MAIL SYSTEM MODULE INSTALLER                   ${NC}"
 echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
-echo -e "${GREEN}Quick install: curl -sSL ls.r-u.live/sh/mail.sh | sudo bash${NC}"
+echo -e "${GREEN}Quick install: curl -sSL ls.r-u.live/modules/mail/install.sh | sudo bash${NC}"
 echo -e "${BLUE}══════════════════════════════════════════════════════════════${NC}"
 
 # Check if running as root
