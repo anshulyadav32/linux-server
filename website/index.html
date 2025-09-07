@@ -4,7 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Linux Setup - Complete Server Management System</title>
-    <meta name="description" content="Automate Linux server setup with web hosting, databases, mail systems, DNS, and security tools">
+                   <!-- Backup System -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border card-hover">
+                    <div class="text-3xl mb-4">💾</div>
+                    <h3 class="text-xl font-bold mb-3">Backup System</h3>
+                    <p class="text-gray-600 mb-4">Automated backups with encryption and remote sync</p>
+                    <div class="bg-gray-100 p-3 rounded text-sm font-mono">
+                        <code>./modules/backup/menu.sh</code>
+                    </div>
+                </div>
+
+                <!-- Webserver -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border card-hover">
+                    <div class="text-3xl mb-4">🌐</div>
+                    <h3 class="text-xl font-bold mb-3">Webserver</h3>
+                    <p class="text-gray-600 mb-4">Apache, Nginx, PHP with SSL/TLS and performance optimization</p>
+                    <div class="bg-gray-100 p-3 rounded text-sm font-mono">
+                        <code>./modules/webserver/menu.sh</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>"description" content="Automate Linux server setup with web hosting, databases, mail systems, DNS, and security tools">
     
     <!-- CSS Framework (Tailwind CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -45,10 +66,10 @@
             <h1 class="text-5xl font-bold mb-6">Complete Server Management System</h1>
             <p class="text-xl mb-8 max-w-3xl mx-auto">
                 Deploy enterprise-grade infrastructure with SSL certificates, mail servers, databases, 
-                security systems, and backup solutions. Complete server automation in minutes.
+                web servers, security systems, and backup solutions. Complete server automation in minutes.
             </p>
             <div class="bg-gray-800 text-green-400 p-4 rounded-lg font-mono text-sm max-w-2xl mx-auto mb-8">
-                <strong>Tech Stack:</strong> Bash scripting • SSL automation • Mail servers • Multi-database • Security hardening • Backup systems
+                <strong>Tech Stack:</strong> Bash scripting • SSL automation • Mail servers • Multi-database • Web servers • Security hardening • Backup systems
             </div>
             <div class="space-x-4">
                 <a href="#installation" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
@@ -129,6 +150,10 @@ sudo ./install.sh</code>
                     <div class="bg-white p-4 rounded-lg">
                         <strong>💾 Backup Module:</strong><br>
                         <code class="text-green-600">curl -sSL ls.r-u.live/modules/backup/install.sh | sudo bash</code>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg">
+                        <strong>🌐 Webserver Module:</strong><br>
+                        <code class="text-green-600">curl -sSL ls.r-u.live/modules/webserver/install.sh | sudo bash</code>
                     </div>
                 </div>
             </div>
@@ -268,6 +293,11 @@ sudo ./master.sh<br><br>
                             <td class="px-6 py-4 font-semibold">💾 Backup</td>
                             <td class="px-6 py-4 font-mono text-sm">./modules/backup/functions.sh create_backup</td>
                             <td class="px-6 py-4 text-gray-600">Create system backup</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 font-semibold">🌐 Webserver</td>
+                            <td class="px-6 py-4 font-mono text-sm">./modules/webserver/functions.sh create_virtual_host domain.com</td>
+                            <td class="px-6 py-4 text-gray-600">Create virtual host</td>
                         </tr>
                     </tbody>
                 </table>
