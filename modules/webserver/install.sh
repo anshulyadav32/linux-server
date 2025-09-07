@@ -377,34 +377,7 @@ check_webserver_requirements() {
 
 # ==========================================
 # PACKAGE INSTALLATION
-# ==========================================
 
-install_web_packages() {
-    print_step "Installing web server packages..."
-    
-    case $OS in
-        "ubuntu"|"debian")
-            apt_update
-            apt_install "apache2 apache2-utils"
-            apt_install "nginx"
-            apt_install "certbot python3-certbot-apache python3-certbot-nginx"
-            ;;
-        "centos"|"rhel"|"rocky"|"alma")
-            dnf_install "httpd httpd-tools"
-            dnf_install "nginx"
-            dnf_install "certbot python3-certbot-apache python3-certbot-nginx"
-            ;;
-        "arch")
-            pacman_install "apache nginx certbot certbot-apache certbot-nginx"
-            ;;
-        *)
-            log_error "Unsupported operating system: $OS"
-            exit 1
-            ;;
-    esac
-    
-    log_info "Web server packages installed successfully"
-}
 
 # ==========================================
 # WEBSERVER CONFIGURATION
