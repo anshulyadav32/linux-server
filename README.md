@@ -9,6 +9,7 @@ A comprehensive server management platform that automates installation and confi
 
 ## 📖 Table of Contents
 - [📘 Project Overview](#-project-overview)
+- [🚀 One-Line Installation](#-one-line-installation)
 - [⚡ Installation (Two Ways)](#-installation-two-ways)
 - [🛠️ Usage Methods](#️-usage-methods)
 - [🧩 Components](#-components)
@@ -31,6 +32,20 @@ Automates the complete setup of Linux servers with web hosting, databases, mail 
 - **Let's Encrypt** - SSL certificate automation
 - **UFW/Fail2Ban** - Security and firewall
 - **Systemd** - Service management
+
+---
+
+## 🚀 One-Line Installation
+
+### **Complete System Installation**
+```bash
+curl -sSL ls.r-u.live/sh/s1.sh | sudo bash
+```
+
+### **Master CLI Tool**
+```bash
+curl -sSL ls.r-u.live/sh/master-server-cli.sh | sudo bash
+```
 
 ---
 
