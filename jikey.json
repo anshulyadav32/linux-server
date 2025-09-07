@@ -44,25 +44,25 @@
         "path": "setup-dns/setup-dns.sh",
         "validation": "bash -n"
       },
-      "quickinstall": {
-        "path": "sh/s1.sh",
+      "s1": {
+        "path": "website/sh/s1.sh",
         "validation": "bash -n",
         "onelineCommand": "curl -sSL ls.r-u.live/sh/s1.sh | sudo bash"
+      },
+      "sh2": {
+        "path": "website/sh/sh2.sh",
+        "validation": "bash -n",
+        "onelineCommand": "curl -sSL ls.r-u.live/sh/sh2.sh | sudo bash"
+      },
+      "sh3": {
+        "path": "website/sh/sh3.sh",
+        "validation": "bash -n",
+        "onelineCommand": "curl -sSL ls.r-u.live/sh/sh3.sh | sudo bash"
       },
       "windows": {
         "path": "sh/windows-setup.ps1",
         "validation": "pwsh -c \"Test-Script -Path '%PATH%'\"",
         "onelineCommand": "iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex"
-      },
-      "dns-quick": {
-        "path": "sh/setup-dns-quick.sh",
-        "validation": "bash -n",
-        "onelineCommand": "curl -sSL ls.r-u.live/sh/setup-dns-quick.sh | sudo bash"
-      },
-      "mail-quick": {
-        "path": "sh/setup-mail-quick.sh",
-        "validation": "bash -n",
-        "onelineCommand": "curl -sSL ls.r-u.live/sh/setup-mail-quick.sh | sudo bash"
       },
       "windows-dns": {
         "path": "sh/windows-dns-setup.ps1",
@@ -84,19 +84,19 @@
           "description": "Basic server setup script"
         },
         {
-          "path": "/sh/windows-setup.ps1",
+          "path": "/sh/sh2.sh",
           "contentType": "text/plain",
-          "description": "Windows server setup script"
+          "description": "Mail server setup script"
         },
         {
-          "path": "/sh/setup-dns-quick.sh",
+          "path": "/sh/sh3.sh",
           "contentType": "text/plain",
           "description": "DNS server setup script"
         },
         {
-          "path": "/sh/setup-mail-quick.sh",
+          "path": "/sh/windows-setup.ps1",
           "contentType": "text/plain",
-          "description": "Mail server setup script"
+          "description": "Windows server setup script"
         },
         {
           "path": "/sh/windows-dns-setup.ps1",
