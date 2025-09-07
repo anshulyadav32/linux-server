@@ -479,19 +479,22 @@ check_webserver_requirements() {
 install_web_packages() {
     print_step "Installing web server packages..."
     
-    case $OS in
-        "ubuntu"|"debian")
+    # Convert OS name to lowercase for consistent comparison
+    OS_LOWER=$(echo "$OS" | tr '[:upper:]' '[:lower:]')
+    
+    case $OS_LOWER in
+        *ubuntu*|*debian*)
             apt_update
             apt_install "apache2 apache2-utils"
             apt_install "nginx"
             apt_install "certbot python3-certbot-apache python3-certbot-nginx"
             ;;
-        "centos"|"rhel"|"rocky"|"alma")
+        *centos*|*rhel*|*rocky*|*alma*)
             dnf_install "httpd httpd-tools"
             dnf_install "nginx"
             dnf_install "certbot python3-certbot-apache python3-certbot-nginx"
             ;;
-        "arch")
+        *arch*)
             pacman_install "apache nginx certbot certbot-apache certbot-nginx"
             ;;
         *)
@@ -577,21 +580,24 @@ configure_nginx() {
 install_php() {
     print_step "Installing PHP and modules..."
     
-    case $OS in
-        "ubuntu"|"debian")
+    # Convert OS name to lowercase for consistent comparison
+    OS_LOWER=$(echo "$OS" | tr '[:upper:]' '[:lower:]')
+    
+    case $OS_LOWER in
+        *ubuntu*|*debian*)
             apt_install "php php-cli php-fpm"
             apt_install "php-mysql php-pgsql php-sqlite3"
             apt_install "php-curl php-gd php-mbstring php-xml php-zip"
             apt_install "php-json php-bcmath php-intl php-soap"
             apt_install "libapache2-mod-php"
             ;;
-        "centos"|"rhel"|"rocky"|"alma")
+        *centos*|*rhel*|*rocky*|*alma*)
             dnf_install "php php-cli php-fpm"
             dnf_install "php-mysqlnd php-pgsql php-pdo"
             dnf_install "php-curl php-gd php-mbstring php-xml php-zip"
             dnf_install "php-json php-bcmath php-intl php-soap"
             ;;
-        "arch")
+        *arch*)
             pacman_install "php php-fpm php-apache"
             pacman_install "php-gd php-intl php-sqlite"
             ;;
