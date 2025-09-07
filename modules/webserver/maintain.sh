@@ -25,6 +25,129 @@ if [[ -f "$SCRIPT_DIR/functions.sh" ]]; then
     source "$SCRIPT_DIR/functions.sh"
 fi
 
+# ---------- Service Management Functions ----------
+show_service_status() {
+    print_step "Checking service status..."
+    
+    # Check Apache status
+    if command -v apache2 >/dev/null; then
+        systemctl status apache2 --no-pager
+    else
+        systemctl status httpd --no-pager
+    fi
+    echo
+
+    # Check Nginx status
+    systemctl status nginx --no-pager
+    echo
+
+    # Check PHP-FPM status
+    for svc in php8.3-fpm php8.2-fpm php8.1-fpm php8.0-fpm php7.4-fpm php-fpm; do
+        if systemctl is-active "$svc" >/dev/null 2>&1; then
+            systemctl status "$svc" --no-pager
+            break
+        fi
+    done
+    echo
+
+    # Check ports
+    log_info "Checking listening ports..."
+    ss -tlpn | grep -E ':80|:8080'
+    echo
+}
+
+show_error_logs() {
+    print_step "Recent error logs:"
+
+    # Apache error logs
+    if [[ -f "/var/log/apache2/error.log" ]]; then
+        log_info "Apache errors (last 20 lines):"
+        tail -n 20 /var/log/apache2/error.log
+    elif [[ -f "/var/log/httpd/error_log" ]]; then
+        log_info "Apache errors (last 20 lines):"
+        tail -n 20 /var/log/httpd/error_log
+    fi
+    echo
+
+    # Nginx error logs
+    log_info "Nginx errors (last 20 lines):"
+    tail -n 20 /var/log/nginx/error.log 2>/dev/null || log_warning "No Nginx error log found"
+    echo
+
+    # PHP-FPM error logs
+    for ver in {8..7}; do
+        if [[ -f "/var/log/php${ver}-fpm.log" ]]; then
+            log_info "PHP${ver}-FPM errors (last 20 lines):"
+            tail -n 20 "/var/log/php${ver}-fpm.log"
+            break
+        elif [[ -f "/var/log/php-fpm/error.log" ]]; then
+            log_info "PHP-FPM errors (last 20 lines):"
+            tail -n 20 /var/log/php-fpm/error.log
+            break
+        fi
+    done
+}
+
+show_server_info() {
+    print_step "Server Information"
+    
+    # Web server versions
+    log_info "Web Server Versions:"
+    if command -v apache2 >/dev/null; then
+        apache2 -v
+    elif command -v httpd >/dev/null; then
+        httpd -v
+    fi
+    nginx -v
+    php -v
+    echo
+
+    # Server resource usage
+    log_info "Resource Usage:"
+    echo "Memory usage:"
+    free -h
+    echo
+    echo "Disk usage:"
+    df -h /var
+    echo
+    echo "CPU load:"
+    uptime
+}
+
+restart_services() {
+    print_step "Restarting web services..."
+    
+    # Find PHP-FPM service
+    local php_fpm=""
+    for svc in php8.3-fpm php8.2-fpm php8.1-fpm php8.0-fpm php7.4-fpm php-fpm; do
+        if systemctl is-active "$svc" >/dev/null 2>&1; then
+            php_fpm="$svc"
+            break
+        fi
+    done
+
+    # Restart services in order
+    if [[ -n "$php_fpm" ]]; then
+        log_info "Restarting $php_fpm..."
+        systemctl restart "$php_fpm"
+        sleep 2
+    fi
+
+    if command -v apache2 >/dev/null; then
+        log_info "Restarting Apache..."
+        systemctl restart apache2
+    else
+        log_info "Restarting httpd..."
+        systemctl restart httpd
+    fi
+    sleep 2
+
+    log_info "Restarting Nginx..."
+    systemctl restart nginx
+
+    print_success "All services restarted successfully"
+}
+
 # ==========================================
 # WEBSERVER MAINTENANCE MAIN FUNCTION
 # ==========================================
@@ -32,6 +155,35 @@ fi
 maintain_webserver() {
     print_section_header "🌐 WEBSERVER MODULE MAINTENANCE"
     
+    while true; do
+        echo "1) Show Service Status"
+        echo "2) Show Error Logs"
+        echo "3) Show Server Information"
+        echo "4) Run Maintenance Tasks"
+        echo "5) Restart Services"
+        echo "0) Exit"
+        echo
+        read -rp "Select an option: " choice
+        
+        case $choice in
+            1) show_service_status ;;
+            2) show_error_logs ;;
+            3) show_server_info ;;
+            4) run_maintenance_tasks ;;
+            5) restart_services ;;
+            0) 
+                log_info "Exiting maintenance module..."
+                return 0
+                ;;
+            *) log_error "Invalid option" ;;
+        esac
+        
+        echo
+        read -rp "Press Enter to continue..."
+    done
+}
+
+run_maintenance_tasks() {
     log_info "Starting webserver module maintenance..."
     
     # Check if running as root
