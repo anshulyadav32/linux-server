@@ -2,6 +2,20 @@
 
 A collection of scripts for automating server setup and configuration across different operating systems.
 
+## Repository Structure
+
+- `/setup-server/` - Scripts for server setup and configuration
+- `/setup-mail/` - Mail server setup and configuration
+- `/setup-dns/` - DNS server setup and configuration
+- `/website/` - Website files for GitHub Pages
+  - `/website/docs/` - Documentation pages
+  - `/website/sh/` - Shell and PowerShell scripts for one-line installation
+  - `/website/assets/` - Static assets (CSS, JavaScript, images)
+
+## � One-Line Installation Commandsver Setup Scripts
+
+A collection of scripts for automating server setup and configuration across different operating systems.
+
 ## � One-Line Installation Commands
 
 ### Linux Systems
