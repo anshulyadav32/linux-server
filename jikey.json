@@ -22,7 +22,7 @@
     },
     "security": {
       "headers": true,
-      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'",
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'",
       "xss_protection": true,
       "content_type_options": true,
       "frame_options": "DENY"
@@ -43,6 +43,74 @@
       "dns": {
         "path": "setup-dns/setup-dns.sh",
         "validation": "bash -n"
+      },
+      "quickinstall": {
+        "path": "sh/s1.sh",
+        "validation": "bash -n",
+        "onelineCommand": "curl -sSL ls.r-u.live/sh/s1.sh | sudo bash"
+      },
+      "windows": {
+        "path": "sh/windows-setup.ps1",
+        "validation": "pwsh -c \"Test-Script -Path '%PATH%'\"",
+        "onelineCommand": "iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex"
+      }
+    },
+    "onelineInstalls": {
+      "enabled": true,
+      "endpoints": [
+        {
+          "path": "/sh/s1.sh",
+          "contentType": "text/plain",
+          "description": "Basic server setup script"
+        },
+        {
+          "path": "/sh/windows-setup.ps1",
+          "contentType": "text/plain",
+          "description": "Windows server setup script"
+        }
+      ],
+      "statistics": {
+        "track": true,
+        "anonymize": true
+      }
+    },
+    "monitoring": {
+      "enabled": true,
+      "endpoints": [
+        {
+          "path": "/health",
+          "responseCode": 200,
+          "responseBody": "{\"status\":\"ok\"}"
+        },
+        {
+          "path": "/version",
+          "responseCode": 200,
+          "responseBody": "{\"version\":\"1.0\",\"lastUpdated\":\"2025-09-07\"}"
+        }
+      ],
+      "alerts": {
+        "email": "admin@ls.r-u.live",
+        "threshold": 95,
+        "downtime": 300
+      }
+    },
+    "cache": {
+      "staticAssets": {
+        "maxAge": 86400,
+        "patterns": [
+          "*.css",
+          "*.js",
+          "*.jpg",
+          "*.png",
+          "*.svg"
+        ]
+      },
+      "scripts": {
+        "maxAge": 3600,
+        "patterns": [
+          "sh/*.sh",
+          "sh/*.ps1"
+        ]
       }
     }
   }
