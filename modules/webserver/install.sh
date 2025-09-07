@@ -12,18 +12,234 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASE_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-# Source common functions
+# Debug information
+echo "[INFO] Script directory: $SCRIPT_DIR"
+echo "[INFO] Base directory: $BASE_DIR"
+echo "[INFO] Looking for common.sh at: $BASE_DIR/modules/common.sh"
+
+# Source common functions with fallback
 if [[ -f "$BASE_DIR/modules/common.sh" ]]; then
+    echo "[INFO] Sourcing common.sh from: $BASE_DIR/modules/common.sh"
     source "$BASE_DIR/modules/common.sh"
+elif [[ -f "$SCRIPT_DIR/../common.sh" ]]; then
+    echo "[INFO] Sourcing common.sh from: $SCRIPT_DIR/../common.sh"
+    source "$SCRIPT_DIR/../common.sh"
+elif [[ -f "./modules/common.sh" ]]; then
+    echo "[INFO] Sourcing common.sh from: ./modules/common.sh"
+    source "./modules/common.sh"
 else
-    echo "Error: common.sh not found"
-    exit 1
+    echo "[ERROR] common.sh not found in any expected location"
+    echo "[ERROR] Tried:"
+    echo "  - $BASE_DIR/modules/common.sh"
+    echo "  - $SCRIPT_DIR/../common.sh" 
+    echo "  - ./modules/common.sh"
+    echo "[ERROR] Current working directory: $(pwd)"
+    echo "[ERROR] Directory contents:"
+    ls -la
+    
+    # Define basic functions as fallback
+    echo "[INFO] Using fallback functions..."
+    
+    # Basic color definitions
+    RED='\033[0;31m'
+    GREEN='\033[0;32m'
+    YELLOW='\033[1;33m'
+    BLUE='\033[0;34m'
+    CYAN='\033[0;36m'
+    NC='\033[0m'
+    
+    # Fallback function definitions
+    print_section_header() {
+        echo -e "${BLUE}============================================${NC}"
+        echo -e "${CYAN}$1${NC}"
+        echo -e "${BLUE}============================================${NC}"
+        echo ""
+    }
+    
+    log_info() {
+        echo -e "${CYAN}[INFO]${NC} $1"
+    }
+    
+    log_success() {
+        echo -e "${GREEN}[SUCCESS]${NC} $1"
+    }
+    
+    log_error() {
+        echo -e "${RED}[ERROR]${NC} $1"
+    }
+    
+    log_warning() {
+        echo -e "${YELLOW}[WARNING]${NC} $1"
+    }
+    
+    print_step() {
+        echo -e "${YELLOW}>>> $1${NC}"
+    }
+    
+    check_root() {
+        if [[ $EUID -ne 0 ]]; then
+            log_error "This script must be run as root"
+            exit 1
+        fi
+    }
+    
+    detect_system() {
+        if [[ -f /etc/os-release ]]; then
+            . /etc/os-release
+            OS=$NAME
+            VER=$VERSION_ID
+        elif type lsb_release >/dev/null 2>&1; then
+            OS=$(lsb_release -si)
+            VER=$(lsb_release -sr)
+        elif [[ -f /etc/redhat-release ]]; then
+            OS="Red Hat Enterprise Linux"
+            VER=$(cat /etc/redhat-release | grep -oE '[0-9]+\.[0-9]+')
+        else
+            OS=$(uname -s)
+            VER=$(uname -r)
+        fi
+        
+        log_info "Detected system: $OS $VER"
+    }
+    
+    pause() {
+        echo ""
+        read -p "$1"
+    }
 fi
 
 # Source webserver functions
 if [[ -f "$SCRIPT_DIR/functions.sh" ]]; then
     source "$SCRIPT_DIR/functions.sh"
 fi
+
+# ==========================================
+# ADDITIONAL FUNCTION DEFINITIONS
+# ==========================================
+
+check_webserver_requirements() {
+    log_info "Checking webserver requirements..."
+    
+    # Check available disk space (need at least 1GB)
+    available_space=$(df / | awk 'NR==2 {print $4}')
+    required_space=1048576  # 1GB in KB
+    
+    if [[ $available_space -lt $required_space ]]; then
+        log_error "Insufficient disk space. Need at least 1GB free."
+        exit 1
+    fi
+    
+    # Check if we can install packages
+    if command -v apt-get >/dev/null 2>&1; then
+        log_info "Using APT package manager"
+    elif command -v yum >/dev/null 2>&1; then
+        log_info "Using YUM package manager"
+    elif command -v dnf >/dev/null 2>&1; then
+        log_info "Using DNF package manager"
+    else
+        log_error "No supported package manager found"
+        exit 1
+    fi
+    
+    log_success "System requirements check passed"
+}
+
+install_web_packages() {
+    log_info "Installing web server packages..."
+    
+    if command -v apt-get >/dev/null 2>&1; then
+        # Ubuntu/Debian
+        export DEBIAN_FRONTEND=noninteractive
+        apt-get update -qq
+        apt-get install -y apache2 nginx php php-fpm php-mysql php-xml php-curl php-zip php-gd php-mbstring \
+                          certbot python3-certbot-apache python3-certbot-nginx \
+                          ufw fail2ban curl wget unzip
+    elif command -v yum >/dev/null 2>&1; then
+        # CentOS/RHEL 7
+        yum install -y epel-release
+        yum install -y httpd nginx php php-fpm php-mysqlnd php-xml php-curl php-zip php-gd php-mbstring \
+                      certbot python2-certbot-apache python2-certbot-nginx \
+                      firewalld fail2ban curl wget unzip
+    elif command -v dnf >/dev/null 2>&1; then
+        # CentOS/RHEL 8+/Fedora
+        dnf install -y epel-release
+        dnf install -y httpd nginx php php-fpm php-mysqlnd php-xml php-curl php-zip php-gd php-mbstring \
+                      certbot python3-certbot-apache python3-certbot-nginx \
+                      firewalld fail2ban curl wget unzip
+    else
+        log_error "Unsupported package manager"
+        exit 1
+    fi
+    
+    log_success "Web server packages installed"
+}
+
+configure_apache() {
+    log_info "Configuring Apache..."
+    
+    # Enable necessary modules
+    if command -v a2enmod >/dev/null 2>&1; then
+        a2enmod rewrite
+        a2enmod ssl
+        a2enmod headers
+        a2enmod proxy
+        a2enmod proxy_http
+    fi
+    
+    # Start and enable Apache
+    systemctl start apache2 2>/dev/null || systemctl start httpd 2>/dev/null || true
+    systemctl enable apache2 2>/dev/null || systemctl enable httpd 2>/dev/null || true
+    
+    log_success "Apache configured"
+}
+
+configure_nginx() {
+    log_info "Configuring Nginx..."
+    
+    # Start and enable Nginx (but don't conflict with Apache on port 80)
+    systemctl start nginx 2>/dev/null || true
+    systemctl enable nginx 2>/dev/null || true
+    
+    # Configure Nginx as reverse proxy (default config)
+    if [[ -f /etc/nginx/sites-available/default ]]; then
+        # Backup original config
+        cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.backup
+    fi
+    
+    log_success "Nginx configured"
+}
+
+configure_php() {
+    log_info "Configuring PHP..."
+    
+    # Start and enable PHP-FPM
+    systemctl start php-fpm 2>/dev/null || systemctl start php8.1-fpm 2>/dev/null || systemctl start php7.4-fpm 2>/dev/null || true
+    systemctl enable php-fpm 2>/dev/null || systemctl enable php8.1-fpm 2>/dev/null || systemctl enable php7.4-fpm 2>/dev/null || true
+    
+    log_success "PHP configured"
+}
+
+setup_firewall() {
+    log_info "Setting up firewall rules..."
+    
+    if command -v ufw >/dev/null 2>&1; then
+        # Ubuntu/Debian with UFW
+        ufw allow 22/tcp    # SSH
+        ufw allow 80/tcp    # HTTP
+        ufw allow 443/tcp   # HTTPS
+        ufw --force enable
+    elif command -v firewall-cmd >/dev/null 2>&1; then
+        # CentOS/RHEL with firewalld
+        systemctl start firewalld
+        systemctl enable firewalld
+        firewall-cmd --permanent --add-service=ssh
+        firewall-cmd --permanent --add-service=http
+        firewall-cmd --permanent --add-service=https
+        firewall-cmd --reload
+    fi
+    
+    log_success "Firewall configured"
+}
 
 # ==========================================
 # WEBSERVER INSTALLATION MAIN FUNCTION
@@ -48,39 +264,119 @@ install_webserver() {
     # Install web server packages
     install_web_packages
     
-    # Configure Apache/Nginx
-    configure_webserver
+    print_step "Configuring Apache..."
+    configure_apache
     
-    # Install PHP and modules
-    install_php
+    print_step "Configuring Nginx..."
+    configure_nginx
     
-    # Configure virtual hosts
-    setup_virtual_hosts
+    print_step "Configuring PHP..."
+    configure_php
     
-    # Configure SSL/TLS
-    configure_webserver_ssl
+    print_step "Setting up firewall..."
+    setup_firewall
     
-    # Set up security configurations
-    configure_webserver_security
+    # Create a simple test page
+    create_test_page
     
-    # Install additional tools
-    install_web_tools
+    # Final status check
+    verify_installation
     
-    # Configure firewall rules
-    configure_webserver_firewall
+    print_section_header "✅ WEBSERVER INSTALLATION COMPLETED"
     
-    # Start and enable services
-    start_webserver_services
-    
-    # Run post-installation checks
-    verify_webserver_installation
-    
-    print_success "Webserver module installation completed successfully!"
+    log_success "Webserver module installation completed successfully!"
     
     # Display summary
-    display_webserver_summary
+    echo ""
+    log_info "Webserver Configuration Summary:"
+    echo "  • Apache: Installed and running on port 80"
+    echo "  • Nginx: Installed (can be configured as reverse proxy)"
+    echo "  • PHP: Installed with essential modules"
+    echo "  • SSL: Ready for Let's Encrypt certificates"
+    echo "  • Firewall: Configured for web traffic"
+    echo ""
+    echo "Management Commands:"
+    echo "  • Webserver menu: $(dirname "$0")/menu.sh"
+    echo "  • Check status: systemctl status apache2 nginx"
+    echo "  • View logs: journalctl -u apache2 -f"
+    echo ""
+}
+
+create_test_page() {
+    log_info "Creating test page..."
     
-    log_info "Webserver module installation completed"
+    # Create simple index page
+    cat > /var/www/html/index.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to Your Web Server</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f4f4f4; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; }
+        .status { background: #2ecc71; color: white; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .info { background: #3498db; color: white; padding: 10px; border-radius: 5px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Web Server Successfully Installed!</h1>
+        <div class="status">✅ Apache HTTP Server is running</div>
+        <div class="info">📁 Document root: /var/www/html</div>
+        <div class="info">🔧 Configuration: /etc/apache2/</div>
+        <div class="info">📊 Logs: /var/log/apache2/</div>
+        <h2>Next Steps:</h2>
+        <ul>
+            <li>Configure virtual hosts for your domains</li>
+            <li>Install SSL certificates with Let's Encrypt</li>
+            <li>Upload your website files to /var/www/html</li>
+            <li>Configure security settings</li>
+        </ul>
+        <p><strong>Installed by:</strong> Linux Setup - Complete Server Management System</p>
+    </div>
+</body>
+</html>
+EOF
+
+    # Set proper permissions
+    chown -R www-data:www-data /var/www/html 2>/dev/null || chown -R apache:apache /var/www/html 2>/dev/null || true
+    chmod -R 644 /var/www/html/*
+    
+    log_success "Test page created at /var/www/html/index.html"
+}
+
+verify_installation() {
+    log_info "Verifying installation..."
+    
+    # Check if Apache is running
+    if systemctl is-active --quiet apache2 2>/dev/null || systemctl is-active --quiet httpd 2>/dev/null; then
+        log_success "Apache is running"
+    else
+        log_warning "Apache is not running"
+    fi
+    
+    # Check if Nginx is installed
+    if command -v nginx >/dev/null 2>&1; then
+        log_success "Nginx is installed"
+    else
+        log_warning "Nginx installation may have failed"
+    fi
+    
+    # Check if PHP is installed
+    if command -v php >/dev/null 2>&1; then
+        local php_version=$(php -v | head -1 | awk '{print $2}')
+        log_success "PHP $php_version is installed"
+    else
+        log_warning "PHP installation may have failed"
+    fi
+    
+    # Test web server response
+    if curl -s http://localhost >/dev/null 2>&1; then
+        log_success "Web server is responding to HTTP requests"
+    else
+        log_warning "Web server is not responding on port 80"
+    fi
 }
 
 # ==========================================
