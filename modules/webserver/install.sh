@@ -3,27 +3,124 @@
 # Linux Setup - Webserver Module Installer
 # =============================================================================
 # Author: Anshul Yadav
-# curl -sSL ls.r-u.live/webserver.sh | sudo bash
+# curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/modules/webserver/install.sh | sudo bash
 # =============================================================================
 
 set -e
 
 # Script directory and base directory detection
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BASE_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
-
+# Handle all execution scenarios including sudo su -
 echo "[INFO] === Webserver Module Installation Started ==="
-echo "[INFO] Script directory: $SCRIPT_DIR"
-echo "[INFO] Base directory: $BASE_DIR"
 
-# Source common functions
-if [[ -f "$BASE_DIR/modules/common.sh" ]]; then
-    echo "[INFO] Sourcing common.sh from: $BASE_DIR/modules/common.sh"
-    source "$BASE_DIR/modules/common.sh"
-else
-    echo "[ERROR] common.sh not found at: $BASE_DIR/modules/common.sh"
+# Always download common.sh for consistent behavior
+TEMP_DIR="/tmp/linux-setup-$$"
+mkdir -p "$TEMP_DIR"
+
+echo "[INFO] Downloading dependencies to $TEMP_DIR..."
+if ! curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/modules/common.sh -o "$TEMP_DIR/common.sh"; then
+    echo "[ERROR] Failed to download common.sh from GitHub"
+    rm -rf "$TEMP_DIR"
     exit 1
 fi
+
+if [[ -f "$TEMP_DIR/common.sh" ]]; then
+    echo "[INFO] Sourcing common.sh from: $TEMP_DIR/common.sh"
+    source "$TEMP_DIR/common.sh"
+else
+    echo "[ERROR] Failed to download common.sh"
+    rm -rf "$TEMP_DIR"
+    exit 1
+fi
+
+# Package management functions that may not be in common.sh
+if ! command -v check_root >/dev/null 2>&1; then
+    check_root() {
+        if [[ $EUID -ne 0 ]]; then
+            echo "[ERROR] This script must be run as root"
+            exit 1
+        fi
+    }
+fi
+
+if ! command -v log_info >/dev/null 2>&1; then
+    log_info() {
+        echo -e "[INFO] $1"
+    }
+fi
+
+if ! command -v log_error >/dev/null 2>&1; then
+    log_error() {
+        echo -e "${RED}[ERROR] $1${NC}"
+    }
+fi
+
+if ! command -v log_success >/dev/null 2>&1; then
+    log_success() {
+        echo -e "${GREEN}[SUCCESS] $1${NC}"
+    }
+fi
+
+if ! command -v print_section_header >/dev/null 2>&1; then
+    print_section_header() {
+        echo -e "\n${BLUE}============================================${NC}"
+        echo -e "${WHITE}$1${NC}"
+        echo -e "${BLUE}============================================${NC}\n"
+    }
+fi
+
+if ! command -v print_step >/dev/null 2>&1; then
+    print_step() {
+        echo -e "\n${YELLOW}➤ $1${NC}"
+    }
+fi
+
+if ! command -v apt_update >/dev/null 2>&1; then
+    apt_update() {
+        echo "[INFO] Updating APT package cache..."
+        apt-get update -qq
+    }
+fi
+
+if ! command -v apt_install >/dev/null 2>&1; then
+    apt_install() {
+        echo "[INFO] Installing package(s): $1"
+        DEBIAN_FRONTEND=noninteractive apt-get install -y $1
+    }
+fi
+
+if ! command -v dnf_install >/dev/null 2>&1; then
+    dnf_install() {
+        echo "[INFO] Installing package(s): $1"
+        dnf install -y $1
+    }
+fi
+
+if ! command -v pacman_install >/dev/null 2>&1; then
+    pacman_install() {
+        echo "[INFO] Installing package(s): $1"
+        pacman -S --noconfirm $1
+    }
+fi
+
+# Set working directories
+SCRIPT_DIR="$TEMP_DIR/webserver"
+BASE_DIR="$TEMP_DIR"
+mkdir -p "$SCRIPT_DIR"
+
+# Define color variables if not already defined
+if [[ -z "$RED" ]]; then
+    RED='\033[0;31m'
+    GREEN='\033[0;32m'
+    YELLOW='\033[1;33m'
+    BLUE='\033[0;34m'
+    CYAN='\033[0;36m'
+    WHITE='\033[1;37m'
+    NC='\033[0m' # No Color
+fi
+
+# Download additional necessary files if needed
+echo "[INFO] Script directory: $SCRIPT_DIR"
+echo "[INFO] Base directory: $BASE_DIR"
 
 # Ensure critical functions are available (fallback definitions)
 if ! command -v get_total_memory >/dev/null 2>&1; then
@@ -377,7 +474,34 @@ check_webserver_requirements() {
 
 # ==========================================
 # PACKAGE INSTALLATION
+# ==========================================
 
+install_web_packages() {
+    print_step "Installing web server packages..."
+    
+    case $OS in
+        "ubuntu"|"debian")
+            apt_update
+            apt_install "apache2 apache2-utils"
+            apt_install "nginx"
+            apt_install "certbot python3-certbot-apache python3-certbot-nginx"
+            ;;
+        "centos"|"rhel"|"rocky"|"alma")
+            dnf_install "httpd httpd-tools"
+            dnf_install "nginx"
+            dnf_install "certbot python3-certbot-apache python3-certbot-nginx"
+            ;;
+        "arch")
+            pacman_install "apache nginx certbot certbot-apache certbot-nginx"
+            ;;
+        *)
+            log_error "Unsupported operating system: $OS"
+            exit 1
+            ;;
+    esac
+    
+    log_info "Web server packages installed successfully"
+}
 
 # ==========================================
 # WEBSERVER CONFIGURATION
