@@ -42,9 +42,9 @@ jobs:
       - name: Validate site files
         run: |
           echo "Checking for required files..."
-          test -f CNAME && echo "✅ CNAME found" || echo "❌ CNAME missing"
-          test -f _config.yml && echo "✅ _config.yml found" || echo "❌ _config.yml missing"
-          test -f index.html && echo "✅ index.html found" || echo "❌ index.html missing"
+          test -f website/CNAME && echo "✅ CNAME found" || echo "❌ CNAME missing"
+          test -f website/_config.yml && echo "✅ _config.yml found" || echo "❌ _config.yml missing"
+          test -f website/index.html && echo "✅ index.html found" || echo "❌ index.html missing"
   
   build:
     needs: validate
@@ -64,7 +64,7 @@ jobs:
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
-          source: ./
+          source: ./website
           destination: ./_site
           
       - name: Apply JiKey security headers

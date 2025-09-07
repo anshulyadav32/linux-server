@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Setup Scripts - Quick Install</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .script-list {
+            margin: 2rem 0;
+        }
+        
+        .script-item {
+            background-color: var(--light-color);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+        
+        .script-name {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .script-command {
+            background-color: #333;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+        }
+        
+        .copy-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        
+        .copy-btn:hover {
+            background-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Server Setup Scripts</h1>
+            <p class="tagline">Quick Installation Commands</p>
+        </div>
+    </header>
+    
+    <main class="container">
+        <section>
+            <h2>One-Line Install Commands</h2>
+            <p>These commands allow you to quickly set up your server with a single command. Simply copy and paste them into your terminal.</p>
+            
+            <div class="script-list">
+                <div class="script-item">
+                    <div class="script-name">Basic Server Setup (s1.sh)</div>
+                    <p>Sets up essential packages, configures firewall, secures SSH, and sets up automatic updates.</p>
+                    <div class="script-command">curl -sSL ls.r-u.live/sh/s1.sh | sudo bash</div>
+                    <button class="copy-btn" onclick="copyToClipboard('curl -sSL ls.r-u.live/sh/s1.sh | sudo bash')">Copy to Clipboard</button>
+                </div>
+                
+                <div class="script-item">
+                    <div class="script-name">Mail Server Setup</div>
+                    <p>Installs and configures a complete mail server with Postfix, Dovecot, and webmail.</p>
+                    <div class="script-command">curl -sSL ls.r-u.live/sh/setup-mail-quick.sh | sudo bash</div>
+                    <button class="copy-btn" onclick="copyToClipboard('curl -sSL ls.r-u.live/sh/setup-mail-quick.sh | sudo bash')">Copy to Clipboard</button>
+                </div>
+                
+                <div class="script-item">
+                    <div class="script-name">DNS Server Setup</div>
+                    <p>Sets up BIND DNS server in master, slave, or caching mode.</p>
+                    <div class="script-command">curl -sSL ls.r-u.live/sh/setup-dns-quick.sh | sudo bash</div>
+                    <button class="copy-btn" onclick="copyToClipboard('curl -sSL ls.r-u.live/sh/setup-dns-quick.sh | sudo bash')">Copy to Clipboard</button>
+                </div>
+            </div>
+            
+            <h3>PowerShell Install (Windows)</h3>
+            <div class="script-list">
+                <div class="script-item">
+                    <div class="script-name">Windows Server Setup</div>
+                    <p>For Windows systems, use PowerShell to download and execute scripts for basic server configuration.</p>
+                    <div class="script-command">iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex</div>
+                    <button class="copy-btn" onclick="copyToClipboard('iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex')">Copy to Clipboard</button>
+                </div>
+                
+                <div class="script-item">
+                    <div class="script-name">Windows Mail Server Setup</div>
+                    <p>Sets up a mail server on Windows using hMailServer with optional webmail.</p>
+                    <div class="script-command">iwr -useb ls.r-u.live/sh/windows-mail-setup.ps1 | iex</div>
+                    <button class="copy-btn" onclick="copyToClipboard('iwr -useb ls.r-u.live/sh/windows-mail-setup.ps1 | iex')">Copy to Clipboard</button>
+                </div>
+                
+                <div class="script-item">
+                    <div class="script-name">Windows DNS Server Setup</div>
+                    <p>Installs and configures Windows DNS Server role with zone configuration.</p>
+                    <div class="script-command">iwr -useb ls.r-u.live/sh/windows-dns-setup.ps1 | iex</div>
+                    <button class="copy-btn" onclick="copyToClipboard('iwr -useb ls.r-u.live/sh/windows-dns-setup.ps1 | iex')">Copy to Clipboard</button>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <h2>Security Note</h2>
+            <p>Always review scripts before running them with elevated privileges. You can inspect any script by opening its URL in your browser.</p>
+            <p>Example: <a href="https://ls.r-u.live/sh/s1.sh">https://ls.r-u.live/sh/s1.sh</a></p>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Server Setup Scripts | <a href="/">Home</a> | <a href="/sh">Scripts</a></p>
+        </div>
+    </footer>
+    
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Command copied to clipboard!');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>
+</body>
+</html>

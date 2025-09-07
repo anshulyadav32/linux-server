@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Setup Scripts</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Server Setup Scripts</h1>
+            <p class="tagline">Automated scripts for server deployment and configuration</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="quick-install">
+            <h2>Quick Install</h2>
+            <div class="feature-card">
+                <h3>Linux Setup (One Command)</h3>
+                <pre><code>curl -sSL ls.r-u.live/sh/s1.sh | sudo bash</code></pre>
+                <p><a href="/sh" class="btn">View All Scripts</a></p>
+            </div>
+            <div class="feature-card">
+                <h3>Windows Setup (PowerShell)</h3>
+                <pre><code>iwr -useb ls.r-u.live/sh/windows-setup.ps1 | iex</code></pre>
+                <p><small>Run in PowerShell as Administrator</small></p>
+            </div>
+        </section>
+        
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>A collection of scripts for automating server setup and configuration across different operating systems, focusing on Ubuntu/Debian systems.</p>
+            <p>These scripts provide comprehensive solutions for:</p>
+            <ul>
+                <li>Base server setup with essential packages and security</li>
+                <li>Complete mail server configuration with multiple component options</li>
+                <li>BIND DNS server setup for domain management</li>
+            </ul>
+        </section>
+
+        <section id="features">
+            <h2>Key Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Server Setup</h3>
+                    <ul>
+                        <li>Built-in installation checkpoints</li>
+                        <li>Distribution detection for compatibility</li>
+                        <li>Comprehensive error handling</li>
+                        <li>Docker and database setup</li>
+                        <li>Security hardening with Fail2Ban</li>
+                    </ul>
+                    <a href="#server-setup" class="btn">Learn More</a>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Mail Server</h3>
+                    <ul>
+                        <li>Multiple IMAP/POP3 server options</li>
+                        <li>Webmail interface configuration</li>
+                        <li>Anti-spam and anti-virus integration</li>
+                        <li>DKIM, SPF, and DMARC support</li>
+                        <li>Secure mail transfer setup</li>
+                    </ul>
+                    <a href="#mail-setup" class="btn">Learn More</a>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>DNS Server</h3>
+                    <ul>
+                        <li>Primary/Master DNS configuration</li>
+                        <li>Secondary/Slave DNS replication</li>
+                        <li>Caching DNS setup</li>
+                        <li>DNSSEC validation</li>
+                        <li>Zone file management</li>
+                    </ul>
+                    <a href="#dns-setup" class="btn">Learn More</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="server-setup">
+            <h2>Server Setup</h2>
+            <h3>Usage</h3>
+            <div class="code-block">
+                <pre><code>chmod +x setup-server/setup.sh
+./setup-server/setup.sh</code></pre>
+            </div>
+            <p>The server setup script automates the installation of:</p>
+            <ul>
+                <li>Git and GitHub CLI</li>
+                <li>Node.js (LTS version)</li>
+                <li>PostgreSQL and MySQL databases</li>
+                <li>Docker with Docker Compose</li>
+                <li>Security tools like Fail2Ban</li>
+                <li>SSL tools (OpenSSL and Certbot)</li>
+            </ul>
+        </section>
+
+        <section id="mail-setup">
+            <h2>Mail Server Setup</h2>
+            <h3>Usage</h3>
+            <div class="code-block">
+                <pre><code># Basic setup
+./setup-mail/setup-mail.sh --domain example.com
+
+# Advanced setup with options
+./setup-mail/setup-mail.sh \
+  --domain example.com \
+  --hostname mail.example.com \
+  --imap-server courier \
+  --webmail-type roundcube</code></pre>
+            </div>
+            <p>Configure your mail server with multiple component options:</p>
+            <ul>
+                <li>SMTP Server: Postfix (default)</li>
+                <li>IMAP/POP3: Choose between Dovecot or Courier</li>
+                <li>Webmail: Roundcube or SquirrelMail</li>
+                <li>Security: SpamAssassin, ClamAV, DKIM, SPF</li>
+            </ul>
+        </section>
+
+        <section id="dns-setup">
+            <h2>DNS Server Setup</h2>
+            <h3>Usage</h3>
+            <div class="code-block">
+                <pre><code># Setup as Primary DNS server
+./setup-dns/setup-dns.sh --domain example.com --server-ip 192.168.1.10
+
+# Setup as Secondary DNS server
+./setup-dns/setup-dns.sh --setup-slave --domain example.com --master-dns 192.168.1.10
+
+# Setup as Caching DNS server
+./setup-dns/setup-dns.sh --setup-caching</code></pre>
+            </div>
+            <p>Configure BIND DNS server in various roles:</p>
+            <ul>
+                <li>Master/Primary DNS server - Authoritative for your domain</li>
+                <li>Slave/Secondary DNS server - Backup with automatic zone transfers</li>
+                <li>Caching-only DNS server - For improved lookup performance</li>
+            </ul>
+        </section>
+        
+        <section id="getting-started">
+            <h2>Getting Started</h2>
+            <p>To use these scripts:</p>
+            <ol>
+                <li>Clone the repository: <code>git clone https://github.com/yourusername/server-setup-scripts.git</code></li>
+                <li>Make scripts executable: <code>chmod +x setup-*/setup*.sh</code></li>
+                <li>Run the appropriate script with your desired options</li>
+            </ol>
+            <p>Each script includes detailed help. Just run with <code>--help</code> to see available options.</p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Server Setup Scripts. All scripts licensed under MIT.</p>
+            <p>
+                <a href="https://github.com/yourusername/server-setup-scripts">GitHub Repository</a> |
+                <a href="docs.html">Documentation</a> |
+                <a href="about.html">About</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
