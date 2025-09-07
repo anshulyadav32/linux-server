@@ -6,6 +6,12 @@ A collection of scripts for automating server setup and configuration across dif
 
 - [`setup-server/`](./setup-server/) - Scripts for server setup and configuration
   - [`setup.sh`](./setup-server/setup.sh) - Ubuntu/Debian server setup script with checkpoints
+- [`setup-mail/`](./setup-mail/) - Mail server setup and configuration
+  - [`setup-mail.sh`](./setup-mail/setup-mail.sh) - Comprehensive mail server setup script
+  - [`config-templates.md`](./setup-mail/config-templates.md) - Mail server configuration templates
+- [`setup-dns/`](./setup-dns/) - DNS server setup and configuration
+  - [`setup-dns.sh`](./setup-dns/setup-dns.sh) - BIND DNS server setup script
+  - [`zone-templates.md`](./setup-dns/zone-templates.md) - DNS zone file templates
 
 ## 🚀 Ubuntu/Debian Setup Script
 
