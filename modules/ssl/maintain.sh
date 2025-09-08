@@ -11,9 +11,205 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# Define colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
 # Source functions
 SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/functions.sh"
+
+# Check if running as root
+if [[ $EUID -ne 0 ]]; then
+   echo -e "${RED}This script must be run as root${NC}"
+   exit 1
+fi
+
+# Function to check SSL certificates
+check_ssl_certs() {
+    echo -e "${YELLOW}Checking SSL certificates...${NC}"
+    local errors=0
+    
+    # Check Let's Encrypt certificates
+    if [ -d "/etc/letsencrypt/live" ]; then
+        for domain in /etc/letsencrypt/live/*; do
+            if [ -d "$domain" ]; then
+                domain=$(basename "$domain")
+                expiry=$(openssl x509 -enddate -noout -in "/etc/letsencrypt/live/$domain/cert.pem" | cut -d= -f2)
+                expiry_epoch=$(date -d "$expiry" +%s)
+                current_epoch=$(date +%s)
+                days_left=$(( ($expiry_epoch - $current_epoch) / 86400 ))
+                
+                if [ $days_left -lt 30 ]; then
+                    echo -e "${RED}✗ Certificate for $domain expires in $days_left days${NC}"
+                    errors=$((errors + 1))
+                else
+                    echo -e "${GREEN}✓ Certificate for $domain valid for $days_left days${NC}"
+                fi
+            fi
+        done
+    fi
+    
+    # Check self-signed certificates
+    for cert in /etc/ssl/certs/*.crt; do
+        if [ -f "$cert" ]; then
+            expiry=$(openssl x509 -enddate -noout -in "$cert" | cut -d= -f2)
+            expiry_epoch=$(date -d "$expiry" +%s)
+            current_epoch=$(date +%s)
+            days_left=$(( ($expiry_epoch - $current_epoch) / 86400 ))
+            
+            if [ $days_left -lt 30 ]; then
+                echo -e "${RED}✗ Self-signed certificate $(basename "$cert") expires in $days_left days${NC}"
+                errors=$((errors + 1))
+            else
+                echo -e "${GREEN}✓ Self-signed certificate $(basename "$cert") valid for $days_left days${NC}"
+            fi
+        fi
+    done
+    
+    return $errors
+}
+
+# Function to renew certificates
+renew_certificates() {
+    echo -e "${YELLOW}Renewing certificates...${NC}"
+    
+    # Try to renew Let's Encrypt certificates
+    certbot renew --non-interactive
+    
+    # Check renewal status
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✓ Certificate renewal completed${NC}"
+    else
+        echo -e "${RED}✗ Certificate renewal failed${NC}"
+        return 1
+    fi
+}
+
+# Function to check SSL configuration
+check_ssl_config() {
+    echo -e "${YELLOW}Checking SSL configuration...${NC}"
+    local errors=0
+    
+    # Check SSL directories
+    for dir in "/etc/ssl/private" "/etc/ssl/certs" "/etc/letsencrypt"; do
+        if [ ! -d "$dir" ]; then
+            echo -e "${RED}✗ $dir directory is missing${NC}"
+            errors=$((errors + 1))
+        fi
+    done
+    
+    # Check directory permissions
+    if [ "$(stat -c %a /etc/ssl/private)" != "700" ]; then
+        echo -e "${RED}✗ /etc/ssl/private has incorrect permissions${NC}"
+        errors=$((errors + 1))
+    fi
+    
+    # Check renewal cron job
+    if ! crontab -l | grep -q "certbot renew"; then
+        echo -e "${RED}✗ Certificate renewal cron job is missing${NC}"
+        errors=$((errors + 1))
+    fi
+    
+    return $errors
+}
+
+# Function to repair SSL configuration
+repair_ssl_config() {
+    echo -e "${YELLOW}Repairing SSL configuration...${NC}"
+    
+    # Recreate missing directories
+    for dir in "/etc/ssl/private" "/etc/ssl/certs" "/etc/letsencrypt"; do
+        if [ ! -d "$dir" ]; then
+            mkdir -p "$dir"
+            echo -e "${GREEN}✓ Recreated $dir${NC}"
+        fi
+    done
+    
+    # Fix permissions
+    chmod 700 /etc/ssl/private
+    chmod 755 /etc/ssl/certs
+    chmod 755 /etc/letsencrypt
+    
+    # Restore renewal cron job if missing
+    if ! crontab -l | grep -q "certbot renew"; then
+        setup_cert_renewal
+    fi
+    
+    echo -e "${GREEN}✓ SSL configuration repaired${NC}"
+}
+
+# Function to show SSL status
+show_ssl_status() {
+    echo -e "${YELLOW}SSL System Status${NC}"
+    echo "----------------------------------------"
+    
+    # Show Let's Encrypt certificates
+    echo "Let's Encrypt Certificates:"
+    if [ -d "/etc/letsencrypt/live" ]; then
+        for domain in /etc/letsencrypt/live/*; do
+            if [ -d "$domain" ]; then
+                domain=$(basename "$domain")
+                echo "Domain: $domain"
+                openssl x509 -in "/etc/letsencrypt/live/$domain/cert.pem" -noout -text | grep -E "Not Before|Not After|Subject:"
+                echo
+            fi
+        done
+    fi
+    
+    # Show self-signed certificates
+    echo "Self-signed Certificates:"
+    for cert in /etc/ssl/certs/*.crt; do
+        if [ -f "$cert" ]; then
+            echo "Certificate: $(basename "$cert")"
+            openssl x509 -in "$cert" -noout -text | grep -E "Not Before|Not After|Subject:"
+            echo
+        fi
+    done
+    
+    # Show renewal status
+    echo "Let's Encrypt Renewal Status:"
+    certbot certificates
+}
+
+# Main menu
+while true; do
+    echo -e "\n${YELLOW}SSL System Maintenance${NC}"
+    echo "1. Check SSL certificates"
+    echo "2. Renew certificates"
+    echo "3. Check SSL configuration"
+    echo "4. Repair SSL configuration"
+    echo "5. Show SSL status"
+    echo "6. Exit"
+    
+    read -p "Select an option: " choice
+    
+    case $choice in
+        1)
+            check_ssl_certs
+            ;;
+        2)
+            renew_certificates
+            ;;
+        3)
+            check_ssl_config
+            ;;
+        4)
+            repair_ssl_config
+            ;;
+        5)
+            show_ssl_status
+            ;;
+        6)
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}Invalid option${NC}"
+            ;;
+    esac
+done
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}      SSL SYSTEM MAINTENANCE           ${NC}"

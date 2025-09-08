@@ -19,6 +19,214 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/functions.sh"
 
+# Function to install backup tools
+install_backup_tools() {
+    echo -e "${YELLOW}Installing backup tools...${NC}"
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        case $ID in
+            ubuntu|debian)
+                apt-get update
+                apt-get install -y rsync duplicity rclone gpg cron
+                ;;
+            centos|rhel|fedora)
+                yum install -y epel-release
+                yum install -y rsync duplicity rclone gnupg2 cronie
+                ;;
+            *)
+                echo -e "${RED}Unsupported operating system${NC}"
+                exit 1
+                ;;
+        esac
+    fi
+}
+
+# Function to setup backup directory structure
+setup_backup_dirs() {
+    echo -e "${YELLOW}Setting up backup directory structure...${NC}"
+    
+    # Create main backup directories
+    mkdir -p /var/backups/daily
+    mkdir -p /var/backups/weekly
+    mkdir -p /var/backups/monthly
+    mkdir -p /var/backups/logs
+    
+    # Set proper permissions
+    chmod 700 /var/backups/{daily,weekly,monthly}
+    chmod 755 /var/backups/logs
+}
+
+# Function to configure backup scripts
+configure_backup_scripts() {
+    echo -e "${YELLOW}Configuring backup scripts...${NC}"
+    
+    # Create backup script directory
+    mkdir -p /usr/local/sbin/backup-scripts
+    
+    # Create daily backup script
+    cat > /usr/local/sbin/backup-scripts/daily-backup.sh << 'EOF'
+#!/bin/bash
+DATE=$(date +%Y-%m-%d)
+BACKUP_DIR="/var/backups/daily"
+LOG_FILE="/var/backups/logs/daily-$DATE.log"
+
+# Backup important directories
+dirs_to_backup=(
+    "/etc"
+    "/home"
+    "/var/www"
+    "/var/mail"
+)
+
+for dir in "${dirs_to_backup[@]}"; do
+    if [ -d "$dir" ]; then
+        rsync -az --delete "$dir" "$BACKUP_DIR/$DATE/" >> "$LOG_FILE" 2>&1
+    fi
+done
+
+# Rotate backups older than 7 days
+find "$BACKUP_DIR" -type d -mtime +7 -exec rm -rf {} \;
+EOF
+    
+    # Create weekly backup script
+    cat > /usr/local/sbin/backup-scripts/weekly-backup.sh << 'EOF'
+#!/bin/bash
+DATE=$(date +%Y-%m-%d)
+BACKUP_DIR="/var/backups/weekly"
+LOG_FILE="/var/backups/logs/weekly-$DATE.log"
+
+# Create encrypted archive of important data
+duplicity --no-encryption \
+    --include /etc \
+    --include /home \
+    --include /var/www \
+    --include /var/mail \
+    --exclude '**' \
+    / "file://$BACKUP_DIR/$DATE" >> "$LOG_FILE" 2>&1
+
+# Rotate backups older than 4 weeks
+find "$BACKUP_DIR" -type d -mtime +28 -exec rm -rf {} \;
+EOF
+    
+    # Create monthly backup script
+    cat > /usr/local/sbin/backup-scripts/monthly-backup.sh << 'EOF'
+#!/bin/bash
+DATE=$(date +%Y-%m)
+BACKUP_DIR="/var/backups/monthly"
+LOG_FILE="/var/backups/logs/monthly-$DATE.log"
+
+# Full system backup excluding temporary files
+rsync -aAX --info=progress2 \
+    --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} \
+    / "$BACKUP_DIR/$DATE/" >> "$LOG_FILE" 2>&1
+
+# Rotate backups older than 3 months
+find "$BACKUP_DIR" -type d -mtime +90 -exec rm -rf {} \;
+EOF
+    
+    # Set proper permissions
+    chmod 700 /usr/local/sbin/backup-scripts/*.sh
+}
+
+# Function to setup backup schedule
+setup_backup_schedule() {
+    echo -e "${YELLOW}Setting up backup schedule...${NC}"
+    
+    # Add backup jobs to crontab
+    (crontab -l 2>/dev/null || true; echo "# Daily backup at 2 AM
+0 2 * * * /usr/local/sbin/backup-scripts/daily-backup.sh
+# Weekly backup at 3 AM on Sundays
+0 3 * * 0 /usr/local/sbin/backup-scripts/weekly-backup.sh
+# Monthly backup at 4 AM on the first day of the month
+0 4 1 * * /usr/local/sbin/backup-scripts/monthly-backup.sh") | crontab -
+}
+
+# Function to validate backup setup
+validate_backup_setup() {
+    echo -e "${YELLOW}Validating backup setup...${NC}"
+    local errors=0
+    
+    # Check backup tools
+    for tool in rsync duplicity rclone; do
+        if ! command -v $tool &> /dev/null; then
+            echo -e "${RED}✗ $tool is not installed${NC}"
+            errors=$((errors + 1))
+        else
+            echo -e "${GREEN}✓ $tool is installed${NC}"
+        fi
+    done
+    
+    # Check backup directories
+    for dir in daily weekly monthly logs; do
+        if [ ! -d "/var/backups/$dir" ]; then
+            echo -e "${RED}✗ /var/backups/$dir directory is missing${NC}"
+            errors=$((errors + 1))
+        else
+            echo -e "${GREEN}✓ /var/backups/$dir directory exists${NC}"
+        fi
+    done
+    
+    # Check backup scripts
+    for script in daily-backup.sh weekly-backup.sh monthly-backup.sh; do
+        if [ ! -x "/usr/local/sbin/backup-scripts/$script" ]; then
+            echo -e "${RED}✗ $script is not executable${NC}"
+            errors=$((errors + 1))
+        else
+            echo -e "${GREEN}✓ $script is executable${NC}"
+        fi
+    done
+    
+    # Check cron jobs
+    if ! crontab -l | grep -q "backup-scripts"; then
+        echo -e "${RED}✗ Backup cron jobs are not configured${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ Backup cron jobs are configured${NC}"
+    fi
+    
+    return $errors
+}
+
+# Main installation flow
+echo -e "${YELLOW}Starting backup system installation...${NC}"
+
+# Install required tools
+install_backup_tools
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to install backup tools${NC}"
+    exit 1
+fi
+
+# Setup backup directories
+setup_backup_dirs
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to setup backup directories${NC}"
+    exit 1
+fi
+
+# Configure backup scripts
+configure_backup_scripts
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to configure backup scripts${NC}"
+    exit 1
+fi
+
+# Setup backup schedule
+setup_backup_schedule
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to setup backup schedule${NC}"
+    exit 1
+fi
+
+# Validate installation
+validate_backup_setup
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Backup system validation failed${NC}"
+    exit 1
+fi
+
+echo -e "${GREEN}Backup system installation completed successfully${NC}"
+
 echo -e "${BLUE}╔══════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║                    BACKUP SYSTEM INSTALLER                  ║${NC}"
 echo -e "${BLUE}║              Comprehensive Data Protection                   ║${NC}"

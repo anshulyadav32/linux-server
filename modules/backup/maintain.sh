@@ -12,9 +12,167 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
+# Define colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
 # Source functions
 SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/functions.sh"
+
+# Check if running as root
+if [[ $EUID -ne 0 ]]; then
+   echo -e "${RED}This script must be run as root${NC}"
+   exit 1
+fi
+
+# Function to check backup health
+check_backup_health() {
+    echo -e "${YELLOW}Checking backup health...${NC}"
+    local errors=0
+    
+    # Check backup directories
+    for dir in daily weekly monthly logs; do
+        if [ ! -d "/var/backups/$dir" ]; then
+            echo -e "${RED}✗ /var/backups/$dir directory is missing${NC}"
+            errors=$((errors + 1))
+        fi
+    done
+    
+    # Check recent backups
+    local last_daily=$(find /var/backups/daily -type d -mtime -1 | wc -l)
+    if [ "$last_daily" -eq 0 ]; then
+        echo -e "${RED}✗ No daily backup in the last 24 hours${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ Daily backup is recent${NC}"
+    fi
+    
+    # Check disk space
+    local space_used=$(df -h /var/backups | awk 'NR==2 {print $5}' | sed 's/%//')
+    if [ "$space_used" -gt 90 ]; then
+        echo -e "${RED}✗ Backup disk space critical ($space_used%)${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ Backup disk space ok ($space_used%)${NC}"
+    fi
+    
+    return $errors
+}
+
+# Function to repair backup system
+repair_backup_system() {
+    echo -e "${YELLOW}Attempting to repair backup system...${NC}"
+    
+    # Recreate missing directories
+    for dir in daily weekly monthly logs; do
+        if [ ! -d "/var/backups/$dir" ]; then
+            mkdir -p "/var/backups/$dir"
+            chmod 700 "/var/backups/$dir"
+            echo -e "${GREEN}✓ Recreated /var/backups/$dir${NC}"
+        fi
+    done
+    
+    # Fix permissions
+    find /var/backups -type d -exec chmod 700 {} \;
+    find /var/backups/logs -type d -exec chmod 755 {} \;
+    
+    # Verify backup scripts
+    for script in daily-backup.sh weekly-backup.sh monthly-backup.sh; do
+        if [ ! -x "/usr/local/sbin/backup-scripts/$script" ]; then
+            echo -e "${RED}✗ Recreating $script${NC}"
+            configure_backup_scripts
+            break
+        fi
+    done
+    
+    # Check and fix cron jobs
+    if ! crontab -l | grep -q "backup-scripts"; then
+        echo -e "${YELLOW}Reinstalling backup schedule...${NC}"
+        setup_backup_schedule
+    fi
+}
+
+# Function to clean old backups
+clean_old_backups() {
+    echo -e "${YELLOW}Cleaning old backups...${NC}"
+    
+    # Remove daily backups older than 7 days
+    find /var/backups/daily -type d -mtime +7 -exec rm -rf {} \;
+    
+    # Remove weekly backups older than 4 weeks
+    find /var/backups/weekly -type d -mtime +28 -exec rm -rf {} \;
+    
+    # Remove monthly backups older than 3 months
+    find /var/backups/monthly -type d -mtime +90 -exec rm -rf {} \;
+    
+    # Clean old log files
+    find /var/backups/logs -type f -mtime +90 -delete
+    
+    echo -e "${GREEN}✓ Cleaned old backups${NC}"
+}
+
+# Function to show backup status
+show_backup_status() {
+    echo -e "${YELLOW}Backup System Status${NC}"
+    echo "----------------------------------------"
+    
+    # Show disk usage
+    echo "Disk Usage:"
+    df -h /var/backups
+    echo
+    
+    # Show recent backups
+    echo "Recent Backups:"
+    echo "Daily:"
+    ls -lt /var/backups/daily | head -n 5
+    echo
+    echo "Weekly:"
+    ls -lt /var/backups/weekly | head -n 3
+    echo
+    echo "Monthly:"
+    ls -lt /var/backups/monthly | head -n 3
+    echo
+    
+    # Show last backup logs
+    echo "Last Backup Log:"
+    tail -n 10 "$(ls -t /var/backups/logs/*.log | head -n 1)"
+}
+
+# Main menu
+while true; do
+    echo -e "\n${YELLOW}Backup System Maintenance${NC}"
+    echo "1. Check backup health"
+    echo "2. Repair backup system"
+    echo "3. Clean old backups"
+    echo "4. Show backup status"
+    echo "5. Exit"
+    
+    read -p "Select an option: " choice
+    
+    case $choice in
+        1)
+            check_backup_health
+            ;;
+        2)
+            repair_backup_system
+            ;;
+        3)
+            clean_old_backups
+            ;;
+        4)
+            show_backup_status
+            ;;
+        5)
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}Invalid option${NC}"
+            ;;
+    esac
+done
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}      BACKUP SYSTEM MAINTENANCE        ${NC}"

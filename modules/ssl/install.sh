@@ -14,9 +14,178 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# Define colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
 # Source functions
 SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/functions.sh"
+
+# Check if running as root
+if [[ $EUID -ne 0 ]]; then
+   echo -e "${RED}This script must be run as root${NC}"
+   exit 1
+fi
+
+# Function to install SSL tools
+install_ssl_tools() {
+    echo -e "${YELLOW}Installing SSL tools...${NC}"
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        case $ID in
+            ubuntu|debian)
+                apt-get update
+                apt-get install -y certbot openssl apache2-utils
+                ;;
+            centos|rhel|fedora)
+                yum install -y epel-release
+                yum install -y certbot openssl httpd-tools
+                ;;
+            *)
+                echo -e "${RED}Unsupported operating system${NC}"
+                exit 1
+                ;;
+        esac
+    fi
+}
+
+# Function to setup SSL directory structure
+setup_ssl_dirs() {
+    echo -e "${YELLOW}Setting up SSL directory structure...${NC}"
+    
+    # Create SSL directories
+    mkdir -p /etc/ssl/private
+    mkdir -p /etc/ssl/certs
+    mkdir -p /etc/letsencrypt
+    
+    # Set proper permissions
+    chmod 700 /etc/ssl/private
+    chmod 755 /etc/ssl/certs
+    chmod 755 /etc/letsencrypt
+}
+
+# Function to create self-signed certificate
+create_self_signed_cert() {
+    local domain=$1
+    local email=$2
+    
+    echo -e "${YELLOW}Creating self-signed certificate for $domain...${NC}"
+    
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+        -keyout "/etc/ssl/private/$domain.key" \
+        -out "/etc/ssl/certs/$domain.crt" \
+        -subj "/CN=$domain/emailAddress=$email/O=Self Signed/C=US"
+        
+    chmod 600 "/etc/ssl/private/$domain.key"
+    chmod 644 "/etc/ssl/certs/$domain.crt"
+}
+
+# Function to request Let's Encrypt certificate
+request_letsencrypt_cert() {
+    local domain=$1
+    local email=$2
+    
+    echo -e "${YELLOW}Requesting Let's Encrypt certificate for $domain...${NC}"
+    
+    certbot certonly --standalone \
+        --non-interactive \
+        --agree-tos \
+        --email "$email" \
+        -d "$domain"
+}
+
+# Function to setup automatic renewal
+setup_cert_renewal() {
+    echo -e "${YELLOW}Setting up certificate renewal...${NC}"
+    
+    # Add renewal job to crontab
+    (crontab -l 2>/dev/null || true; echo "0 0 * * * /usr/bin/certbot renew --quiet") | crontab -
+    
+    # Create renewal hook directory
+    mkdir -p /etc/letsencrypt/renewal-hooks/post
+}
+
+# Function to validate SSL setup
+validate_ssl_setup() {
+    echo -e "${YELLOW}Validating SSL setup...${NC}"
+    local errors=0
+    
+    # Check SSL tools
+    for tool in openssl certbot; do
+        if ! command -v $tool &> /dev/null; then
+            echo -e "${RED}✗ $tool is not installed${NC}"
+            errors=$((errors + 1))
+        else
+            echo -e "${GREEN}✓ $tool is installed${NC}"
+        fi
+    done
+    
+    # Check SSL directories
+    for dir in "/etc/ssl/private" "/etc/ssl/certs" "/etc/letsencrypt"; do
+        if [ ! -d "$dir" ]; then
+            echo -e "${RED}✗ $dir directory is missing${NC}"
+            errors=$((errors + 1))
+        else
+            echo -e "${GREEN}✓ $dir directory exists${NC}"
+        fi
+    done
+    
+    # Check directory permissions
+    if [ "$(stat -c %a /etc/ssl/private)" != "700" ]; then
+        echo -e "${RED}✗ /etc/ssl/private has incorrect permissions${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ /etc/ssl/private has correct permissions${NC}"
+    fi
+    
+    # Check renewal cron job
+    if ! crontab -l | grep -q "certbot renew"; then
+        echo -e "${RED}✗ Certificate renewal cron job is not configured${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ Certificate renewal cron job is configured${NC}"
+    fi
+    
+    return $errors
+}
+
+# Main installation flow
+echo -e "${YELLOW}Starting SSL system installation...${NC}"
+
+# Install required tools
+install_ssl_tools
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to install SSL tools${NC}"
+    exit 1
+fi
+
+# Setup SSL directories
+setup_ssl_dirs
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to setup SSL directories${NC}"
+    exit 1
+fi
+
+# Setup certificate renewal
+setup_cert_renewal
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to setup certificate renewal${NC}"
+    exit 1
+fi
+
+# Validate installation
+validate_ssl_setup
+if [ $? -ne 0 ]; then
+    echo -e "${RED}SSL system validation failed${NC}"
+    exit 1
+fi
+
+echo -e "${GREEN}SSL system installation completed successfully${NC}"
+echo -e "${YELLOW}To create a self-signed certificate use: create_self_signed_cert domain.com email@domain.com${NC}"
+echo -e "${YELLOW}To request a Let's Encrypt certificate use: request_letsencrypt_cert domain.com email@domain.com${NC}"
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}       SSL SYSTEM INSTALLER            ${NC}"

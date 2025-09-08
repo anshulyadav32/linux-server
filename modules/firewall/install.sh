@@ -15,9 +15,390 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
+# Define colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
 # Source functions
 SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/functions.sh"
+
+# Check if running as root
+if [[ $EUID -ne 0 ]]; then
+   echo -e "${RED}This script must be run as root${NC}"
+   exit 1
+fi
+
+# Function to install firewall tools
+install_firewall_tools() {
+    echo -e "${YELLOW}Installing firewall tools...${NC}"
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        case $ID in
+            ubuntu|debian)
+                apt-get update
+                apt-get install -y ufw fail2ban logwatch
+                ;;
+            centos|rhel|fedora)
+                yum install -y epel-release
+                yum install -y ufw fail2ban logwatch
+                ;;
+            *)
+                echo -e "${RED}Unsupported operating system${NC}"
+                exit 1
+                ;;
+        esac
+    fi
+}
+
+# Function to configure UFW
+configure_ufw() {
+    echo -e "${YELLOW}Configuring UFW...${NC}"
+    
+    # Reset UFW to default state
+    ufw --force reset
+    
+    # Set default policies
+    ufw default deny incoming
+    ufw default allow outgoing
+    
+    # Allow SSH (modify port if needed)
+    ufw allow 22/tcp
+    
+    # Allow HTTP and HTTPS
+    ufw allow 80/tcp
+    ufw allow 443/tcp
+    
+    # Enable UFW
+    ufw --force enable
+}
+
+# Function to configure Fail2Ban
+configure_fail2ban() {
+    echo -e "${YELLOW}Configuring Fail2Ban...${NC}"
+    
+    # Create Fail2Ban configuration
+    cat > /etc/fail2ban/jail.local << 'EOF'
+[DEFAULT]
+bantime = 3600
+findtime = 600
+maxretry = 5
+
+[sshd]
+enabled = true
+port = ssh
+filter = sshd
+logpath = %(sshd_log)s
+maxretry = 3
+
+[http-auth]
+enabled = true
+port = http,https
+filter = apache-auth
+logpath = /var/log/apache2/error.log
+maxretry = 3
+
+[nginx-http-auth]
+enabled = true
+filter = nginx-http-auth
+port = http,https
+logpath = /var/log/nginx/error.log
+maxretry = 3
+EOF
+    
+    # Restart Fail2Ban
+    systemctl restart fail2ban
+}
+
+# Function to configure log monitoring
+configure_logwatch() {
+    echo -e "${YELLOW}Configuring Logwatch...${NC}"
+    
+    # Create Logwatch configuration
+    cat > /etc/logwatch/conf/logwatch.conf << 'EOF'
+LogDir = /var/log
+TmpDir = /var/cache/logwatch
+MailTo = root
+MailFrom = Logwatch
+Detail = Low
+Service = All
+Range = yesterday
+Format = html
+EOF
+    
+    # Add daily Logwatch job to crontab
+    (crontab -l 2>/dev/null || true; echo "0 5 * * * /usr/sbin/logwatch --output mail") | crontab -
+}
+
+# Function to validate firewall setup
+validate_firewall_setup() {
+    echo -e "${YELLOW}Validating firewall setup...${NC}"
+    local errors=0
+    
+    # Check firewall tools
+    for tool in ufw fail2ban logwatch; do
+        if ! command -v $tool &> /dev/null; then
+            echo -e "${RED}✗ $tool is not installed${NC}"
+            errors=$((errors + 1))
+        else
+            echo -e "${GREEN}✓ $tool is installed${NC}"
+        fi
+    done
+    
+    # Check UFW status
+    if ! ufw status | grep -q "Status: active"; then
+        echo -e "${RED}✗ UFW is not active${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ UFW is active${NC}"
+    fi
+    
+    # Check Fail2Ban status
+    if ! systemctl is-active --quiet fail2ban; then
+        echo -e "${RED}✗ Fail2Ban is not running${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ Fail2Ban is running${NC}"
+    fi
+    
+    # Check configuration files
+    if [ ! -f /etc/fail2ban/jail.local ]; then
+        echo -e "${RED}✗ Fail2Ban configuration is missing${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ Fail2Ban configuration exists${NC}"
+    fi
+    
+    if [ ! -f /etc/logwatch/conf/logwatch.conf ]; then
+        echo -e "${RED}✗ Logwatch configuration is missing${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ Logwatch configuration exists${NC}"
+    fi
+    
+    return $errors
+}
+
+# Main installation flow
+echo -e "${YELLOW}Starting firewall system installation...${NC}"
+
+# Install required tools
+install_firewall_tools
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to install firewall tools${NC}"
+    exit 1
+fi
+
+# Configure UFW
+configure_ufw
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to configure UFW${NC}"
+    exit 1
+fi
+
+# Configure Fail2Ban
+configure_fail2ban
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to configure Fail2Ban${NC}"
+    exit 1
+fi
+
+# Configure log monitoring
+configure_logwatch
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to configure log monitoring${NC}"
+    exit 1
+fi
+
+# Validate installation
+validate_firewall_setup
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Firewall system validation failed${NC}"
+    exit 1
+fi
+
+echo -e "${GREEN}Firewall system installation completed successfully${NC}"
+echo -e "${YELLOW}Remember to verify UFW rules with: ufw status verbose${NC}"
+echo -e "${YELLOW}Check Fail2Ban status with: fail2ban-client status${NC}"
+
+# Main installation steps
+echo -e "\n${BLUE}[1/5] Installing UFW and dependencies...${NC}"
+if ! install_ufw; then
+    echo -e "${RED}Failed to install UFW and dependencies${NC}"
+    exit 1
+fi
+
+echo -e "\n${BLUE}[2/5] Configuring basic firewall rules...${NC}"
+if ! configure_basic_firewall; then
+    echo -e "${RED}Failed to configure firewall rules${NC}"
+    exit 1
+fi
+
+echo -e "\n${BLUE}[3/5] Setting up Fail2Ban...${NC}"
+if ! configure_fail2ban; then
+    echo -e "${RED}Failed to configure Fail2Ban${NC}"
+    exit 1
+fi
+
+echo -e "\n${BLUE}[4/5] Configuring log monitoring...${NC}"
+if ! setup_log_monitoring; then
+    echo -e "${RED}Failed to setup log monitoring${NC}"
+    exit 1
+fi
+
+echo -e "\n${BLUE}[5/5] Validating setup...${NC}"
+if ! validate_firewall; then
+    echo -e "${RED}Firewall validation failed${NC}"
+    exit 1
+fi
+
+echo -e "\n${GREEN}Firewall installation completed successfully!${NC}"
+echo -e "Current UFW status:"
+ufw status verbose
+echo -e "\nCurrent Fail2Ban status:"
+fail2ban-client status
+
+# Function to install UFW and dependencies
+install_ufw() {
+    echo -e "${YELLOW}Installing UFW and dependencies...${NC}"
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        case $ID in
+            ubuntu|debian)
+                apt-get update
+                apt-get install -y ufw fail2ban
+                ;;
+            centos|rhel|fedora)
+                yum install -y epel-release
+                yum install -y ufw fail2ban
+                ;;
+            *)
+                echo -e "${RED}Unsupported operating system${NC}"
+                exit 1
+                ;;
+        esac
+    fi
+}
+
+# Function to configure basic firewall rules
+configure_basic_firewall() {
+    echo -e "${YELLOW}Configuring basic firewall rules...${NC}"
+    
+    # Reset UFW to default
+    ufw --force reset
+    
+    # Default policies
+    ufw default deny incoming
+    ufw default allow outgoing
+    
+    # Allow SSH
+    ufw allow ssh
+    
+    # Allow common web services
+    ufw allow http
+    ufw allow https
+    
+    # Enable UFW
+    echo "y" | ufw enable
+}
+
+# Function to configure Fail2Ban
+configure_fail2ban() {
+    echo -e "${YELLOW}Configuring Fail2Ban...${NC}"
+    
+    # Create custom jail configuration
+    cat > /etc/fail2ban/jail.local << EOF
+[DEFAULT]
+bantime = 1h
+findtime = 10m
+maxretry = 5
+
+[sshd]
+enabled = true
+port = ssh
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 3
+bantime = 24h
+
+[http-auth]
+enabled = true
+port = http,https
+filter = apache-auth
+logpath = /var/log/apache2/error.log
+maxretry = 3
+
+[wordpress]
+enabled = true
+filter = wordpress
+logpath = /var/log/auth.log
+maxretry = 3
+EOF
+    
+    # Restart Fail2Ban
+    systemctl restart fail2ban
+}
+
+# Function to setup log monitoring
+setup_log_monitoring() {
+    echo -e "${YELLOW}Setting up log monitoring...${NC}"
+    
+    # Install logwatch if not present
+    if ! command -v logwatch &> /dev/null; then
+        if [ -f /etc/os-release ]; then
+            . /etc/os-release
+            case $ID in
+                ubuntu|debian)
+                    apt-get install -y logwatch
+                    ;;
+                centos|rhel|fedora)
+                    yum install -y logwatch
+                    ;;
+            esac
+        fi
+    fi
+    
+    # Configure daily log analysis
+    cat > /etc/cron.daily/00logwatch << EOF
+#!/bin/bash
+/usr/sbin/logwatch --output mail --mailto root --detail high
+EOF
+    chmod +x /etc/cron.daily/00logwatch
+}
+
+# Function to validate firewall setup
+validate_firewall() {
+    echo -e "${YELLOW}Validating firewall setup...${NC}"
+    local errors=0
+    
+    # Check UFW status
+    if ! ufw status | grep -q "Status: active"; then
+        echo -e "${RED}✗ UFW is not active${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ UFW is active${NC}"
+    fi
+    
+    # Check Fail2Ban status
+    if ! systemctl is-active --quiet fail2ban; then
+        echo -e "${RED}✗ Fail2Ban is not running${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ Fail2Ban is running${NC}"
+    fi
+    
+    # Check log monitoring
+    if [ ! -x "/etc/cron.daily/00logwatch" ]; then
+        echo -e "${RED}✗ Log monitoring is not configured${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ Log monitoring is configured${NC}"
+    fi
+    
+    return $errors
+}
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}      FIREWALL SYSTEM INSTALLATION     ${NC}"

@@ -12,9 +12,196 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
+# Define colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
 # Source functions
 SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/functions.sh"
+
+# Check if running as root
+if [[ $EUID -ne 0 ]]; then
+   echo -e "${RED}This script must be run as root${NC}"
+   exit 1
+fi
+
+# Function to check firewall status
+check_firewall_status() {
+    echo -e "${YELLOW}Checking firewall status...${NC}"
+    local errors=0
+    
+    # Check UFW status
+    if ! ufw status | grep -q "Status: active"; then
+        echo -e "${RED}✗ UFW is not active${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ UFW is active${NC}"
+    fi
+    
+    # Check Fail2Ban status
+    if ! systemctl is-active --quiet fail2ban; then
+        echo -e "${RED}✗ Fail2Ban is not running${NC}"
+        errors=$((errors + 1))
+    else
+        echo -e "${GREEN}✓ Fail2Ban is running${NC}"
+    fi
+    
+    # Check UFW rules
+    if ! ufw status | grep -q "22/tcp.*ALLOW"; then
+        echo -e "${RED}✗ SSH port is not allowed in UFW${NC}"
+        errors=$((errors + 1))
+    fi
+    
+    # Check Fail2Ban jails
+    if ! fail2ban-client status | grep -q "Number of jail:.*[1-9]"; then
+        echo -e "${RED}✗ No active Fail2Ban jails${NC}"
+        errors=$((errors + 1))
+    fi
+    
+    return $errors
+}
+
+# Function to analyze security logs
+analyze_security_logs() {
+    echo -e "${YELLOW}Analyzing security logs...${NC}"
+    
+    # Show recent UFW blocks
+    echo -e "\nRecent UFW blocks:"
+    grep "UFW BLOCK" /var/log/ufw.log | tail -n 10
+    
+    # Show Fail2Ban bans
+    echo -e "\nFail2Ban status for all jails:"
+    fail2ban-client status
+    
+    # Show recently banned IPs
+    echo -e "\nRecently banned IPs:"
+    for jail in $(fail2ban-client status | grep "Jail list" | cut -f2- | tr ',' ' '); do
+        echo -e "\nJail: $jail"
+        fail2ban-client status "$jail"
+    done
+    
+    # Show auth log suspicious entries
+    echo -e "\nSuspicious auth entries:"
+    grep "Failed password" /var/log/auth.log | tail -n 10
+}
+
+# Function to repair firewall system
+repair_firewall_system() {
+    echo -e "${YELLOW}Repairing firewall system...${NC}"
+    
+    # Restart UFW
+    echo -e "\nRestarting UFW..."
+    ufw --force reset
+    configure_ufw
+    
+    # Restart Fail2Ban
+    echo -e "\nRestarting Fail2Ban..."
+    systemctl restart fail2ban
+    
+    # Recreate Fail2Ban configuration if missing
+    if [ ! -f /etc/fail2ban/jail.local ]; then
+        echo -e "\nRecreating Fail2Ban configuration..."
+        configure_fail2ban
+    fi
+    
+    # Verify logwatch configuration
+    if [ ! -f /etc/logwatch/conf/logwatch.conf ]; then
+        echo -e "\nRecreating Logwatch configuration..."
+        configure_logwatch
+    fi
+    
+    echo -e "${GREEN}✓ Firewall system repaired${NC}"
+}
+
+# Function to show banned IPs
+show_banned_ips() {
+    echo -e "${YELLOW}Currently banned IPs:${NC}"
+    
+    # Get all jails
+    local jails=$(fail2ban-client status | grep "Jail list" | cut -f2- | tr ',' ' ')
+    
+    # Show banned IPs for each jail
+    for jail in $jails; do
+        echo -e "\nJail: $jail"
+        fail2ban-client status "$jail"
+    done
+}
+
+# Function to manage firewall rules
+manage_firewall_rules() {
+    while true; do
+        echo -e "\n${YELLOW}Firewall Rules Management${NC}"
+        echo "1. List current rules"
+        echo "2. Add new rule"
+        echo "3. Delete rule"
+        echo "4. Back to main menu"
+        
+        read -p "Select an option: " rule_choice
+        
+        case $rule_choice in
+            1)
+                ufw status numbered
+                ;;
+            2)
+                read -p "Enter port number: " port
+                read -p "Enter protocol (tcp/udp): " protocol
+                ufw allow "$port/$protocol"
+                echo -e "${GREEN}✓ Rule added${NC}"
+                ;;
+            3)
+                ufw status numbered
+                read -p "Enter rule number to delete: " rule_num
+                ufw --force delete $rule_num
+                ;;
+            4)
+                break
+                ;;
+            *)
+                echo -e "${RED}Invalid option${NC}"
+                ;;
+        esac
+    done
+}
+
+# Main menu
+while true; do
+    echo -e "\n${YELLOW}Firewall System Maintenance${NC}"
+    echo "1. Check firewall status"
+    echo "2. Analyze security logs"
+    echo "3. Repair firewall system"
+    echo "4. Show banned IPs"
+    echo "5. Manage firewall rules"
+    echo "6. Exit"
+    
+    read -p "Select an option: " choice
+    
+    case $choice in
+        1)
+            check_firewall_status
+            ;;
+        2)
+            analyze_security_logs
+            ;;
+        3)
+            repair_firewall_system
+            ;;
+        4)
+            show_banned_ips
+            ;;
+        5)
+            manage_firewall_rules
+            ;;
+        6)
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}Invalid option${NC}"
+            ;;
+    esac
+done
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}      FIREWALL SYSTEM MAINTENANCE      ${NC}"
