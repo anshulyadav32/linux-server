@@ -367,7 +367,7 @@ echo -e "  ${CYAN}./modules/database/install.sh${NC}   - Database systems"
 echo -e "  ${CYAN}./modules/firewall/install.sh${NC}   - Firewall & Security"
 echo -e "  ${CYAN}./modules/backup/install.sh${NC}     - Backup system"
 echo ""
-echo -e "${BLUE}Quick reinstall: curl -sSL ls.r-u.live/s1.sh | sudo bash${NC}"
+echo -e "${BLUE}Quick reinstall: curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash${NC}"
 echo -e "${GREEN}Thank you for using the SSL Certificate Module!${NC}"
 
 # Copy files to a permanent location (optional)

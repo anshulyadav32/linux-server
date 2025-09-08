@@ -46,7 +46,7 @@ Linux Setup is a **complete server management platform** that automates the inst
 #### **⚡ Complete System Installation:**
 ```bash
 # Install all 5 modules with one command
-curl -sSL ls.r-u.live/s1.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash
 ```
 
 #### **🎯 Individual Module Installation:**
@@ -54,35 +54,41 @@ curl -sSL ls.r-u.live/s1.sh | sudo bash
 ##### **🔐 SSL Certificates Module**
 ```bash
 # Install SSL components with Let's Encrypt automation
-curl -sSL ls.r-u.live/modules/ssl/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s ssl
 ```
 
 ##### **✉️ Mail System Module**
 ```bash
 # Install mail components (Postfix, Dovecot, Roundcube)
-curl -sSL ls.r-u.live/modules/mail/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s mail
 ```
 
 ##### **🗄️ Database Module**
 ```bash
 # Install database components (PostgreSQL, MariaDB, MongoDB)
-curl -sSL ls.r-u.live/modules/database/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s database
 ```
 
 ##### **🔒 Firewall & Security Module**
 ```bash
 # Install security components (UFW, Fail2Ban, ClamAV)
-curl -sSL ls.r-u.live/modules/firewall/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s firewall
 ```
 
 ##### **💾 Backup System Module**
 ```bash
 # Install backup components with encryption
-curl -sSL ls.r-u.live/modules/backup/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s backup
+```
+
+##### **🌐 Webserver Module**
+```bash
+# Install webserver components (Apache, Nginx, PHP)
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s webserver
 ```
 
 **What this does:**
-- Downloads and runs the automated installer from live repository
+- Downloads and runs the automated installer from GitHub repository
 - Installs all 25+ components with verification
 - Configures security, SSL, and performance optimization
 - Creates professional server management system
@@ -346,15 +352,15 @@ sudo ./modules/firewall/functions.sh update_security_rules
 ## 🌐 **Live Documentation**
 
 ### **Online Resources:**
-- 🌐 **Main Site**: [https://ls.r-u.live](https://ls.r-u.live)
-- 📚 **GitHub Pages**: [https://anshulyadav32.github.io/linux-setup](https://anshulyadav32.github.io/linux-setup)
+- 🌐 **Main Site**: [https://anshulyadav32.github.io/linux-setup](https://anshulyadav32.github.io/linux-setup)
+- 📚 **GitHub Repository**: [github.com/anshulyadav32/linux-setup](https://github.com/anshulyadav32/linux-setup)
 - 📖 **Wiki**: [GitHub Wiki](https://github.com/anshulyadav32/linux-setup/wiki)
 - 📋 **Issues**: [GitHub Issues](https://github.com/anshulyadav32/linux-setup/issues)
 
 ### **Support Channels:**
-- 📧 **Email**: support@ls.r-u.live
-- 🐛 **Issues**: [GitHub Issues](https://github.com/anshulyadav32/linux-setup/issues)
-- 📚 **Documentation**: [ls.r-u.live/docs](https://ls.r-u.live/docs)
+- � **Issues**: [GitHub Issues](https://github.com/anshulyadav32/linux-setup/issues)
+- � **Discussions**: [GitHub Discussions](https://github.com/anshulyadav32/linux-setup/discussions)
+- 📚 **Documentation**: [GitHub README](https://github.com/anshulyadav32/linux-setup#readme)
 
 ---
 
@@ -416,4 +422,4 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 **Ready to get started? Choose your installation method above and deploy your server in minutes!**
 
-For questions, support, or contributions, visit our [GitHub repository](https://github.com/anshulyadav32/linux-setup) or [documentation site](https://ls.r-u.live).
+For questions, support, or contributions, visit our [GitHub repository](https://github.com/anshulyadav32/linux-setup) or [GitHub Pages site](https://anshulyadav32.github.io/linux-setup).

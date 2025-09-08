@@ -124,8 +124,8 @@ start_services() {
   os=$(detect_os)
 
   if [[ "$os" == "debian" ]]; then
-    systemctl restart named bind9
-    systemctl enable named bind9
+    systemctl restart named
+    systemctl enable named
   else
     systemctl restart named
     systemctl enable named

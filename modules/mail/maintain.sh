@@ -11,9 +11,94 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Source functions
-SCRIPT_DIR="$(dirname "$0")"
-source "$SCRIPT_DIR/functions.sh"
+# Function to check if a service is running
+check_service() {
+    local service=$1
+    if systemctl is-active --quiet "$service"; then
+        echo -e "${GREEN}✓ $service is running${NC}"
+        return 0
+    else
+        echo -e "${RED}✗ $service is not running${NC}"
+        return 1
+    fi
+}
+
+# Function to check all mail services
+check_all_mail_services() {
+    echo -e "\n${BLUE}=== Service Status ===${NC}"
+    check_service postfix
+    check_service dovecot
+    check_service spamd
+    check_service clamav-daemon
+}
+
+# Function to check mail ports
+check_mail_ports() {
+    echo -e "\n${BLUE}=== Port Status ===${NC}"
+    # Install net-tools if needed
+    if ! command -v netstat &> /dev/null; then
+        echo -e "${YELLOW}Installing net-tools...${NC}"
+        apt-get update && apt-get install -y net-tools
+    fi
+    # Check common mail ports
+    netstat -tuln | grep -E ':25|:587|:465|:143|:993|:110|:995' || echo -e "${RED}No mail ports are currently in use${NC}"
+}
+
+# Function to view mail logs
+view_mail_logs() {
+    echo -e "\n${BLUE}=== Mail Logs ===${NC}"
+    echo -e "\n${YELLOW}Last 10 lines of mail.log:${NC}"
+    tail -n 10 /var/log/mail.log 2>/dev/null || echo "No mail.log found"
+    echo -e "\n${YELLOW}Last 10 lines of maillog:${NC}"
+    tail -n 10 /var/log/maillog 2>/dev/null || echo "No maillog found"
+}
+
+# Function to check mail queue
+check_mail_queue() {
+    echo -e "\n${BLUE}=== Mail Queue ===${NC}"
+    if command -v postqueue &> /dev/null; then
+        postqueue -p || echo "Mail queue is empty"
+    elif command -v mailq &> /dev/null; then
+        mailq || echo "Mail queue is empty"
+    else
+        echo -e "${YELLOW}Installing mailutils...${NC}"
+        apt-get update && apt-get install -y mailutils
+        mailq || echo "Mail queue is empty"
+    fi
+}
+
+# Get mail queue status (for backward compatibility)
+get_mail_queue_status() {
+    check_mail_queue
+}
+
+# Function to check disk usage
+check_disk_usage() {
+    echo -e "\n${BLUE}=== Disk Usage ===${NC}"
+    df -h /var/spool/postfix /var/mail
+    echo -e "\n${YELLOW}Mail directory sizes:${NC}"
+    du -sh /var/spool/postfix/* /var/mail 2>/dev/null
+}
+
+# Function to perform full system check
+full_system_check() {
+    echo -e "${BLUE}Performing full mail system check...${NC}"
+    
+    # Check services
+    check_all_mail_services
+    
+    # Check ports
+    check_mail_ports
+    
+    # Check logs
+    view_mail_logs
+    
+    # Check mail queue
+    check_mail_queue
+    
+    # Check disk usage
+    check_disk_usage
+}
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}      MAIL SYSTEM MAINTENANCE          ${NC}"
@@ -39,9 +124,7 @@ show_maintenance_menu() {
 # Function to check service status
 check_status() {
     echo -e "${YELLOW}Checking mail service status...${NC}"
-    echo
     check_all_mail_services
-    echo
     echo -e "${BLUE}Port status:${NC}"
     check_mail_ports
     echo

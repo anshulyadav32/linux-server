@@ -15,9 +15,128 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# Source functions
-SCRIPT_DIR="$(dirname "$0")"
-source "$SCRIPT_DIR/functions.sh"
+# Function to print step headers
+print_step() {
+    echo -e "\n${YELLOW}Step $1/$2: $3...${NC}"
+}
+
+# Function to print success messages
+print_success() {
+    echo -e "${GREEN}✓ $1${NC}"
+}
+
+# Function to print error messages
+print_error() {
+    echo -e "${RED}✗ $1${NC}"
+    exit 1
+}
+
+# Function to detect OS
+detect_os() {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        OS=$NAME
+        VER=$VERSION_ID
+    elif [ -f /etc/debian_version ]; then
+        OS="Debian"
+        VER=$(cat /etc/debian_version)
+    elif [ -f /etc/redhat-release ]; then
+        OS="RedHat"
+        VER=$(rpm -qa \*-release | grep -v "^(redhat|centos)-release" | cut -d"-" -f3)
+    else
+        OS="Unknown"
+        VER="Unknown"
+    fi
+}
+
+# Function to update system
+update_system() {
+    echo -e "${YELLOW}Updating system packages...${NC}"
+    detect_os
+    case $OS in
+        *Ubuntu*|*Debian*)
+            apt-get update && apt-get upgrade -y
+            ;;
+        *CentOS*|*RedHat*|*Fedora*)
+            yum update -y
+            ;;
+        *Arch*)
+            pacman -Syu --noconfirm
+            ;;
+        *)
+            echo -e "${RED}Unsupported operating system${NC}"
+            exit 1
+            ;;
+    esac
+}
+
+# Function to install PostgreSQL
+install_postgresql() {
+    echo -e "${YELLOW}Installing PostgreSQL...${NC}"
+    detect_os
+    case $OS in
+        *Ubuntu*|*Debian*)
+            apt-get install -y postgresql postgresql-contrib postgresql-client pgadmin4
+            ;;
+        *CentOS*|*RedHat*|*Fedora*)
+            yum install -y postgresql-server postgresql-contrib pgadmin4
+            postgresql-setup --initdb
+            ;;
+        *Arch*)
+            pacman -S --noconfirm postgresql pgadmin4
+            ;;
+    esac
+    systemctl start postgresql
+    systemctl enable postgresql
+}
+
+# Function to install MariaDB
+install_mariadb() {
+    echo -e "${YELLOW}Installing MariaDB...${NC}"
+    detect_os
+    case $OS in
+        *Ubuntu*|*Debian*)
+            apt-get install -y mariadb-server mariadb-client phpmyadmin
+            ;;
+        *CentOS*|*RedHat*|*Fedora*)
+            yum install -y mariadb-server mariadb phpmyadmin
+            ;;
+        *Arch*)
+            pacman -S --noconfirm mariadb phpmyadmin
+            mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+            ;;
+    esac
+    systemctl start mariadb
+    systemctl enable mariadb
+    mysql_secure_installation
+}
+
+# Function to install MongoDB
+install_mongodb() {
+    echo -e "${YELLOW}Installing MongoDB...${NC}"
+    detect_os
+    case $OS in
+        *Ubuntu*|*Debian*)
+            wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | apt-key add -
+            echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+            apt-get update
+            apt-get install -y mongodb-org mongodb-compass
+            ;;
+        *CentOS*|*RedHat*|*Fedora*)
+            echo "[mongodb-org-6.0]" | tee /etc/yum.repos.d/mongodb-org-6.0.repo
+            echo "name=MongoDB Repository" | tee -a /etc/yum.repos.d/mongodb-org-6.0.repo
+            echo "baseurl=https://repo.mongodb.org/yum/redhat/\$releasever/mongodb-org/6.0/x86_64/" | tee -a /etc/yum.repos.d/mongodb-org-6.0.repo
+            echo "gpgcheck=1" | tee -a /etc/yum.repos.d/mongodb-org-6.0.repo
+            echo "enabled=1" | tee -a /etc/yum.repos.d/mongodb-org-6.0.repo
+            yum install -y mongodb-org mongodb-compass
+            ;;
+        *Arch*)
+            pacman -S --noconfirm mongodb-bin mongodb-compass
+            ;;
+    esac
+    systemctl start mongod
+    systemctl enable mongod
+}
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}      DATABASE SYSTEM INSTALLATION     ${NC}"
@@ -43,14 +162,22 @@ show_database_options() {
 get_database_choice() {
     while true; do
         show_database_options
-        read -p "Select database system to install [1-4]: " db_choice
+        if [ -z "$REPLY" ]; then
+            read -p "Select database system to install [1-4]: " db_choice
+        else
+            db_choice=$REPLY
+        fi
         
         case $db_choice in
             1|2|3|4)
-                return $db_choice
+                echo $db_choice
+                return 0
                 ;;
             *)
                 echo -e "${RED}Invalid choice. Please select 1-4.${NC}"
+                if [ ! -z "$REPLY" ]; then
+                    return 1
+                fi
                 ;;
         esac
     done
@@ -61,14 +188,17 @@ echo
 
 # Step 1: System Update
 echo -e "${BLUE}Step 1/8: Updating system packages...${NC}"
-update_system_packages
+update_system
 echo -e "${GREEN}✓ System packages updated${NC}"
 echo
 
 # Step 2: Get database choice
 echo -e "${BLUE}Step 2/8: Database selection...${NC}"
-get_database_choice
-user_choice=$?
+user_choice=$(get_database_choice)
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Error: Invalid database selection${NC}"
+    exit 1
+fi
 echo -e "${GREEN}✓ Database system selected${NC}"
 echo
 

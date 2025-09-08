@@ -83,6 +83,9 @@ detect_system() {
         VER=$(uname -r)
     fi
     
+    # Convert OS name to lowercase for consistency
+    OS=$(echo "$OS" | tr '[:upper:]' '[:lower:]')
+    
     log_info "Detected system: $OS $VER"
 }
 

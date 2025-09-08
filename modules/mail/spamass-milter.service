@@ -1,0 +1,14 @@
+[Unit]
+Description=Spamassassin Milter Service
+After=network.target
+
+[Service]
+Type=forking
+RuntimeDirectory=spamass-milter
+PIDFile=/var/run/spamass/spamass-milter.pid
+ExecStart=/usr/sbin/spamass-milter -p /var/spool/postfix/spamass/spamass.sock -u spamass-milter
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

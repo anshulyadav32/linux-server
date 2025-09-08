@@ -7,11 +7,10 @@ This directory contains the complete website and documentation for the **Linux S
 The **Linux Setup** website is a professional documentation platform built with Jekyll, featuring responsive design, dual-domain support, and enterprise-grade presentation of the modular server management system.
 
 ### **🏆 Key Features**
-- **Dual-Domain Access**: Primary domain (ls.r-u.live) with GitHub Pages mirror
+- **GitHub Pages Hosting**: Professional documentation hosted on GitHub Pages
 - **Professional Design**: Enterprise-grade responsive interface
-- **Smart Domain Switching**: Automatic URL adaptation based on current domain
 - **Comprehensive Documentation**: Complete guides, tutorials, and API references
-- **One-Line Installation**: Copy-to-clipboard installation commands
+- **One-Line Installation**: Copy-to-clipboard installation commands with GitHub raw URLs
 - **SEO Optimized**: Enhanced search engine visibility and performance
 
 ## 📁 **Directory Structure**
@@ -112,31 +111,34 @@ The website provides professional one-line installation commands for various dep
 ### **Complete System Installation**
 ```bash
 # Install complete modular system with all modules
-curl -sSL ls.r-u.live/s1.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash
 ```
 
 ### **Master CLI Tool**
 ```bash
 # Install master CLI for direct system access
-curl -sSL ls.r-u.live/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/install.sh | sudo bash
 ```
 
 ### **Individual Modules**
 ```bash
 # SSL Certificates
-curl -sSL ls.r-u.live/s1.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s ssl
 
 # Mail Server
-curl -sSL ls.r-u.live/mail.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s mail
 
-# Database 
-curl -sSL ls.r-u.live/database.sh | sudo bash
+# Database
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s database
 
 # Firewall
-curl -sSL ls.r-u.live/firewall.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s firewall
 
 # Backup
-curl -sSL ls.r-u.live/backup.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s backup
+
+# Webserver
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s webserver
 ```
 
 ## 🔧 **Website Development**
@@ -203,11 +205,11 @@ bundle exec jekyll build
 
 ## 📞 **Website Links & Access**
 
-- **Primary Domain**: [https://ls.r-u.live](https://ls.r-u.live)
-- **GitHub Pages**: [https://anshulyadav32.github.io/linux-setup](https://anshulyadav32.github.io/linux-setup)
-- **Installation Scripts**: [ls.r-u.live/sh](https://ls.r-u.live/sh)
-- **Documentation**: [ls.r-u.live/docs](https://ls.r-u.live/docs)
-- **Repository**: [github.com/anshulyadav32/linux-setup](https://github.com/anshulyadav32/linux-setup)
+- **Primary Domain**: [https://anshulyadav32.github.io/linux-setup](https://anshulyadav32.github.io/linux-setup)
+- **GitHub Repository**: [github.com/anshulyadav32/linux-setup](https://github.com/anshulyadav32/linux-setup)
+- **Installation Scripts**: [raw.githubusercontent.com/anshulyadav32/linux-setup/main](https://raw.githubusercontent.com/anshulyadav32/linux-setup/main)
+- **Documentation**: [github.com/anshulyadav32/linux-setup#readme](https://github.com/anshulyadav32/linux-setup#readme)
+- **Issues & Support**: [github.com/anshulyadav32/linux-setup/issues](https://github.com/anshulyadav32/linux-setup/issues)
 
 ---
 
