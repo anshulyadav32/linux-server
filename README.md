@@ -23,14 +23,6 @@ curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-server/main/s1.s
 curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-server/main/s1.sh | bash -s dns
 ```
 
-### For Windows (PowerShell):
-Clone the repository and run the install script using WSL or a Linux VM:
-```powershell
-git clone https://github.com/anshulyadav32/linux-server.git
-cd linux-server
-# Run in WSL or Linux environment:
-bash install.sh
-```
 
 ---
 
