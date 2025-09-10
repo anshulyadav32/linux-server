@@ -67,6 +67,12 @@ Available modules: webserver, database, dns, firewall, ssl, backup
    sudo ./s3.sh
    ```
 
+6. **Update server components:**
+   ```bash
+   chmod +x update-server.sh
+   sudo ./update-server.sh
+   ```
+
 ---
 
 ## Health Monitoring & Maintenance
@@ -117,8 +123,28 @@ sudo ./modules/extra/check_extra.sh
 sudo ./modules/backup/check_backup.sh
 ```
 
-### Module Updates
-Update individual modules or all modules:
+### Server Updates
+Update all server components with the master update script:
+
+```bash
+# Update all modules
+sudo ./update-server.sh
+
+# Update with verbose output
+sudo ./update-server.sh --verbose
+
+# Dry run to see what would be updated
+sudo ./update-server.sh --dry-run
+
+# Force update with system backup
+sudo ./update-server.sh --force --backup
+
+# Update specific modules only
+sudo ./update-server.sh database webserver ssl
+```
+
+### Individual Module Updates
+Update individual modules manually:
 
 ```bash
 # Update specific module

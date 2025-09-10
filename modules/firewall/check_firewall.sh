@@ -94,7 +94,9 @@ main() {
             local banned_ips=0
             for jail in $(fail2ban-client status 2>/dev/null | grep "Jail list:" | cut -d: -f2 | tr ',' ' '); do
                 local jail_banned=$(fail2ban-client status $jail 2>/dev/null | grep "Currently banned:" | awk '{print $3}' | head -1)
-                banned_ips=$((banned_ips + jail_banned))
+                if [[ -n "$jail_banned" && "$jail_banned" =~ ^[0-9]+$ ]]; then
+                    banned_ips=$((banned_ips + jail_banned))
+                fi
             done
             print_info "Currently Banned IPs: $banned_ips"
         fi

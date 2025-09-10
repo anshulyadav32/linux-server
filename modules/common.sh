@@ -49,6 +49,39 @@ print_section_header() {
     echo ""
 }
 
+# Additional print functions for check/update scripts
+print_header() {
+    echo ""
+    echo -e "${PURPLE}================================${NC}"
+    echo -e "${PURPLE} $1${NC}"
+    echo -e "${PURPLE}================================${NC}"
+    echo ""
+}
+
+print_step() {
+    echo -e "${BLUE}[STEP]${NC} $1"
+}
+
+print_substep() {
+    echo -e "${CYAN}  → $1${NC}"
+}
+
+print_info() {
+    echo -e "${CYAN}[INFO]${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
 print_step() {
     echo -e "${YELLOW}>>> $1${NC}"
 }
