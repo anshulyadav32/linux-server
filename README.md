@@ -61,6 +61,86 @@ Available modules: webserver, database, dns, firewall, ssl, backup
    ```
    This will install all major modules (webserver, database, dns, firewall, ssl, backup) in parallel and report status.
 
+5. **Run comprehensive system health check:**
+   ```bash
+   chmod +x s3.sh
+   sudo ./s3.sh
+   ```
+
+---
+
+## Health Monitoring & Maintenance
+
+### System Comprehensive Check (S3)
+The `s3.sh` script provides a master health check that runs all module checks:
+
+```bash
+# Check all modules
+sudo ./s3.sh
+
+# Check specific modules
+sudo ./s3.sh database webserver ssl
+
+# Verbose mode for detailed output
+sudo ./s3.sh --verbose
+
+# Quiet mode for automated scripts
+sudo ./s3.sh --quiet
+
+# Fast mode for quick overview
+sudo ./s3.sh --fast --summary
+```
+
+### Individual Module Health Checks
+Each module has its own health check script:
+
+```bash
+# Database health check
+sudo ./modules/database/check_database.sh
+
+# Web server health check  
+sudo ./modules/webserver/check_webserver.sh --verbose
+
+# SSL certificate check
+sudo ./modules/ssl/check_ssl.sh
+
+# Firewall status check
+sudo ./modules/firewall/check_firewall.sh
+
+# DNS service check
+sudo ./modules/dns/check_dns.sh
+
+# Mail server check
+sudo ./modules/extra/check_extra.sh
+
+# Backup system check
+sudo ./modules/backup/check_backup.sh
+```
+
+### Module Updates
+Update individual modules or all modules:
+
+```bash
+# Update specific module
+sudo ./modules/webserver/update_webserver.sh
+
+# Update all modules (example loop)
+for module in database dns webserver firewall ssl extra backup; do
+    sudo ./modules/$module/update_${module}.sh
+done
+```
+
+### Scheduled Health Monitoring
+Add to crontab for automated monitoring:
+
+```bash
+# Daily health check at 6 AM
+0 6 * * * /path/to/linux-server/s3.sh --quiet >> /var/log/server_health.log 2>&1
+
+# Weekly comprehensive check
+0 2 * * 0 /path/to/linux-server/s3.sh --verbose >> /var/log/server_health_weekly.log 2>&1
+```
+
 ---
 
 GitHub Repository: [linux-server](https://github.com/anshulyadav32/linux-server)
