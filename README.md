@@ -1,5 +1,8 @@
 
+
 # linux-server
+
+Automated Linux server setup and configuration scripts for webserver, database, and more. Easily deploy and manage your server modules with a single install command.
 
 [View GitHub Pages site](https://anshulyadav32.github.io/linux-server/)
 
