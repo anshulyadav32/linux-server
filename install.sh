@@ -17,17 +17,6 @@ wait $database_pid
 database_status=$?
 
 if [ $webserver_status -eq 0 ] && [ $database_status -eq 0 ]; then
-	echo "Both installations have finished."
-else
-	echo "One or both installations failed."
-	exit 1
-fi
-wait $webserver_pid
-webserver_status=$?
-wait $database_pid
-database_status=$?
-
-if [ $webserver_status -eq 0 ] && [ $database_status -eq 0 ]; then
 	echo "Both installations completed successfully."
 else
 	echo "One or both installations failed."
