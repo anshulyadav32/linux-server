@@ -1,7 +1,7 @@
 
 # linux-server
 
-[View GitHub Pages site](https://anshulyadav89.github.io/linux-server/)
+[View GitHub Pages site](https://anshulyadav32.github.io/linux-server/)
 
 
 
