@@ -1,10 +1,10 @@
-# Linux Setup - Professional Documentation Website
+# Linux Server Automation Suite - Documentation Website
 
-This directory contains the complete website and documentation for the **Linux Setup - Modular Server Management System**. The website provides professional documentation, installation guides, and comprehensive system information accessible through dual-domain functionality.
+This directory contains the complete website and documentation for the **Linux Server Automation Suite**. The website provides professional documentation, installation guides, and comprehensive system information for enterprise-grade server management.
 
 ## 🌐 **Website Overview**
 
-The **Linux Setup** website is a professional documentation platform built with Jekyll, featuring responsive design, dual-domain support, and enterprise-grade presentation of the modular server management system.
+The **Linux Server Automation Suite** website is a professional documentation platform built with Jekyll, featuring responsive design and enterprise-grade presentation of the complete server automation framework.
 
 ### **🏆 Key Features**
 - **GitHub Pages Hosting**: Professional documentation hosted on GitHub Pages
