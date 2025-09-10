@@ -2,7 +2,7 @@
 
 # linux-server
 
-Automated Linux server setup and configuration scripts for webserver, database, DNS, firewall, SSL, and backup. Easily deploy and manage all major server modules with a single install command.
+Automated Linux server setup and configuration scripts for webserver, database, DNS, domain management, firewall, SSL, and backup. Easily deploy and manage all major server modules with a single install command.
 
 [View GitHub Pages site](https://anshulyadav32.github.io/linux-server/)
 
@@ -19,12 +19,12 @@ Run this command in your terminal for a one-line remote install of all modules:
 curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-server/main/s1.sh | bash
 ```
 
-#### To install only a specific module remotely (e.g., DNS):
+#### To install only a specific module remotely (e.g., Domain):
 ```bash
-curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-server/main/s1.sh | bash -s dns
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-server/main/s1.sh | bash -s domain
 ```
 
-Available modules: webserver, database, dns, firewall, ssl, backup
+Available modules: webserver, database, dns, domain, firewall, ssl, backup
 
 
 ---
@@ -51,6 +51,7 @@ Available modules: webserver, database, dns, firewall, ssl, backup
       - `modules/webserver/install.sh`
       - `modules/database/install.sh`
       - `modules/dns/install.sh`
+      - `modules/domain/install.sh`
       - `modules/firewall/install.sh`
       - `modules/ssl/install.sh`
       - `modules/backup/install.sh`
@@ -59,11 +60,52 @@ Available modules: webserver, database, dns, firewall, ssl, backup
    ```bash
    bash install.sh
    ```
-   This will install all major modules (webserver, database, dns, firewall, ssl, backup) in parallel and report status.
+   This will install all major modules (webserver, database, dns, domain, firewall, ssl, backup) in parallel and report status.
+
+5. **Access domain management:**
+   After installation, use the domain management interface:
+   ```bash
+   sudo domain-manager
+   ```
 
 ---
 
 GitHub Repository: [linux-server](https://github.com/anshulyadav32/linux-server)
+
+---
+
+## Domain Management Features
+
+The domain module provides comprehensive domain management capabilities:
+
+### Key Features:
+- **Easy Domain Setup**: Add/remove domains with automatic DNS zone creation
+- **DNS Zone Management**: Automated zone file generation and validation
+- **Web Server Integration**: Automatic virtual host configuration for Apache/Nginx
+- **Domain Health Monitoring**: Check domain status and DNS propagation
+- **Bulk Operations**: Import multiple domains from file
+- **SSL Integration**: Ready for SSL certificate management
+- **Backup & Restore**: Configuration backup and restoration tools
+
+### Quick Domain Operations:
+```bash
+# Interactive domain management
+sudo domain-manager
+
+# Command line operations
+sudo domain-manager add example.com
+sudo domain-manager remove example.com
+sudo domain-manager list
+sudo domain-manager check example.com
+```
+
+### Domain Management Menu:
+1. Add Domain - Create new domain with DNS zone and web configuration
+2. Remove Domain - Clean removal of domain and all configurations
+3. List Domains - View all configured domains
+4. Check Domain - Health check and DNS verification
+5. DNS Management - DNS service operations and configuration
+6. Domain Tools - Whois, propagation checks, SSL verification
 
 ---
 
