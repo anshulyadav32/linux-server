@@ -75,17 +75,78 @@ sudo ./modules/webserver/install.sh
    ```
    This will install all major modules (webserver, database, dns, firewall, ssl, backup) in parallel and report status.
 
-5. **Run comprehensive system health check:**
+5. **Run post-installation setup:**
    ```bash
-   chmod +x s3.sh
+   # Make scripts executable
+   chmod +x s3.sh update-server.sh
+   
+   # Run initial system health check
    sudo ./s3.sh
    ```
 
-6. **Update server components:**
-   ```bash
-   chmod +x update-server.sh
-   sudo ./update-server.sh
-   ```
+---
+
+## 🛠️ Core Management Scripts
+
+### 🩺 s3.sh - System Comprehensive Check
+The master health monitoring script that provides enterprise-grade system diagnostics:
+
+```bash
+# Complete system health check
+sudo ./s3.sh
+
+# Verbose diagnostic output
+sudo ./s3.sh --verbose
+
+# Quick system overview
+sudo ./s3.sh --fast --summary
+
+# Check specific modules only
+sudo ./s3.sh database webserver ssl
+
+# Automated monitoring mode
+sudo ./s3.sh --quiet
+
+# Performance benchmarking
+sudo ./s3.sh --performance
+```
+
+**Key Features:**
+- 🔍 **Deep System Analysis**: Comprehensive health checks across all modules
+- 📊 **Performance Metrics**: System resource monitoring and benchmarking  
+- 🚨 **Intelligent Alerting**: Automated issue detection and reporting
+- 📈 **Trend Analysis**: Historical performance tracking
+- ⚡ **Fast Scanning**: Quick overview mode for rapid assessment
+
+### 🔄 update-server.sh - Intelligent Update Management
+Advanced update management system with dependency resolution:
+
+```bash
+# Update entire server stack
+sudo ./update-server.sh
+
+# Detailed update process
+sudo ./update-server.sh --verbose
+
+# Preview changes (safe testing)
+sudo ./update-server.sh --dry-run
+
+# Force update with backup
+sudo ./update-server.sh --force --backup
+
+# Update specific modules
+sudo ./update-server.sh database webserver ssl
+
+# Emergency rollback
+sudo ./update-server.sh --rollback
+```
+
+**Key Features:**
+- 🎯 **Dependency Resolution**: Intelligent update ordering and conflict resolution
+- 🛡️ **Automatic Backups**: Pre-update system state preservation
+- 🧪 **Dry-Run Testing**: Preview changes before execution
+- 📋 **Change Validation**: Post-update verification and health checks
+- ⚡ **Parallel Processing**: Optimized concurrent updates where safe
 
 ---
 
