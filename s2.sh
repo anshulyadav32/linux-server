@@ -2,7 +2,7 @@
 # s2.sh - Check for required dependencies for linux-server modules
 
 REQUIRED_CMDS=(git curl bash sudo)
-MODULES=(webserver database dns firewall ssl backup)
+MODULES=(webserver database dns domain firewall ssl backup)
 
 missing=()
 
