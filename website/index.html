@@ -4,28 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Linux Setup - Complete Server Management System</title>
-                   <!-- Backup System -->
-                <div class="bg-white p-6 rounded-xl shadow-lg border card-hover">
-                    <div class="text-3xl mb-4">💾</div>
-                    <h3 class="text-xl font-bold mb-3">Backup System</h3>
-                    <p class="text-gray-600 mb-4">Automated backups with encryption and remote sync</p>
-                    <div class="bg-gray-100 p-3 rounded text-sm font-mono">
-                        <code>./modules/backup/menu.sh</code>
-                    </div>
-                </div>
-
-                <!-- Webserver -->
-                <div class="bg-white p-6 rounded-xl shadow-lg border card-hover">
-                    <div class="text-3xl mb-4">🌐</div>
-                    <h3 class="text-xl font-bold mb-3">Webserver</h3>
-                    <p class="text-gray-600 mb-4">Apache, Nginx, PHP with SSL/TLS and performance optimization</p>
-                    <div class="bg-gray-100 p-3 rounded text-sm font-mono">
-                        <code>./modules/webserver/menu.sh</code>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>"description" content="Automate Linux server setup with web hosting, databases, mail systems, DNS, and security tools">
+    <meta name="description" content="Automate Linux server setup with web hosting, databases, DNS, firewall, SSL, backup, and security tools">
     
     <!-- CSS Framework (Tailwind CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -129,31 +108,31 @@ sudo ./install.sh</code>
             
             <div class="mt-12 bg-gray-100 p-8 rounded-xl">
                 <h3 class="text-xl font-bold mb-4 text-center">🔧 Individual Module Installation</h3>
-                <p class="text-gray-600 mb-6 text-center">Install specific modules with parameter-based remote commands:</p>
+                <p class="text-gray-600 mb-6 text-center">To install a specific module, run its install script directly from the <code>modules</code> folder:</p>
                 <div class="grid md:grid-cols-1 gap-4 text-sm">
                     <div class="bg-white p-4 rounded-lg">
-                        <strong>🔐 SSL Module:</strong><br>
-                        <code class="text-green-600">curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s ssl</code>
+                        <strong>Webserver:</strong><br>
+                        <code class="text-green-600">bash modules/webserver/install.sh</code>
                     </div>
                     <div class="bg-white p-4 rounded-lg">
-                        <strong>✉️ Mail Module:</strong><br>
-                        <code class="text-green-600">curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s mail</code>
+                        <strong>Database:</strong><br>
+                        <code class="text-green-600">bash modules/database/install.sh</code>
                     </div>
                     <div class="bg-white p-4 rounded-lg">
-                        <strong>🗄️ Database Module:</strong><br>
-                        <code class="text-green-600">curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s database</code>
+                        <strong>DNS:</strong><br>
+                        <code class="text-green-600">bash modules/dns/install.sh</code>
                     </div>
                     <div class="bg-white p-4 rounded-lg">
-                        <strong>🔒 Firewall Module:</strong><br>
-                        <code class="text-green-600">curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s firewall</code>
+                        <strong>Firewall:</strong><br>
+                        <code class="text-green-600">bash modules/firewall/install.sh</code>
                     </div>
                     <div class="bg-white p-4 rounded-lg">
-                        <strong>💾 Backup Module:</strong><br>
-                        <code class="text-green-600">curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s backup</code>
+                        <strong>SSL:</strong><br>
+                        <code class="text-green-600">bash modules/ssl/install.sh</code>
                     </div>
                     <div class="bg-white p-4 rounded-lg">
-                        <strong>🌐 Webserver Module:</strong><br>
-                        <code class="text-green-600">curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-setup/main/s1.sh | sudo bash -s webserver</code>
+                        <strong>Backup:</strong><br>
+                        <code class="text-green-600">bash modules/backup/install.sh</code>
                     </div>
                 </div>
             </div>
