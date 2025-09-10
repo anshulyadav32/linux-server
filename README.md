@@ -10,16 +10,20 @@ Automated Linux server setup and configuration scripts for webserver, database, 
 
 ## Quick Installation (Recommended)
 
-### For Windows (PowerShell):
-Run this command in PowerShell to install directly:
-```powershell
-iex (Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/anshulyadav32/linux-server/main/install.sh' -UseBasicParsing).Content
+
+### For Linux (Recommended):
+Run this command in your terminal for a one-line remote install:
+```bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-server/main/s1.sh | bash
 ```
 
-### For Linux:
-Run this command in your terminal:
-```bash
-curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-server/main/install.sh | bash
+### For Windows (PowerShell):
+Clone the repository and run the install script using WSL or a Linux VM:
+```powershell
+git clone https://github.com/anshulyadav32/linux-server.git
+cd linux-server
+# Run in WSL or Linux environment:
+bash install.sh
 ```
 
 ---
