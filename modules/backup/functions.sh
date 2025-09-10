@@ -644,3 +644,191 @@ sync_backup_remote() {
         return 1
     fi
 }
+
+#===========================================
+# BACKUP MODULE MAIN FUNCTIONS
+#===========================================
+
+install_backup_module() {
+    print_header "Installing Backup Module"
+    
+    # Configure backup defaults
+    if configure_backup_defaults; then
+        print_success "Backup module installed successfully"
+        return 0
+    else
+        print_error "Backup module installation failed"
+        return 1
+    fi
+}
+
+check_backup_module() {
+    print_header "Checking Backup Module"
+    
+    local config_status=0
+    local directory_status=0
+    local cron_status=0
+    
+    # Check backup configuration
+    if [[ -f /etc/backup.conf ]]; then
+        print_success "Backup configuration file exists"
+        config_status=1
+    else
+        print_error "Backup configuration file not found"
+    fi
+    
+    # Check backup directories
+    if [[ -d /root/backups ]]; then
+        print_success "Backup directory structure exists"
+        directory_status=1
+    else
+        print_error "Backup directory structure not found"
+    fi
+    
+    # Check for scheduled backups
+    if crontab -l 2>/dev/null | grep -q "backup"; then
+        print_success "Scheduled backups found"
+        cron_status=1
+    else
+        print_info "No scheduled backups configured"
+    fi
+    
+    if [[ $config_status -eq 1 && $directory_status -eq 1 ]]; then
+        print_success "Backup module is operational"
+        return 0
+    else
+        print_error "Backup module is not fully operational"
+        return 1
+    fi
+}
+
+update_backup_module() {
+    print_header "Updating Backup Module"
+    
+    # Update backup tools
+    apt-get update >/dev/null 2>&1
+    apt-get upgrade -y tar gzip rsync >/dev/null 2>&1
+    
+    # Clean up old backups
+    cleanup_old_backups
+    
+    print_success "Backup module updated successfully"
+    return 0
+}
+
+check_backup_update() {
+    print_header "Checking Backup Module Updates"
+    
+    # Check for available updates
+    apt-get update >/dev/null 2>&1
+    
+    local updates_available=0
+    
+    # Check for backup-related tool updates
+    if apt list --upgradable 2>/dev/null | grep -E "tar|gzip|rsync"; then
+        print_info "Backup tool updates available"
+        updates_available=1
+    fi
+    
+    if [[ $updates_available -eq 1 ]]; then
+        print_warning "Backup module updates available"
+        return 1
+    else
+        print_success "Backup module is up to date"
+        return 0
+    fi
+}
+
+#===========================================
+# BACKUP MODULE MAIN FUNCTIONS
+#===========================================
+
+install_backup_module() {
+    print_header "Installing Backup Module"
+    
+    # Configure backup defaults
+    if configure_backup_defaults; then
+        print_success "Backup module installed successfully"
+        return 0
+    else
+        print_error "Backup module installation failed"
+        return 1
+    fi
+}
+
+check_backup_module() {
+    print_header "Checking Backup Module"
+    
+    local config_status=0
+    local directory_status=0
+    local cron_status=0
+    
+    # Check backup configuration
+    if [[ -f /etc/backup.conf ]]; then
+        print_success "Backup configuration file exists"
+        config_status=1
+    else
+        print_error "Backup configuration file not found"
+    fi
+    
+    # Check backup directories
+    if [[ -d /root/backups ]]; then
+        print_success "Backup directory structure exists"
+        directory_status=1
+    else
+        print_error "Backup directory structure not found"
+    fi
+    
+    # Check for scheduled backups
+    if crontab -l 2>/dev/null | grep -q "backup"; then
+        print_success "Scheduled backups found"
+        cron_status=1
+    else
+        print_info "No scheduled backups configured"
+    fi
+    
+    if [[ $config_status -eq 1 && $directory_status -eq 1 ]]; then
+        print_success "Backup module is operational"
+        return 0
+    else
+        print_error "Backup module is not fully operational"
+        return 1
+    fi
+}
+
+update_backup_module() {
+    print_header "Updating Backup Module"
+    
+    # Update backup tools
+    apt-get update >/dev/null 2>&1
+    apt-get upgrade -y tar gzip rsync >/dev/null 2>&1
+    
+    # Clean up old backups
+    cleanup_old_backups
+    
+    print_success "Backup module updated successfully"
+    return 0
+}
+
+check_backup_update() {
+    print_header "Checking Backup Module Updates"
+    
+    # Check for available updates
+    apt-get update >/dev/null 2>&1
+    
+    local updates_available=0
+    
+    # Check for backup-related tool updates
+    if apt list --upgradable 2>/dev/null | grep -E "tar|gzip|rsync"; then
+        print_info "Backup tool updates available"
+        updates_available=1
+    fi
+    
+    if [[ $updates_available -eq 1 ]]; then
+        print_warning "Backup module updates available"
+        return 1
+    else
+        print_success "Backup module is up to date"
+        return 0
+    fi
+}

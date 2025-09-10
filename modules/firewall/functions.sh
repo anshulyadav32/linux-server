@@ -543,3 +543,85 @@ update_firewall() {
     restart_firewall
     echo "[SUCCESS] Firewall components updated"
 }
+
+#===========================================
+# FIREWALL MODULE MAIN FUNCTIONS
+#===========================================
+
+install_firewall_module() {
+    print_header "Installing Firewall Module"
+    
+    if install_firewall; then
+        print_success "Firewall module installed successfully"
+        return 0
+    else
+        print_error "Firewall module installation failed"
+        return 1
+    fi
+}
+
+check_firewall_module() {
+    print_header "Checking Firewall Module"
+    
+    local ufw_status=0
+    local fail2ban_status=0
+    
+    # Check UFW
+    if systemctl is-active --quiet ufw && ufw status | grep -q "Status: active"; then
+        print_success "UFW firewall is active"
+        ufw_status=1
+    else
+        print_error "UFW firewall is not active"
+    fi
+    
+    # Check Fail2Ban
+    if systemctl is-active --quiet fail2ban; then
+        print_success "Fail2Ban is active"
+        fail2ban_status=1
+    else
+        print_error "Fail2Ban is not active"
+    fi
+    
+    if [[ $ufw_status -eq 1 && $fail2ban_status -eq 1 ]]; then
+        print_success "Firewall module is fully operational"
+        return 0
+    else
+        print_error "Firewall module is not fully operational"
+        return 1
+    fi
+}
+
+update_firewall_module() {
+    print_header "Updating Firewall Module"
+    
+    if update_firewall; then
+        print_success "Firewall module updated successfully"
+        return 0
+    else
+        print_error "Firewall module update failed"
+        return 1
+    fi
+}
+
+check_firewall_update() {
+    print_header "Checking Firewall Module Updates"
+    
+    # Check for available updates
+    apt-get update >/dev/null 2>&1
+    
+    local updates_available=0
+    
+    # Check for firewall-related updates
+    if apt list --upgradable 2>/dev/null | grep -E "ufw|fail2ban|iptables"; then
+        print_info "Firewall updates available"
+        updates_available=1
+    fi
+    
+    if [[ $updates_available -eq 1 ]]; then
+        print_warning "Firewall updates available"
+        return 1
+    else
+        print_success "Firewall module is up to date"
+        return 0
+    fi
+}

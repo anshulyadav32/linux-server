@@ -369,3 +369,94 @@ update_mail() {
     restart_mail_services
     echo "[SUCCESS] Mail server updated"
 }
+
+#===========================================
+# EXTRA MODULE MAIN FUNCTIONS
+#===========================================
+
+install_extra_module() {
+    print_header "Installing Extra Module (Mail & Additional Services)"
+    
+    if install_mail; then
+        print_success "Extra module installed successfully"
+        return 0
+    else
+        print_error "Extra module installation failed"
+        return 1
+    fi
+}
+
+check_extra_module() {
+    print_header "Checking Extra Module"
+    
+    local postfix_status=0
+    local dovecot_status=0
+    local spamassassin_status=0
+    
+    # Check Postfix
+    if systemctl is-active --quiet postfix; then
+        print_success "Postfix (SMTP) is active"
+        postfix_status=1
+    else
+        print_error "Postfix (SMTP) is not active"
+    fi
+    
+    # Check Dovecot
+    if systemctl is-active --quiet dovecot; then
+        print_success "Dovecot (IMAP/POP3) is active"
+        dovecot_status=1
+    else
+        print_error "Dovecot (IMAP/POP3) is not active"
+    fi
+    
+    # Check SpamAssassin
+    if systemctl is-active --quiet spamassassin; then
+        print_success "SpamAssassin is active"
+        spamassassin_status=1
+    else
+        print_warning "SpamAssassin is not active"
+    fi
+    
+    if [[ $postfix_status -eq 1 && $dovecot_status -eq 1 ]]; then
+        print_success "Extra module is operational"
+        return 0
+    else
+        print_error "Extra module is not fully operational"
+        return 1
+    fi
+}
+
+update_extra_module() {
+    print_header "Updating Extra Module"
+    
+    if update_mail; then
+        print_success "Extra module updated successfully"
+        return 0
+    else
+        print_error "Extra module update failed"
+        return 1
+    fi
+}
+
+check_extra_update() {
+    print_header "Checking Extra Module Updates"
+    
+    # Check for available updates
+    apt-get update >/dev/null 2>&1
+    
+    local updates_available=0
+    
+    # Check for mail-related updates
+    if apt list --upgradable 2>/dev/null | grep -E "postfix|dovecot|spamassassin|clamav"; then
+        print_info "Mail server updates available"
+        updates_available=1
+    fi
+    
+    if [[ $updates_available -eq 1 ]]; then
+        print_warning "Extra module updates available"
+        return 1
+    else
+        print_success "Extra module is up to date"
+        return 0
+    fi
+}

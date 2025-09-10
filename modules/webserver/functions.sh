@@ -736,3 +736,412 @@ check_webserver_config() {
         fi
     fi
 }
+
+# ==========================================
+# APACHE INSTALL/CHECK/UPDATE FUNCTIONS
+# ==========================================
+
+install_apache() {
+    print_step "Installing Apache web server"
+    
+    apt-get update >/dev/null 2>&1
+    apt-get install -y apache2 apache2-utils >/dev/null 2>&1
+    
+    if [[ $? -eq 0 ]]; then
+        print_success "Apache installed successfully"
+        
+        # Start and enable service
+        systemctl start apache2
+        systemctl enable apache2
+        
+        return 0
+    else
+        print_error "Failed to install Apache"
+        return 1
+    fi
+}
+
+check_apache() {
+    print_step "Checking Apache installation"
+    
+    # Check if service exists
+    if ! systemctl list-unit-files | grep -q "apache2.service\|httpd.service"; then
+        print_error "Apache service not found"
+        return 1
+    fi
+    
+    # Check if service is active
+    if systemctl is-active --quiet apache2 || systemctl is-active --quiet httpd; then
+        print_success "Apache service is running"
+        return 0
+    else
+        print_error "Apache service is not running"
+        return 1
+    fi
+}
+
+update_apache() {
+    print_step "Updating Apache"
+    
+    # Check if installed first
+    if ! check_apache >/dev/null 2>&1; then
+        print_error "Apache not installed"
+        return 1
+    fi
+    
+    # Update packages
+    apt-get update >/dev/null 2>&1
+    apt-get upgrade -y apache2 apache2-utils >/dev/null 2>&1
+    
+    if [[ $? -eq 0 ]]; then
+        print_success "Apache updated successfully"
+        
+        # Restart service
+        systemctl restart apache2
+        return 0
+    else
+        print_error "Failed to update Apache"
+        return 1
+    fi
+}
+
+configure_apache() {
+    print_substep "Configuring Apache"
+    
+    # Enable required modules
+    enable_apache_module ssl
+    enable_apache_module rewrite
+    enable_apache_module headers
+    
+    # Configure basic security
+    echo "ServerTokens Prod" >> /etc/apache2/conf-available/security.conf
+    echo "ServerSignature Off" >> /etc/apache2/conf-available/security.conf
+    
+    a2enconf security >/dev/null 2>&1
+    
+    # Restart Apache
+    systemctl restart apache2
+    
+    print_success "Apache configured"
+}
+
+# ==========================================
+# NGINX INSTALL/CHECK/UPDATE FUNCTIONS
+# ==========================================
+
+install_nginx() {
+    print_step "Installing Nginx web server"
+    
+    apt-get update >/dev/null 2>&1
+    apt-get install -y nginx >/dev/null 2>&1
+    
+    if [[ $? -eq 0 ]]; then
+        print_success "Nginx installed successfully"
+        
+        # Start and enable service
+        systemctl start nginx
+        systemctl enable nginx
+        
+        return 0
+    else
+        print_error "Failed to install Nginx"
+        return 1
+    fi
+}
+
+check_nginx() {
+    print_step "Checking Nginx installation"
+    
+    # Check if service exists
+    if ! systemctl list-unit-files | grep -q "nginx.service"; then
+        print_error "Nginx service not found"
+        return 1
+    fi
+    
+    # Check if service is active
+    if systemctl is-active --quiet nginx; then
+        print_success "Nginx service is running"
+        return 0
+    else
+        print_error "Nginx service is not running"
+        return 1
+    fi
+}
+
+update_nginx() {
+    print_step "Updating Nginx"
+    
+    # Check if installed first
+    if ! check_nginx >/dev/null 2>&1; then
+        print_error "Nginx not installed"
+        return 1
+    fi
+    
+    # Update packages
+    apt-get update >/dev/null 2>&1
+    apt-get upgrade -y nginx >/dev/null 2>&1
+    
+    if [[ $? -eq 0 ]]; then
+        print_success "Nginx updated successfully"
+        
+        # Restart service
+        systemctl restart nginx
+        return 0
+    else
+        print_error "Failed to update Nginx"
+        return 1
+    fi
+}
+
+configure_nginx() {
+    print_substep "Configuring Nginx"
+    
+    # Basic security headers
+    cat > /etc/nginx/conf.d/security.conf << 'EOF'
+server_tokens off;
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-XSS-Protection "1; mode=block" always;
+EOF
+    
+    # Test configuration and restart
+    if nginx -t >/dev/null 2>&1; then
+        systemctl restart nginx
+        print_success "Nginx configured"
+    else
+        print_error "Nginx configuration error"
+        return 1
+    fi
+}
+
+# ==========================================
+# PHP INSTALL/CHECK/UPDATE FUNCTIONS
+# ==========================================
+
+install_php() {
+    print_step "Installing PHP"
+    
+    apt-get update >/dev/null 2>&1
+    apt-get install -y php php-mysql php-pgsql php-curl php-gd php-mbstring \
+                       php-xml php-zip php-fpm libapache2-mod-php >/dev/null 2>&1
+    
+    if [[ $? -eq 0 ]]; then
+        print_success "PHP installed successfully"
+        
+        # Start and enable PHP-FPM
+        systemctl start php*-fpm 2>/dev/null
+        systemctl enable php*-fpm 2>/dev/null
+        
+        return 0
+    else
+        print_error "Failed to install PHP"
+        return 1
+    fi
+}
+
+check_php() {
+    print_step "Checking PHP installation"
+    
+    # Check if PHP is installed
+    if ! command -v php >/dev/null 2>&1; then
+        print_error "PHP not installed"
+        return 1
+    fi
+    
+    print_success "PHP is installed"
+    
+    # Check PHP-FPM service
+    if systemctl is-active --quiet php*-fpm 2>/dev/null; then
+        print_success "PHP-FPM service is running"
+    else
+        print_warning "PHP-FPM service is not running"
+    fi
+    
+    return 0
+}
+
+update_php() {
+    print_step "Updating PHP"
+    
+    # Check if installed first
+    if ! check_php >/dev/null 2>&1; then
+        print_error "PHP not installed"
+        return 1
+    fi
+    
+    # Update PHP packages
+    apt-get update >/dev/null 2>&1
+    apt-get upgrade -y php php-* libapache2-mod-php >/dev/null 2>&1
+    
+    if [[ $? -eq 0 ]]; then
+        print_success "PHP updated successfully"
+        
+        # Restart services
+        systemctl restart apache2 2>/dev/null
+        systemctl restart php*-fpm 2>/dev/null
+        
+        return 0
+    else
+        print_error "Failed to update PHP"
+        return 1
+    fi
+}
+
+configure_php() {
+    print_substep "Configuring PHP"
+    
+    # Basic PHP security settings
+    local php_ini=$(php -i 2>/dev/null | grep "Loaded Configuration File" | cut -d' ' -f5)
+    
+    if [[ -f "$php_ini" ]]; then
+        # Backup original
+        cp "$php_ini" "$php_ini.backup"
+        
+        # Configure security settings
+        sed -i 's/expose_php = On/expose_php = Off/' "$php_ini"
+        sed -i 's/;date.timezone =/date.timezone = UTC/' "$php_ini"
+        
+        print_success "PHP configured"
+    else
+        print_warning "PHP configuration file not found"
+    fi
+}
+
+# ==========================================
+# WEBSERVER MODULE MAIN FUNCTIONS
+# ==========================================
+
+install_webserver_module() {
+    print_header "Installing Webserver Module"
+    
+    local apache_success=0
+    local nginx_success=0
+    local php_success=0
+    
+    # Install Apache
+    if install_apache; then
+        configure_apache
+        apache_success=1
+    fi
+    
+    # Install Nginx
+    if install_nginx; then
+        configure_nginx
+        nginx_success=1
+    fi
+    
+    # Install PHP
+    if install_php; then
+        configure_php
+        php_success=1
+    fi
+    
+    if [[ $apache_success -eq 1 && $php_success -eq 1 ]]; then
+        print_success "Webserver module installed successfully"
+        return 0
+    else
+        print_error "Webserver module installation failed"
+        return 1
+    fi
+}
+
+check_webserver_module() {
+    print_header "Checking Webserver Module"
+    
+    local apache_status=0
+    local php_status=0
+    local overall_status=0
+    
+    # Check Apache
+    if check_apache >/dev/null 2>&1; then
+        apache_status=1
+    fi
+    
+    # Check PHP
+    if check_php >/dev/null 2>&1; then
+        php_status=1
+    fi
+    
+    if [[ $apache_status -eq 1 && $php_status -eq 1 ]]; then
+        print_success "Webserver module is fully operational"
+        overall_status=0
+    else
+        print_error "Webserver module is not operational"
+        overall_status=1
+    fi
+    
+    # Run configuration check
+    check_webserver_config
+    
+    return $overall_status
+}
+
+update_webserver_module() {
+    print_header "Updating Webserver Module"
+    
+    local updated=0
+    
+    # Update Apache if installed
+    if systemctl list-unit-files | grep -q "apache2.service\|httpd.service"; then
+        if update_apache; then
+            updated=1
+        fi
+    fi
+    
+    # Update Nginx if installed
+    if systemctl list-unit-files | grep -q "nginx.service"; then
+        if update_nginx; then
+            updated=1
+        fi
+    fi
+    
+    # Update PHP if installed
+    if command -v php >/dev/null 2>&1; then
+        if update_php; then
+            updated=1
+        fi
+    fi
+    
+    if [[ $updated -eq 1 ]]; then
+        print_success "Webserver module updated successfully"
+        return 0
+    else
+        print_warning "No webserver components to update"
+        return 0
+    fi
+}
+
+check_webserver_update() {
+    print_header "Checking Webserver Module Updates"
+    
+    # Check for available updates
+    apt-get update >/dev/null 2>&1
+    
+    local updates_available=0
+    
+    # Check Apache updates
+    if apt list --upgradable 2>/dev/null | grep -q "apache2"; then
+        print_info "Apache updates available"
+        updates_available=1
+    fi
+    
+    # Check Nginx updates
+    if apt list --upgradable 2>/dev/null | grep -q "nginx"; then
+        print_info "Nginx updates available"
+        updates_available=1
+    fi
+    
+    # Check PHP updates
+    if apt list --upgradable 2>/dev/null | grep -q "php"; then
+        print_info "PHP updates available"
+        updates_available=1
+    fi
+    
+    if [[ $updates_available -eq 1 ]]; then
+        print_warning "Webserver updates available"
+        return 1
+    else
+        print_success "Webserver module is up to date"
+        return 0
+    fi
+}

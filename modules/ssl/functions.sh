@@ -536,3 +536,100 @@ update_ssl() {
     
     echo "[SUCCESS] SSL tools updated"
 }
+
+#===========================================
+# SSL MODULE MAIN FUNCTIONS
+#===========================================
+
+install_ssl_module() {
+    print_header "Installing SSL Module"
+    
+    if install_ssl; then
+        print_success "SSL module installed successfully"
+        return 0
+    else
+        print_error "SSL module installation failed"
+        return 1
+    fi
+}
+
+check_ssl_module() {
+    print_header "Checking SSL Module"
+    
+    local certbot_status=0
+    local openssl_status=0
+    
+    # Check Certbot
+    if command -v certbot >/dev/null 2>&1; then
+        print_success "Certbot is installed"
+        certbot_status=1
+    else
+        print_error "Certbot is not installed"
+    fi
+    
+    # Check OpenSSL
+    if command -v openssl >/dev/null 2>&1; then
+        print_success "OpenSSL is installed"
+        openssl_status=1
+    else
+        print_error "OpenSSL is not installed"
+    fi
+    
+    # Check for existing certificates
+    if [[ -d /etc/letsencrypt/live ]] && [[ -n "$(ls -A /etc/letsencrypt/live 2>/dev/null)" ]]; then
+        print_info "SSL certificates found"
+    else
+        print_info "No SSL certificates found"
+    fi
+    
+    if [[ $certbot_status -eq 1 && $openssl_status -eq 1 ]]; then
+        print_success "SSL module is fully operational"
+        return 0
+    else
+        print_error "SSL module is not fully operational"
+        return 1
+    fi
+}
+
+update_ssl_module() {
+    print_header "Updating SSL Module"
+    
+    if update_ssl; then
+        print_success "SSL module updated successfully"
+        return 0
+    else
+        print_error "SSL module update failed"
+        return 1
+    fi
+}
+
+check_ssl_update() {
+    print_header "Checking SSL Module Updates"
+    
+    # Check for available updates
+    apt-get update >/dev/null 2>&1
+    
+    local updates_available=0
+    
+    # Check for SSL-related updates
+    if apt list --upgradable 2>/dev/null | grep -E "certbot|openssl|ca-certificates"; then
+        print_info "SSL updates available"
+        updates_available=1
+    fi
+    
+    # Check snap certbot updates
+    if command -v snap >/dev/null 2>&1 && snap list certbot >/dev/null 2>&1; then
+        if snap refresh --list 2>/dev/null | grep -q certbot; then
+            print_info "Certbot snap updates available"
+            updates_available=1
+        fi
+    fi
+    
+    if [[ $updates_available -eq 1 ]]; then
+        print_warning "SSL updates available"
+        return 1
+    else
+        print_success "SSL module is up to date"
+        return 0
+    fi
+}
