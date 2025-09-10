@@ -19,15 +19,28 @@
         </div>
     </header>
 
-    <nav>
-        <div class="container">
-            <a href="/" class="logo">LS.R-U.LIVE</a>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/sh">Scripts</a></li>
-                <li><a href="/docs" class="active">Documentation</a></li>
-                <li><a href="https://github.com/anshulyadav32/linux-setup" target="_blank">GitHub</a></li>
+    <nav class="nav-container">
+        <div class="nav-wrapper">
+            <a href="../index.html" class="nav-logo">🚀 Linux Setup</a>
+            
+            <!-- Desktop Navigation -->
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../index.html#installation">Installation</a></li>
+                <li><a href="../index.html#usage">Usage</a></li>
+                <li><a href="../index.html#components">Components</a></li>
+                <li><a href="../index.html#modules">Modules</a></li>
+                <li><a href="../index.html#maintenance">Maintenance</a></li>
+                <li><a href="index.html" class="active" style="color: var(--primary-color); font-weight: 600;">Documentation</a></li>
+                <li><a href="https://github.com/anshulyadav32/linux-server" target="_blank" rel="noopener" style="background: var(--primary-color); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem;">GitHub</a></li>
             </ul>
+
+            <!-- Mobile menu button -->
+            <button class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
@@ -426,6 +439,31 @@ sudo ./modules/system/configure.sh --optimize</code></pre>
                     }
                 }
             });
+        });
+
+        // Mobile navigation toggle
+        const navToggle = document.getElementById('nav-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+
+        navToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            navToggle.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on links
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', function() {
+                navMenu.classList.remove('active');
+                navToggle.classList.remove('active');
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!navToggle.contains(event.target) && !navMenu.contains(event.target)) {
+                navMenu.classList.remove('active');
+                navToggle.classList.remove('active');
+            }
         });
     </script>
 </body>
