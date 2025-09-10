@@ -1,12 +1,19 @@
 # linux-server
 
 
+
 ## Quick Installation (Recommended)
 
+### For Windows (PowerShell):
 Run this command in PowerShell to install directly:
-
 ```powershell
 iex (Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/anshulyadav32/linux-server/main/install.sh' -UseBasicParsing).Content
+```
+
+### For Linux:
+Run this command in your terminal:
+```bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-server/main/install.sh | bash
 ```
 
 ---
