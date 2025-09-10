@@ -11,10 +11,16 @@ Automated Linux server setup and configuration scripts for webserver, database, 
 ## Quick Installation (Recommended)
 
 
+
 ### For Linux (Recommended):
 Run this command in your terminal for a one-line remote install:
 ```bash
 curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-server/main/s1.sh | bash
+```
+
+#### To install only the DNS module remotely:
+```bash
+curl -sSL https://raw.githubusercontent.com/anshulyadav32/linux-server/main/s1.sh | bash -s dns
 ```
 
 ### For Windows (PowerShell):
@@ -38,9 +44,14 @@ bash install.sh
 
 2. **Make sure you have bash installed.**
 
+
 3. **(Optional) Review and configure module scripts as needed:**
-   - All modules are located in the `modules/` directory.
-   - You can inspect or modify individual module scripts before installation.
+    - All modules are located in the `modules/` directory.
+    - You can inspect or modify individual module scripts before installation.
+    - To install only the DNS module manually:
+       ```bash
+       bash modules/dns/install.sh
+       ```
 
 4. **Run the main install script:**
    ```bash
