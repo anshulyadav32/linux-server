@@ -158,29 +158,31 @@ show_database_options() {
     echo
 }
 
-# Function to get user choice
+
+# Function to get user choice (non-interactive)
 get_database_choice() {
-    while true; do
-        show_database_options
-        if [ -z "$REPLY" ]; then
-            read -p "Select database system to install [1-4]: " db_choice
-        else
-            db_choice=$REPLY
-        fi
-        
-        case $db_choice in
-            1|2|3|4)
-                echo $db_choice
-                return 0
-                ;;
-            *)
-                echo -e "${RED}Invalid choice. Please select 1-4.${NC}"
-                if [ ! -z "$REPLY" ]; then
-                    return 1
-                fi
-                ;;
-        esac
-    done
+    show_database_options
+    # Priority: first argument, environment variable, REPLY, else default to 4
+    if [ -n "$1" ]; then
+        db_choice="$1"
+    elif [ -n "$DB_CHOICE" ]; then
+        db_choice="$DB_CHOICE"
+    elif [ -n "$REPLY" ]; then
+        db_choice="$REPLY"
+    else
+        db_choice="4"
+        echo -e "${YELLOW}No selection provided. Defaulting to Install All.${NC}"
+    fi
+    case $db_choice in
+        1|2|3|4)
+            echo $db_choice
+            return 0
+            ;;
+        *)
+            echo -e "${RED}Invalid choice. Please select 1-4.${NC}"
+            return 1
+            ;;
+    esac
 }
 
 echo -e "${YELLOW}Starting database system installation...${NC}"
@@ -192,9 +194,10 @@ update_system
 echo -e "${GREEN}✓ System packages updated${NC}"
 echo
 
+
 # Step 2: Get database choice
 echo -e "${BLUE}Step 2/8: Database selection...${NC}"
-user_choice=$(get_database_choice)
+user_choice=$(get_database_choice "$1")
 if [ $? -ne 0 ]; then
     echo -e "${RED}Error: Invalid database selection${NC}"
     exit 1
