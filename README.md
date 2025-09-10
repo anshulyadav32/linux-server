@@ -1,21 +1,23 @@
 # linux-server
 
-## Installation Steps
 
-Follow these steps to install all modules and run the setup:
+## Quick Installation (Recommended)
+
+Run this command in PowerShell to install directly:
+
+```powershell
+iex (Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/anshulyadav32/linux-server/main/install.sh' -UseBasicParsing).Content
+```
+
+---
+
+## Manual Installation Steps
 
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/anshulyadav32/linux-server.git
    cd linux-server
    ```
-   
-   Or, for direct PowerShell execution:
-   ```powershell
-   iex (Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/anshulyadav32/linux-server/main/install.sh' -UseBasicParsing).Content
-   ```
-   
-   [GitHub Repository](https://github.com/anshulyadav32/linux-server)
 
 2. **Make sure you have bash installed.**
 
@@ -28,6 +30,10 @@ Follow these steps to install all modules and run the setup:
    bash install.sh
    ```
    This will execute the webserver installation and any other logic defined in `install.sh`.
+
+---
+
+GitHub Repository: [linux-server](https://github.com/anshulyadav32/linux-server)
 
 ---
 
