@@ -27,4 +27,15 @@ for module in "${MODULES[@]}"; do
     fi
 done
 
+    # Check for key package dependencies
+    echo "\nChecking key package dependencies..."
+    PKG_CMDS=(apache2 nginx psql mariadb mongod ufw certbot rsync)
+    for pkg in "${PKG_CMDS[@]}"; do
+        if ! command -v "$pkg" >/dev/null 2>&1; then
+            echo "Missing: $pkg (required for some modules)"
+        else
+            echo "Found: $pkg"
+        fi
+    done
+
 echo "Dependency check complete."
