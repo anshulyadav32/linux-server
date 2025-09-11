@@ -19,7 +19,7 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/functions.sh"
 
-# Function to install backup tools
+# Function to install backup tools (WSL compatible)
 install_backup_tools() {
     echo -e "${YELLOW}Installing backup tools...${NC}"
     if [ -f /etc/os-release ]; then
@@ -27,11 +27,13 @@ install_backup_tools() {
         case $ID in
             ubuntu|debian)
                 apt-get update
-                apt-get install -y rsync duplicity rclone gpg cron
+                apt-get install -y rsync duplicity rclone gpg
+                echo -e "${GREEN}Backup tools installed (WSL compatible).${NC}"
                 ;;
             centos|rhel|fedora)
                 yum install -y epel-release
-                yum install -y rsync duplicity rclone gnupg2 cronie
+                yum install -y rsync duplicity rclone gnupg2
+                echo -e "${GREEN}Backup tools installed (WSL compatible).${NC}"
                 ;;
             *)
                 echo -e "${RED}Unsupported operating system${NC}"
