@@ -77,15 +77,9 @@ install_packages() {
 }
 
 stop_services() {
-  local os php_fpm
-  os=$(detect_os)
-  php_fpm=$(get_php_fpm_service)
-
-  if [[ "$os" == "debian" ]]; then
-    systemctl stop apache2 nginx "$php_fpm" || true
-  else
-    systemctl stop httpd nginx php-fpm || true
-  fi
+  service apache2 stop || true
+  service nginx stop || true
+  service php8.3-fpm stop || true
 }
 
 configure_apache() {
@@ -122,7 +116,7 @@ EOF
 
 configure_nginx() {
   # Stop nginx before configuration
-  systemctl stop nginx
+  service nginx stop || true
 
   # Remove default config
   rm -f /etc/nginx/sites-enabled/default
@@ -234,27 +228,60 @@ main() {
   check_root
 
   log_info "Stopping any running services..."
-  stop_services
+  # Use service commands for WSL compatibility
+  service apache2 stop || true
+  service nginx stop || true
+  service php8.3-fpm stop || true
 
-  log_info "Installing packages..."
+  # --- Apache ---
+  log_info "Installing Apache..."
   install_packages
-
   log_info "Configuring Apache..."
   configure_apache
+  log_info "Starting Apache..."
+  service apache2 start
+  sleep 2
+  service apache2 status >/dev/null 2>&1 && log_success "Apache is running" || { log_error "Apache failed"; exit 1; }
 
+  # --- Nginx ---
+  log_info "Installing Nginx..."
+  # Nginx is installed with install_packages
   log_info "Configuring Nginx..."
   configure_nginx
+  log_info "Starting Nginx..."
+  service nginx start
+  sleep 2
+  service nginx status >/dev/null 2>&1 && log_success "Nginx is running" || { log_error "Nginx failed"; exit 1; }
 
+  # --- PHP ---
+  log_info "Installing PHP..."
+  # PHP is installed with install_packages
   log_info "Configuring PHP..."
   configure_php
+  log_info "Starting PHP-FPM..."
+  service php8.3-fpm start
+  sleep 2
+  service php8.3-fpm status >/dev/null 2>&1 && log_success "php8.3-fpm is running" || { log_error "PHP-FPM failed"; exit 1; }
 
-  log_info "Starting services..."
-  start_services
+  # --- Final Verification ---
+  log_info "Verifying webserver stack..."
+  sleep 2
+  local all_ok=1
+  if command -v curl >/dev/null; then
+    curl -s -f http://localhost:80 >/dev/null && log_success "Port 80 (Nginx) responding" || { log_error "Port 80 failed"; all_ok=0; }
+    curl -s -f http://localhost:8080 >/dev/null && log_success "Port 8080 (Apache) responding" || { log_error "Port 8080 failed"; all_ok=0; }
+  fi
 
-  log_info "Verifying installation..."
-  verify
-
-  log_success "Installation complete! Nginx (:80) → Apache (:8080) with PHP"
+  # --- Summary Check ---
+  log_info "Summary of component status:"
+  service apache2 status >/dev/null 2>&1 && log_success "Apache2: running" || log_error "Apache2: not running"
+  service nginx status >/dev/null 2>&1 && log_success "Nginx: running" || log_error "Nginx: not running"
+  service php8.3-fpm status >/dev/null 2>&1 && log_success "PHP-FPM: running" || log_error "PHP-FPM: not running"
+  if [[ $all_ok -eq 1 ]]; then
+    log_success "All components are installed and responding."
+  else
+    log_warning "Some components failed port checks."
+  fi
 }
 
 main "$@"
