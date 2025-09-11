@@ -38,37 +38,42 @@ detect_os() {
   fi
 }
 
-# ---------- Installation ----------
-install_packages() {
+install_bind_packages() {
   local os
   os=$(detect_os)
-  
+  log_info "Installing BIND packages..."
   case "$os" in
     debian)
       apt-get update -qq
-      DEBIAN_FRONTEND=noninteractive apt-get install -y bind9 bind9utils dnsutils resolvconf
+      DEBIAN_FRONTEND=noninteractive apt-get install -y bind9 bind9utils dnsutils resolvconf || { log_error "Failed to install BIND packages"; exit 1; }
       ;;
     rhel)
-      dnf install -y bind bind-utils
+      dnf install -y bind bind-utils || { log_error "Failed to install BIND packages"; exit 1; }
       ;;
     arch)
-      pacman -Sy --noconfirm bind bind-tools
+      pacman -Sy --noconfirm bind bind-tools || { log_error "Failed to install BIND packages"; exit 1; }
       ;;
     *)
-      log_error "Unsupported OS: $os"
-      exit 1
+      log_error "Unsupported OS: $os"; exit 1;
       ;;
   esac
+  log_success "BIND packages installed."
+}
+
+test_bind_packages() {
+  if command -v named >/dev/null && command -v dig >/dev/null; then
+    log_success "BIND and dig commands available."
+    return 0
+  else
+    log_error "BIND or dig not found after install."
+    return 1
+  fi
 }
 
 configure_bind() {
-  local os
-  os=$(detect_os)
-
-  # Create needed directories
+  log_info "Configuring BIND..."
   mkdir -p /etc/bind/zones
-
-  # Configure main BIND options
+  # ...existing code...
   cat > /etc/bind/named.conf.options <<'EOF'
 options {
     directory "/var/cache/bind";
@@ -86,8 +91,7 @@ options {
     };
 };
 EOF
-
-  # Configure local zones
+  # ...existing code...
   cat > /etc/bind/named.conf.local <<'EOF'
 // Add your zones here
 // Example:
@@ -96,8 +100,7 @@ EOF
 //     file "/etc/bind/zones/db.example.com";
 // };
 EOF
-
-  # Create a sample zone file template
+  # ...existing code...
   cat > /etc/bind/zones/zone.template <<'EOF'
 $TTL    86400
 @       IN      SOA     ns1.domain.tld. admin.domain.tld. (
@@ -112,67 +115,72 @@ $TTL    86400
 ns1     IN      A       127.0.0.1
 www     IN      A       127.0.0.1
 EOF
-
-  # Set proper permissions
   chown -R bind:bind /etc/bind /var/cache/bind
   chmod -R 755 /etc/bind
   chmod -R 644 /etc/bind/*
+  log_success "BIND configuration complete."
 }
 
-start_services() {
-  local os
-  os=$(detect_os)
-
-  if [[ "$os" == "debian" ]]; then
-    systemctl restart named
-    systemctl enable named
+test_bind_config() {
+  if named-checkconf >/dev/null 2>&1; then
+    log_success "BIND configuration is valid."
+    return 0
   else
-    systemctl restart named
-    systemctl enable named
+    log_error "BIND configuration is invalid."
+    return 1
   fi
 }
 
-verify() {
-  local os
-  os=$(detect_os)
-  
-  # Wait for service to fully start
-  sleep 3
-  
-  # Check if service is running
-  if [[ "$os" == "debian" ]]; then
-    systemctl is-active --quiet bind9 && log_success "bind9 is running" || log_error "bind9 failed"
-  else
-    systemctl is-active --quiet named && log_success "named is running" || log_error "named failed"
-  fi
-  
-  # Test DNS resolution
+
+# WSL-compatible: skip service start/enable, print message
+start_bind_service() {
+  log_warning "Skipping BIND service start (not supported in WSL)."
+}
+
+
+# WSL-compatible: skip service status check, print message
+test_bind_service() {
+  log_warning "Skipping BIND service status check (not supported in WSL)."
+  return 0
+}
+
+test_dns_resolution() {
   if command -v dig >/dev/null; then
-    dig @localhost google.com +short >/dev/null && log_success "DNS resolution working" || log_error "DNS resolution failed"
+    dig @localhost google.com +short >/dev/null && log_success "DNS resolution working" || { log_error "DNS resolution failed"; return 1; }
+  else
+    log_error "dig command not found for DNS resolution test."; return 1;
   fi
-  
-  # Check listening ports
-  ss -tulpn | grep -q ':53' && log_success "Port 53 is listening" || log_error "Port 53 not listening"
+  return 0
 }
 
-# ---------- Main Installation ----------
+test_bind_port() {
+  ss -tulpn | grep -q ':53' && log_success "Port 53 is listening" || { log_error "Port 53 not listening"; return 1; }
+  return 0
+}
+
 main() {
   log_info "Starting DNS server installation..."
   check_root
 
-  log_info "Installing packages..."
-  install_packages
+  local error_count=0
 
-  log_info "Configuring BIND..."
-  configure_bind
+  install_bind_packages || { log_error "BIND package install failed."; error_count=$((error_count+1)); }
+  test_bind_packages || { log_error "BIND package test failed."; error_count=$((error_count+1)); }
 
-  log_info "Starting services..."
-  start_services
+  configure_bind || { log_error "BIND configuration failed."; error_count=$((error_count+1)); }
+  test_bind_config || { log_error "BIND config test failed."; error_count=$((error_count+1)); }
 
-  log_info "Verifying installation..."
-  verify
+  start_bind_service || { log_error "BIND service start skipped or failed."; error_count=$((error_count+1)); }
+  test_bind_service || { log_error "BIND service status skipped or failed."; error_count=$((error_count+1)); }
 
-  log_success "DNS server installation complete!"
+  test_dns_resolution || { log_error "DNS resolution test failed. If in WSL, manually start BIND: sudo named -c /etc/bind/named.conf"; error_count=$((error_count+1)); }
+  test_bind_port || { log_error "BIND port test failed."; error_count=$((error_count+1)); }
+
+  if [ "$error_count" -eq 0 ]; then
+    log_success "DNS server installation complete!"
+  else
+    log_warning "DNS server installation completed with $error_count error(s). See above for details."
+  fi
 }
 
 main "$@"

@@ -70,57 +70,96 @@ update_system() {
     esac
 }
 
-# Function to install PostgreSQL
+
+
+# ===================== PostgreSQL Module =====================
 install_postgresql() {
-    echo -e "${YELLOW}Installing PostgreSQL...${NC}"
+    echo -e "${YELLOW}[PostgreSQL] Installing...${NC}"
     detect_os
     case $OS in
         *Ubuntu*|*Debian*)
-            apt-get install -y postgresql postgresql-contrib postgresql-client pgadmin4
+            apt-get install -y postgresql postgresql-contrib postgresql-client pgadmin4 || { print_error "[PostgreSQL] Install failed!"; return 1; }
             ;;
         *CentOS*|*RedHat*|*Fedora*)
-            yum install -y postgresql-server postgresql-contrib pgadmin4
-            postgresql-setup --initdb
+            yum install -y postgresql-server postgresql-contrib pgadmin4 || { print_error "[PostgreSQL] Install failed!"; return 1; }
+            postgresql-setup --initdb || true
             ;;
         *Arch*)
-            pacman -S --noconfirm postgresql pgadmin4
+            pacman -S --noconfirm postgresql pgadmin4 || { print_error "[PostgreSQL] Install failed!"; return 1; }
+            ;;
+        *)
+            print_error "[PostgreSQL] Unsupported OS"
+            return 1
             ;;
     esac
-    systemctl start postgresql
-    systemctl enable postgresql
+    print_success "[PostgreSQL] Installed."
 }
 
-# Function to install MariaDB
+test_postgresql() {
+    command -v psql >/dev/null 2>&1 && print_success "[PostgreSQL] psql available" || { print_error "[PostgreSQL] psql not found"; return 1; }
+}
+
+setup_postgresql_test() {
+    sudo -u postgres psql -c "CREATE USER testuser WITH PASSWORD 'testpass123';" || true
+    sudo -u postgres psql -c "CREATE DATABASE testdb OWNER testuser;" || true
+    print_success "[PostgreSQL] test database and user created"
+}
+
+test_postgresql_connection() {
+    PGPASSWORD="testpass123" psql -U testuser -d testdb -h localhost -c "SELECT 1;" && print_success "[PostgreSQL] connection test passed" || print_error "[PostgreSQL] connection test failed"
+}
+
+# ===================== MariaDB Module =====================
 install_mariadb() {
-    echo -e "${YELLOW}Installing MariaDB...${NC}"
+    echo -e "${YELLOW}[MariaDB] Installing...${NC}"
     detect_os
     case $OS in
         *Ubuntu*|*Debian*)
-            apt-get install -y mariadb-server mariadb-client phpmyadmin
+            apt-get install -y mariadb-server mariadb-client phpmyadmin || { print_error "[MariaDB] Install failed!"; return 1; }
             ;;
         *CentOS*|*RedHat*|*Fedora*)
-            yum install -y mariadb-server mariadb phpmyadmin
+            yum install -y mariadb-server mariadb phpmyadmin || { print_error "[MariaDB] Install failed!"; return 1; }
             ;;
         *Arch*)
-            pacman -S --noconfirm mariadb phpmyadmin
-            mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+            pacman -S --noconfirm mariadb phpmyadmin || { print_error "[MariaDB] Install failed!"; return 1; }
+            mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql || true
+            ;;
+        *)
+            print_error "[MariaDB] Unsupported OS"
+            return 1
             ;;
     esac
-    systemctl start mariadb
-    systemctl enable mariadb
-    mysql_secure_installation
+    print_success "[MariaDB] Installed."
 }
 
-# Function to install MongoDB
+test_mariadb() {
+    command -v mysql >/dev/null 2>&1 && print_success "[MariaDB] mysql available" || { print_error "[MariaDB] mysql not found"; return 1; }
+}
+
+setup_mariadb_test() {
+    mysql -u root <<EOF
+CREATE DATABASE IF NOT EXISTS testdb;
+CREATE USER IF NOT EXISTS 'testuser'@'localhost' IDENTIFIED BY 'testpass123';
+GRANT ALL PRIVILEGES ON testdb.* TO 'testuser'@'localhost';
+FLUSH PRIVILEGES;
+EOF
+    print_success "[MariaDB] test database and user created"
+}
+
+test_mariadb_connection() {
+    mysql -u testuser -ptestpass123 -e "USE testdb; SELECT 1;" && print_success "[MariaDB] connection test passed" || print_error "[MariaDB] connection test failed"
+}
+
+# ===================== MongoDB Module =====================
 install_mongodb() {
-    echo -e "${YELLOW}Installing MongoDB...${NC}"
+    echo -e "${YELLOW}[MongoDB] Installing...${NC}"
     detect_os
     case $OS in
         *Ubuntu*|*Debian*)
             wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | apt-key add -
             echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list
             apt-get update
-            apt-get install -y mongodb-org mongodb-compass
+            apt-get install -y mongodb-org mongodb-compass || { print_error "[MongoDB] Install failed!"; return 1; }
             ;;
         *CentOS*|*RedHat*|*Fedora*)
             echo "[mongodb-org-6.0]" | tee /etc/yum.repos.d/mongodb-org-6.0.repo
@@ -128,14 +167,33 @@ install_mongodb() {
             echo "baseurl=https://repo.mongodb.org/yum/redhat/\$releasever/mongodb-org/6.0/x86_64/" | tee -a /etc/yum.repos.d/mongodb-org-6.0.repo
             echo "gpgcheck=1" | tee -a /etc/yum.repos.d/mongodb-org-6.0.repo
             echo "enabled=1" | tee -a /etc/yum.repos.d/mongodb-org-6.0.repo
-            yum install -y mongodb-org mongodb-compass
+            yum install -y mongodb-org mongodb-compass || { print_error "[MongoDB] Install failed!"; return 1; }
             ;;
         *Arch*)
-            pacman -S --noconfirm mongodb-bin mongodb-compass
+            pacman -S --noconfirm mongodb-bin mongodb-compass || { print_error "[MongoDB] Install failed!"; return 1; }
+            ;;
+        *)
+            print_error "[MongoDB] Unsupported OS"
+            return 1
             ;;
     esac
-    systemctl start mongod
-    systemctl enable mongod
+    print_success "[MongoDB] Installed."
+}
+
+test_mongodb() {
+    command -v mongo >/dev/null 2>&1 && print_success "[MongoDB] mongo available" || { print_error "[MongoDB] mongo not found"; return 1; }
+}
+
+setup_mongodb_test() {
+    mongo <<EOF
+use testdb
+db.createUser({user: "testuser", pwd: "testpass123", roles: ["readWrite"]})
+EOF
+    print_success "[MongoDB] test database and user created"
+}
+
+test_mongodb_connection() {
+    mongo testdb --eval 'db.runCommand({ping: 1})' && print_success "[MongoDB] connection test passed" || print_error "[MongoDB] connection test failed"
 }
 
 echo -e "${BLUE}========================================${NC}"
@@ -205,58 +263,49 @@ fi
 echo -e "${GREEN}✓ Database system selected${NC}"
 echo
 
-# Step 3: Install selected database(s)
+
+# Step 3: Install selected database(s) and test after each install
 echo -e "${BLUE}Step 3/8: Installing database software...${NC}"
 
 install_postgresql_flag=false
 install_mariadb_flag=false
 install_mongodb_flag=false
+error_count=0
 
 case $user_choice in
     1)
-        install_postgresql
+        install_postgresql || { print_error "PostgreSQL install failed."; error_count=$((error_count+1)); }
+        test_postgresql || { print_error "PostgreSQL test failed."; error_count=$((error_count+1)); }
         install_postgresql_flag=true
-        echo -e "${GREEN}✓ PostgreSQL installed${NC}"
         ;;
     2)
-        install_mariadb
+        install_mariadb || { print_error "MariaDB install failed."; error_count=$((error_count+1)); }
+        test_mariadb || { print_error "MariaDB test failed."; error_count=$((error_count+1)); }
         install_mariadb_flag=true
-        echo -e "${GREEN}✓ MariaDB installed${NC}"
         ;;
     3)
-        install_mongodb
+        install_mongodb || { print_error "MongoDB install failed."; error_count=$((error_count+1)); }
+        test_mongodb || { print_error "MongoDB test failed."; error_count=$((error_count+1)); }
         install_mongodb_flag=true
-        echo -e "${GREEN}✓ MongoDB installed${NC}"
         ;;
     4)
-        install_postgresql
-        install_mariadb
-        install_mongodb
+        install_postgresql || { print_error "PostgreSQL install failed."; error_count=$((error_count+1)); }
+        test_postgresql || { print_error "PostgreSQL test failed."; error_count=$((error_count+1)); }
+        install_mariadb || { print_error "MariaDB install failed."; error_count=$((error_count+1)); }
+        test_mariadb || { print_error "MariaDB test failed."; error_count=$((error_count+1)); }
+        install_mongodb || { print_error "MongoDB install failed."; error_count=$((error_count+1)); }
+        test_mongodb || { print_error "MongoDB test failed."; error_count=$((error_count+1)); }
         install_postgresql_flag=true
         install_mariadb_flag=true
         install_mongodb_flag=true
-        echo -e "${GREEN}✓ All database systems installed${NC}"
         ;;
 esac
 echo
 
-# Step 4: Start and enable services
+
+# Step 4: Start and enable services (skipped for WSL, handled by install)
 echo -e "${BLUE}Step 4/8: Starting database services...${NC}"
-
-if $install_postgresql_flag; then
-    start_database_service "postgresql"
-    echo -e "${GREEN}✓ PostgreSQL service started${NC}"
-fi
-
-if $install_mariadb_flag; then
-    start_database_service "mariadb"
-    echo -e "${GREEN}✓ MariaDB service started${NC}"
-fi
-
-if $install_mongodb_flag; then
-    start_database_service "mongodb"
-    echo -e "${GREEN}✓ MongoDB service started${NC}"
-fi
+echo -e "${YELLOW}Service start/enable skipped for WSL. Please start services manually if needed.${NC}"
 echo
 
 # Step 5: Configure firewall
@@ -298,36 +347,38 @@ fi
 echo -e "${GREEN}✓ Firewall configured${NC}"
 echo
 
-# Step 6: Create test databases and users
+
+# Step 6: Create test databases and users (modular, with check after each)
 echo -e "${BLUE}Step 6/8: Creating test databases and users...${NC}"
 
 if $install_postgresql_flag; then
-    setup_postgresql_test
+    setup_postgresql_test || { print_error "[PostgreSQL] test DB/user creation failed."; error_count=$((error_count+1)); }
 fi
 
 if $install_mariadb_flag; then
-    setup_mariadb_test
+    setup_mariadb_test || { print_error "[MariaDB] test DB/user creation failed."; error_count=$((error_count+1)); }
 fi
 
 if $install_mongodb_flag; then
-    setup_mongodb_test
+    setup_mongodb_test || { print_error "[MongoDB] test DB/user creation failed."; error_count=$((error_count+1)); }
 fi
 echo -e "${GREEN}✓ Test databases created${NC}"
 echo
 
-# Step 7: Run connection tests
+
+# Step 7: Run connection tests (modular, with check after each)
 echo -e "${BLUE}Step 7/8: Testing database connections...${NC}"
 
 if $install_postgresql_flag; then
-    test_postgresql_connection
+    test_postgresql_connection || { print_error "[PostgreSQL] connection test failed."; error_count=$((error_count+1)); }
 fi
 
 if $install_mariadb_flag; then
-    test_mariadb_connection
+    test_mariadb_connection || { print_error "[MariaDB] connection test failed."; error_count=$((error_count+1)); }
 fi
 
 if $install_mongodb_flag; then
-    test_mongodb_connection
+    test_mongodb_connection || { print_error "[MongoDB] connection test failed."; error_count=$((error_count+1)); }
 fi
 echo -e "${GREEN}✓ Connection tests completed${NC}"
 echo
@@ -350,7 +401,11 @@ echo -e "${BLUE}      INSTALLATION COMPLETED           ${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo
 
-echo -e "${GREEN}Database system(s) installed successfully!${NC}"
+if [ "$error_count" -eq 0 ]; then
+    echo -e "${GREEN}Database system(s) installed successfully!${NC}"
+else
+    echo -e "${YELLOW}Database installation completed with $error_count error(s). See above for details.${NC}"
+fi
 echo
 
 if $install_postgresql_flag; then

@@ -51,59 +51,59 @@ main() {
     
     # Individual component checks
     print_step "Checking individual database components..."
-    
+
     # Check MySQL/MariaDB
     echo ""
     print_substep "MySQL/MariaDB Check:"
-    if check_mysql; then
+    if command -v mysql >/dev/null 2>&1; then
         mysql_status=1
-        
+        print_success "MySQL/MariaDB is installed"
         # Additional MySQL checks
         if systemctl is-active --quiet mariadb || systemctl is-active --quiet mysql; then
             print_info "MySQL Service: Active"
-            
             # Test database connection
             if mysql -u root -padmin123 -e "SELECT 1;" >/dev/null 2>&1; then
                 print_success "MySQL Connection: OK"
             else
                 print_warning "MySQL Connection: Failed (check credentials)"
             fi
-            
             # Check database count
             local db_count=$(mysql -u root -padmin123 -e "SHOW DATABASES;" 2>/dev/null | wc -l)
             if [[ $db_count -gt 0 ]]; then
                 print_info "MySQL Databases: $((db_count - 1)) found"
             fi
+        else
+            print_warning "MySQL/MariaDB service is not running"
         fi
     else
-        print_warning "MySQL/MariaDB not installed or not running"
+        print_warning "MySQL/MariaDB is not installed"
     fi
-    
+
     # Check PostgreSQL
     echo ""
     print_substep "PostgreSQL Check:"
-    if check_postgresql; then
+    if command -v psql >/dev/null 2>&1; then
         postgresql_status=1
-        
+        print_success "PostgreSQL is installed"
         # Additional PostgreSQL checks
         if systemctl is-active --quiet postgresql; then
             print_info "PostgreSQL Service: Active"
-            
             # Test database connection
             if sudo -u postgres psql -c "SELECT 1;" >/dev/null 2>&1; then
                 print_success "PostgreSQL Connection: OK"
             else
                 print_warning "PostgreSQL Connection: Failed"
             fi
-            
             # Check database count
             local pg_db_count=$(sudo -u postgres psql -t -c "SELECT count(*) FROM pg_database WHERE datistemplate = false;" 2>/dev/null | tr -d ' ')
             if [[ -n "$pg_db_count" ]] && [[ $pg_db_count -gt 0 ]]; then
                 print_info "PostgreSQL Databases: $pg_db_count found"
             fi
+        else
+            print_warning "PostgreSQL service is not running"
         fi
     else
-        print_warning "PostgreSQL not installed or not running"
+        print_warning "PostgreSQL is not installed"
     fi
     
     echo ""

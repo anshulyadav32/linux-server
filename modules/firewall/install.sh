@@ -31,7 +31,8 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-# Function to install firewall tools
+
+# Modular install and test functions for firewall tools
 install_firewall_tools() {
     echo -e "${YELLOW}Installing firewall tools...${NC}"
     if [ -f /etc/os-release ]; then
@@ -53,33 +54,44 @@ install_firewall_tools() {
     fi
 }
 
-# Function to configure UFW
+test_firewall_tools() {
+    local errors=0
+    for tool in ufw fail2ban logwatch; do
+        if ! command -v $tool &> /dev/null; then
+            echo -e "${RED}✗ $tool is not installed${NC}"
+            errors=$((errors + 1))
+        else
+            echo -e "${GREEN}✓ $tool is installed${NC}"
+        fi
+    done
+    return $errors
+}
+
+
 configure_ufw() {
     echo -e "${YELLOW}Configuring UFW...${NC}"
-    
-    # Reset UFW to default state
     ufw --force reset
-    
-    # Set default policies
     ufw default deny incoming
     ufw default allow outgoing
-    
-    # Allow SSH (modify port if needed)
     ufw allow 22/tcp
-    
-    # Allow HTTP and HTTPS
     ufw allow 80/tcp
     ufw allow 443/tcp
-    
-    # Enable UFW
     ufw --force enable
 }
 
-# Function to configure Fail2Ban
+test_ufw() {
+    if ufw status | grep -q "Status: active"; then
+        echo -e "${GREEN}✓ UFW is active${NC}"
+        return 0
+    else
+        echo -e "${RED}✗ UFW is not active${NC}"
+        return 1
+    fi
+}
+
+
 configure_fail2ban() {
     echo -e "${YELLOW}Configuring Fail2Ban...${NC}"
-    
-    # Create Fail2Ban configuration
     cat > /etc/fail2ban/jail.local << 'EOF'
 [DEFAULT]
 bantime = 3600
@@ -107,16 +119,27 @@ port = http,https
 logpath = /var/log/nginx/error.log
 maxretry = 3
 EOF
-    
-    # Restart Fail2Ban
-    systemctl restart fail2ban
 }
 
-# Function to configure log monitoring
+test_fail2ban() {
+    if [ -f /etc/fail2ban/jail.local ]; then
+        echo -e "${GREEN}✓ Fail2Ban configuration exists${NC}"
+    else
+        echo -e "${RED}✗ Fail2Ban configuration is missing${NC}"
+        return 1
+    fi
+    if command -v fail2ban-client &> /dev/null; then
+        fail2ban-client status &> /dev/null && echo -e "${GREEN}✓ Fail2Ban is running${NC}" || { echo -e "${RED}✗ Fail2Ban is not running${NC}"; return 1; }
+    else
+        echo -e "${RED}✗ fail2ban-client not found${NC}"
+        return 1
+    fi
+    return 0
+}
+
+
 configure_logwatch() {
     echo -e "${YELLOW}Configuring Logwatch...${NC}"
-    
-    # Create Logwatch configuration
     cat > /etc/logwatch/conf/logwatch.conf << 'EOF'
 LogDir = /var/log
 TmpDir = /var/cache/logwatch
@@ -127,9 +150,23 @@ Service = All
 Range = yesterday
 Format = html
 EOF
-    
-    # Add daily Logwatch job to crontab
     (crontab -l 2>/dev/null || true; echo "0 5 * * * /usr/sbin/logwatch --output mail") | crontab -
+}
+
+test_logwatch() {
+    if [ -f /etc/logwatch/conf/logwatch.conf ]; then
+        echo -e "${GREEN}✓ Logwatch configuration exists${NC}"
+    else
+        echo -e "${RED}✗ Logwatch configuration is missing${NC}"
+        return 1
+    fi
+    if command -v logwatch &> /dev/null; then
+        echo -e "${GREEN}✓ Logwatch is installed${NC}"
+        return 0
+    else
+        echo -e "${RED}✗ Logwatch is not installed${NC}"
+        return 1
+    fi
 }
 
 # Function to validate firewall setup
@@ -181,45 +218,36 @@ validate_firewall_setup() {
     return $errors
 }
 
-# Main installation flow
+
+# Modular main installation flow
 echo -e "${YELLOW}Starting firewall system installation...${NC}"
 
-# Install required tools
-install_firewall_tools
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Failed to install firewall tools${NC}"
-    exit 1
-fi
+test_firewall_tools || { echo -e "${RED}Failed to install firewall tools${NC}"; exit 1; }
+test_ufw || { echo -e "${RED}Failed to configure UFW${NC}"; exit 1; }
+test_fail2ban || { echo -e "${RED}Failed to configure Fail2Ban${NC}"; exit 1; }
+test_logwatch || { echo -e "${RED}Failed to configure log monitoring${NC}"; exit 1; }
+error_count=0
+# Step 1: Install required tools
+install_firewall_tools || { echo -e "${RED}Failed to install firewall tools${NC}"; error_count=$((error_count+1)); }
+test_firewall_tools || { echo -e "${RED}Failed to test firewall tools${NC}"; error_count=$((error_count+1)); }
 
-# Configure UFW
-configure_ufw
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Failed to configure UFW${NC}"
-    exit 1
-fi
+# Step 2: Configure UFW
+configure_ufw || { echo -e "${RED}Failed to configure UFW${NC}"; error_count=$((error_count+1)); }
+test_ufw || { echo -e "${RED}Failed to test UFW${NC}"; error_count=$((error_count+1)); }
 
-# Configure Fail2Ban
-configure_fail2ban
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Failed to configure Fail2Ban${NC}"
-    exit 1
-fi
+# Step 3: Configure Fail2Ban
+configure_fail2ban || { echo -e "${RED}Failed to configure Fail2Ban${NC}"; error_count=$((error_count+1)); }
+test_fail2ban || { echo -e "${RED}Failed to test Fail2Ban${NC}"; error_count=$((error_count+1)); }
 
-# Configure log monitoring
-configure_logwatch
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Failed to configure log monitoring${NC}"
-    exit 1
-fi
+# Step 4: Configure log monitoring
+configure_logwatch || { echo -e "${RED}Failed to configure log monitoring${NC}"; error_count=$((error_count+1)); }
+test_logwatch || { echo -e "${RED}Failed to test log monitoring${NC}"; error_count=$((error_count+1)); }
 
-# Validate installation
-validate_firewall_setup
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Firewall system validation failed${NC}"
-    exit 1
+if [ "$error_count" -eq 0 ]; then
+    echo -e "${GREEN}Firewall system installation completed successfully${NC}"
+else
+    echo -e "${YELLOW}Firewall installation completed with $error_count error(s). See above for details.${NC}"
 fi
-
-echo -e "${GREEN}Firewall system installation completed successfully${NC}"
 echo -e "${YELLOW}Remember to verify UFW rules with: ufw status verbose${NC}"
 echo -e "${YELLOW}Check Fail2Ban status with: fail2ban-client status${NC}"
 

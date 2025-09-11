@@ -227,60 +227,61 @@ main() {
   log_info "Starting webserver installation..."
   check_root
 
+  error_count=0
+
   log_info "Stopping any running services..."
-  # Use service commands for WSL compatibility
   service apache2 stop || true
   service nginx stop || true
   service php8.3-fpm stop || true
 
   # --- Apache ---
   log_info "Installing Apache..."
-  install_packages
+  install_packages || { log_error "Apache install_packages failed"; error_count=$((error_count+1)); }
   log_info "Configuring Apache..."
-  configure_apache
+  configure_apache || { log_error "Apache configuration failed"; error_count=$((error_count+1)); }
   log_info "Starting Apache..."
-  service apache2 start
+  service apache2 start || { log_error "Apache start failed"; error_count=$((error_count+1)); }
   sleep 2
-  service apache2 status >/dev/null 2>&1 && log_success "Apache is running" || { log_error "Apache failed"; exit 1; }
+  service apache2 status >/dev/null 2>&1 && log_success "Apache is running" || { log_error "Apache failed"; error_count=$((error_count+1)); }
 
   # --- Nginx ---
   log_info "Installing Nginx..."
   # Nginx is installed with install_packages
   log_info "Configuring Nginx..."
-  configure_nginx
+  configure_nginx || { log_error "Nginx configuration failed"; error_count=$((error_count+1)); }
   log_info "Starting Nginx..."
-  service nginx start
+  service nginx start || { log_error "Nginx start failed"; error_count=$((error_count+1)); }
   sleep 2
-  service nginx status >/dev/null 2>&1 && log_success "Nginx is running" || { log_error "Nginx failed"; exit 1; }
+  service nginx status >/dev/null 2>&1 && log_success "Nginx is running" || { log_error "Nginx failed"; error_count=$((error_count+1)); }
 
   # --- PHP ---
   log_info "Installing PHP..."
   # PHP is installed with install_packages
   log_info "Configuring PHP..."
-  configure_php
+  configure_php || { log_error "PHP configuration failed"; error_count=$((error_count+1)); }
   log_info "Starting PHP-FPM..."
-  service php8.3-fpm start
+  service php8.3-fpm start || { log_error "PHP-FPM start failed"; error_count=$((error_count+1)); }
   sleep 2
-  service php8.3-fpm status >/dev/null 2>&1 && log_success "php8.3-fpm is running" || { log_error "PHP-FPM failed"; exit 1; }
+  service php8.3-fpm status >/dev/null 2>&1 && log_success "php8.3-fpm is running" || { log_error "PHP-FPM failed"; error_count=$((error_count+1)); }
 
   # --- Final Verification ---
   log_info "Verifying webserver stack..."
   sleep 2
   local all_ok=1
   if command -v curl >/dev/null; then
-    curl -s -f http://localhost:80 >/dev/null && log_success "Port 80 (Nginx) responding" || { log_error "Port 80 failed"; all_ok=0; }
-    curl -s -f http://localhost:8080 >/dev/null && log_success "Port 8080 (Apache) responding" || { log_error "Port 8080 failed"; all_ok=0; }
+    curl -s -f http://localhost:80 >/dev/null && log_success "Port 80 (Nginx) responding" || { log_error "Port 80 failed"; all_ok=0; error_count=$((error_count+1)); }
+    curl -s -f http://localhost:8080 >/dev/null && log_success "Port 8080 (Apache) responding" || { log_error "Port 8080 failed"; all_ok=0; error_count=$((error_count+1)); }
   fi
 
   # --- Summary Check ---
   log_info "Summary of component status:"
-  service apache2 status >/dev/null 2>&1 && log_success "Apache2: running" || log_error "Apache2: not running"
-  service nginx status >/dev/null 2>&1 && log_success "Nginx: running" || log_error "Nginx: not running"
-  service php8.3-fpm status >/dev/null 2>&1 && log_success "PHP-FPM: running" || log_error "PHP-FPM: not running"
-  if [[ $all_ok -eq 1 ]]; then
+  service apache2 status >/dev/null 2>&1 && log_success "Apache2: running" || { log_error "Apache2: not running"; error_count=$((error_count+1)); }
+  service nginx status >/dev/null 2>&1 && log_success "Nginx: running" || { log_error "Nginx: not running"; error_count=$((error_count+1)); }
+  service php8.3-fpm status >/dev/null 2>&1 && log_success "PHP-FPM: running" || { log_error "PHP-FPM: not running"; error_count=$((error_count+1)); }
+  if [[ $all_ok -eq 1 && $error_count -eq 0 ]]; then
     log_success "All components are installed and responding."
   else
-    log_warning "Some components failed port checks."
+    log_warning "Webserver installation completed with $error_count error(s). See above for details."
   fi
 }
 

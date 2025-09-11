@@ -51,61 +51,61 @@ main() {
     
     # Individual component checks
     print_step "Checking individual DNS components..."
-    
+
     # Check BIND9
     echo ""
     print_substep "BIND9 DNS Server Check:"
-    if check_bind9; then
+    if command -v named >/dev/null 2>&1; then
         bind9_status=1
-        
+        print_success "BIND9 is installed"
         # Additional BIND9 checks
         if systemctl is-active --quiet bind9 || systemctl is-active --quiet named; then
             print_info "BIND9 Service: Active"
-            
             # Test DNS resolution
             if nslookup localhost 127.0.0.1 >/dev/null 2>&1; then
                 print_success "DNS Resolution: OK"
             else
                 print_warning "DNS Resolution: Failed"
             fi
-            
             # Check configuration
             if named-checkconf >/dev/null 2>&1; then
                 print_success "BIND9 Configuration: Valid"
             else
                 print_warning "BIND9 Configuration: Issues detected"
             fi
+        else
+            print_warning "BIND9 service is not running"
         fi
     else
-        print_info "BIND9 not installed or not running"
+        print_info "BIND9 is not installed"
     fi
-    
+
     # Check dnsmasq
     echo ""
     print_substep "dnsmasq DNS Server Check:"
-    if check_dnsmasq; then
+    if command -v dnsmasq >/dev/null 2>&1; then
         dnsmasq_status=1
-        
+        print_success "dnsmasq is installed"
         # Additional dnsmasq checks
         if systemctl is-active --quiet dnsmasq; then
             print_info "dnsmasq Service: Active"
-            
             # Test DNS resolution
             if nslookup localhost 127.0.0.1 >/dev/null 2>&1; then
                 print_success "DNS Resolution: OK"
             else
                 print_warning "DNS Resolution: Failed"
             fi
-            
             # Check configuration
             if dnsmasq --test >/dev/null 2>&1; then
                 print_success "dnsmasq Configuration: Valid"
             else
                 print_warning "dnsmasq Configuration: Issues detected"
             fi
+        else
+            print_warning "dnsmasq service is not running"
         fi
     else
-        print_info "dnsmasq not installed or not running"
+        print_info "dnsmasq is not installed"
     fi
     
     echo ""

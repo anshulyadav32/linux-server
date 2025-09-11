@@ -155,35 +155,24 @@ validate_ssl_setup() {
 # Main installation flow
 echo -e "${YELLOW}Starting SSL system installation...${NC}"
 
+error_count=0
 # Install required tools
-install_ssl_tools
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Failed to install SSL tools${NC}"
-    exit 1
-fi
+install_ssl_tools || { echo -e "${RED}Failed to install SSL tools${NC}"; error_count=$((error_count+1)); }
 
 # Setup SSL directories
-setup_ssl_dirs
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Failed to setup SSL directories${NC}"
-    exit 1
-fi
+setup_ssl_dirs || { echo -e "${RED}Failed to setup SSL directories${NC}"; error_count=$((error_count+1)); }
 
 # Setup certificate renewal
-setup_cert_renewal
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Failed to setup certificate renewal${NC}"
-    exit 1
-fi
+setup_cert_renewal || { echo -e "${RED}Failed to setup certificate renewal${NC}"; error_count=$((error_count+1)); }
 
 # Validate installation
-validate_ssl_setup
-if [ $? -ne 0 ]; then
-    echo -e "${RED}SSL system validation failed${NC}"
-    exit 1
-fi
+validate_ssl_setup || { echo -e "${RED}SSL system validation failed${NC}"; error_count=$((error_count+1)); }
 
-echo -e "${GREEN}SSL system installation completed successfully${NC}"
+if [ "$error_count" -eq 0 ]; then
+    echo -e "${GREEN}SSL system installation completed successfully${NC}"
+else
+    echo -e "${YELLOW}SSL installation completed with $error_count error(s). See above for details.${NC}"
+fi
 echo -e "${YELLOW}To create a self-signed certificate use: create_self_signed_cert domain.com email@domain.com${NC}"
 echo -e "${YELLOW}To request a Let's Encrypt certificate use: request_letsencrypt_cert domain.com email@domain.com${NC}"
 
@@ -207,21 +196,23 @@ install_ssl
 
 # Install web server if not present
 echo -e "\n${YELLOW}[3/6] Checking web server...${NC}"
-if ! systemctl is-active --quiet apache2 && ! systemctl is-active --quiet nginx; then
+# WSL compatibility: systemctl/service not available, check process instead
+if ! pgrep apache2 >/dev/null && ! pgrep nginx >/dev/null; then
     echo -e "${YELLOW}No web server found. Installing Apache...${NC}"
     apt install -y apache2
-    systemctl enable apache2
-    systemctl start apache2
+    # In WSL, start Apache manually
+    service apache2 start || (echo -e "${YELLOW}Could not start Apache automatically. Please run: sudo service apache2 start${NC}")
 fi
 
 # Enable SSL modules
 echo -e "\n${YELLOW}[4/6] Enabling SSL modules...${NC}"
-if systemctl is-active --quiet apache2; then
+if pgrep apache2 >/dev/null; then
     a2enmod ssl
     a2enmod rewrite
-    systemctl restart apache2
-elif systemctl is-active --quiet nginx; then
-    systemctl restart nginx
+    service apache2 restart || (echo -e "${YELLOW}Could not restart Apache automatically. Please run: sudo service apache2 restart${NC}")
+elif pgrep nginx >/dev/null; then
+    # For nginx, just restart if running
+    service nginx restart || (echo -e "${YELLOW}Could not restart nginx automatically. Please run: sudo service nginx restart${NC}")
 fi
 
 # Configure firewall
@@ -246,11 +237,9 @@ if [[ -n "$domain" && -n "$email" ]]; then
     # Request certificate
     if certbot certonly --webroot -w /var/www/html -d "$domain" --email "$email" --agree-tos --non-interactive; then
         echo -e "${GREEN}SSL certificate successfully installed for $domain${NC}"
-        
-        # Setup auto-renewal
-        echo "0 3 * * * root certbot renew --quiet && systemctl reload apache2 nginx" > /etc/cron.d/ssl_renew
+        # Setup auto-renewal (WSL: no systemctl reload)
+        echo "0 3 * * * root certbot renew --quiet && service apache2 reload && service nginx reload" > /etc/cron.d/ssl_renew
         echo -e "${GREEN}Auto-renewal configured${NC}"
-        
         # Test certificate
         test_ssl_certificate "$domain"
     else
