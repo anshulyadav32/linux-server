@@ -190,9 +190,15 @@ fi
 echo -e "\n${YELLOW}[1/6] Updating system packages...${NC}"
 apt update && apt upgrade -y
 
-# Install SSL tools
 echo -e "\n${YELLOW}[2/6] Installing SSL tools...${NC}"
-install_ssl
+# WSL detection
+if grep -qiE 'microsoft|wsl' /proc/version; then
+    echo -e "${YELLOW}WSL detected: Skipping snapd-dependent Certbot steps. Certbot will be installed via apt only.${NC}"
+    apt-get update
+    apt-get install -y certbot openssl apache2-utils
+else
+    install_ssl
+fi
 
 # Install web server if not present
 echo -e "\n${YELLOW}[3/6] Checking web server...${NC}"
@@ -223,28 +229,32 @@ if command -v ufw >/dev/null 2>&1; then
     echo -e "${GREEN}Firewall configured for HTTP/HTTPS${NC}"
 fi
 
-# Request SSL certificate
 echo -e "\n${YELLOW}[6/6] SSL Certificate Setup${NC}"
 read -p "Enter domain for SSL certificate (e.g., example.com): " domain
 read -p "Enter email for Let's Encrypt registration: " email
 
 if [[ -n "$domain" && -n "$email" ]]; then
     echo -e "${YELLOW}Requesting SSL certificate for $domain...${NC}"
-    
-    # Create webroot if it doesn't exist
     mkdir -p /var/www/html
-    
-    # Request certificate
-    if certbot certonly --webroot -w /var/www/html -d "$domain" --email "$email" --agree-tos --non-interactive; then
-        echo -e "${GREEN}SSL certificate successfully installed for $domain${NC}"
-        # Setup auto-renewal (WSL: no systemctl reload)
-        echo "0 3 * * * root certbot renew --quiet && service apache2 reload && service nginx reload" > /etc/cron.d/ssl_renew
-        echo -e "${GREEN}Auto-renewal configured${NC}"
-        # Test certificate
-        test_ssl_certificate "$domain"
+    # WSL detection for certbot compatibility
+    if grep -qiE 'microsoft|wsl' /proc/version; then
+        if certbot certonly --webroot -w /var/www/html -d "$domain" --email "$email" --agree-tos --non-interactive; then
+            echo -e "${GREEN}SSL certificate successfully installed for $domain${NC}"
+            echo "0 3 * * * root certbot renew --quiet && service apache2 reload && service nginx reload" > /etc/cron.d/ssl_renew
+            echo -e "${GREEN}Auto-renewal configured${NC}"
+        else
+            echo -e "${RED}Failed to install SSL certificate (WSL detected, snapd features unavailable)${NC}"
+            echo -e "${YELLOW}Try manual certbot commands or use self-signed certificates in WSL.${NC}"
+        fi
     else
-        echo -e "${RED}Failed to install SSL certificate${NC}"
-        exit 1
+        if certbot certonly --webroot -w /var/www/html -d "$domain" --email "$email" --agree-tos --non-interactive; then
+            echo -e "${GREEN}SSL certificate successfully installed for $domain${NC}"
+            echo "0 3 * * * root certbot renew --quiet && service apache2 reload && service nginx reload" > /etc/cron.d/ssl_renew
+            echo -e "${GREEN}Auto-renewal configured${NC}"
+        else
+            echo -e "${RED}Failed to install SSL certificate${NC}"
+            exit 1
+        fi
     fi
 else
     echo -e "${YELLOW}Skipping certificate installation (no domain/email provided)${NC}"
