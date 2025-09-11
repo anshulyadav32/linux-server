@@ -51,64 +51,54 @@ main() {
     
     # Individual component checks
     print_step "Checking individual firewall components..."
-    
+
     # Check UFW
     echo ""
     print_substep "UFW Firewall Check:"
-    if systemctl is-active --quiet ufw && ufw status | grep -q "Status: active"; then
-        ufw_status=1
-        print_success "UFW Service: Active"
-        
-        # Show UFW status
-        local ufw_rules=$(ufw status numbered 2>/dev/null | grep -c "^\[")
-        print_info "UFW Rules: $ufw_rules configured"
-        
-        # Check default policies
-        local incoming_policy=$(ufw status verbose 2>/dev/null | grep "Default:" | awk '{print $2}')
-        local outgoing_policy=$(ufw status verbose 2>/dev/null | grep "Default:" | awk '{print $4}')
-        print_info "Default Policy: Incoming=$incoming_policy, Outgoing=$outgoing_policy"
-    else
-        print_warning "UFW not active or not installed"
-        
-        # Check if UFW is installed but not active
-        if command -v ufw >/dev/null 2>&1; then
-            print_info "UFW is installed but not enabled"
+    if command -v ufw >/dev/null 2>&1; then
+        if systemctl is-active --quiet ufw && ufw status | grep -q "Status: active"; then
+            ufw_status=1
+            print_success "UFW Service: Active"
+            # Show UFW status
+            local ufw_rules=$(ufw status numbered 2>/dev/null | grep -c "^\[")
+            print_info "UFW Rules: $ufw_rules configured"
+            # Check default policies
+            local incoming_policy=$(ufw status verbose 2>/dev/null | grep "Default:" | awk '{print $2}')
+            local outgoing_policy=$(ufw status verbose 2>/dev/null | grep "Default:" | awk '{print $4}')
+            print_info "Default Policy: Incoming=$incoming_policy, Outgoing=$outgoing_policy"
         else
-            print_error "UFW is not installed"
+            print_warning "UFW is installed but not active"
         fi
+    else
+        print_error "UFW is not installed"
     fi
-    
+
     # Check Fail2Ban
     echo ""
     print_substep "Fail2Ban Check:"
-    if systemctl is-active --quiet fail2ban; then
-        fail2ban_status=1
-        print_success "Fail2Ban Service: Active"
-        
-        # Show active jails
-        if command -v fail2ban-client >/dev/null 2>&1; then
-            local active_jails=$(fail2ban-client status 2>/dev/null | grep "Jail list:" | cut -d: -f2 | tr ',' '\n' | wc -w)
-            print_info "Fail2Ban Jails: $active_jails active"
-            
-            # Show banned IPs count
-            local banned_ips=0
-            for jail in $(fail2ban-client status 2>/dev/null | grep "Jail list:" | cut -d: -f2 | tr ',' ' '); do
-                local jail_banned=$(fail2ban-client status $jail 2>/dev/null | grep "Currently banned:" | awk '{print $3}' | head -1)
-                if [[ -n "$jail_banned" && "$jail_banned" =~ ^[0-9]+$ ]]; then
-                    banned_ips=$((banned_ips + jail_banned))
-                fi
-            done
-            print_info "Currently Banned IPs: $banned_ips"
+    if command -v fail2ban-server >/dev/null 2>&1; then
+        if systemctl is-active --quiet fail2ban; then
+            fail2ban_status=1
+            print_success "Fail2Ban Service: Active"
+            # Show active jails
+            if command -v fail2ban-client >/dev/null 2>&1; then
+                local active_jails=$(fail2ban-client status 2>/dev/null | grep "Jail list:" | cut -d: -f2 | tr ',' '\n' | wc -w)
+                print_info "Fail2Ban Jails: $active_jails active"
+                # Show banned IPs count
+                local banned_ips=0
+                for jail in $(fail2ban-client status 2>/dev/null | grep "Jail list:" | cut -d: -f2 | tr ',' ' '); do
+                    local jail_banned=$(fail2ban-client status $jail 2>/dev/null | grep "Currently banned:" | awk '{print $3}' | head -1)
+                    if [[ -n "$jail_banned" && "$jail_banned" =~ ^[0-9]+$ ]]; then
+                        banned_ips=$((banned_ips + jail_banned))
+                    fi
+                done
+                print_info "Currently Banned IPs: $banned_ips"
+            fi
+        else
+            print_warning "Fail2Ban is installed but not running"
         fi
     else
-        print_warning "Fail2Ban not running or not installed"
-        
-        # Check if Fail2Ban is installed but not running
-        if command -v fail2ban-server >/dev/null 2>&1; then
-            print_info "Fail2Ban is installed but not running"
-        else
-            print_error "Fail2Ban is not installed"
-        fi
+        print_error "Fail2Ban is not installed"
     fi
     
     echo ""

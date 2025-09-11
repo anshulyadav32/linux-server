@@ -51,39 +51,34 @@ main() {
     
     # Individual component checks
     print_step "Checking individual SSL components..."
-    
+
     # Check Certbot
     echo ""
     print_substep "Certbot Check:"
     if command -v certbot >/dev/null 2>&1; then
         certbot_status=1
         print_success "Certbot is installed"
-        
+        # ...existing Certbot checks...
         # Check Certbot version
         local certbot_version=$(certbot --version 2>&1 | awk '{print $2}')
         print_info "Certbot Version: $certbot_version"
-        
         # Check for existing certificates
         local cert_count=0
         if [[ -d /etc/letsencrypt/live ]]; then
             cert_count=$(ls -1 /etc/letsencrypt/live 2>/dev/null | wc -l)
         fi
-        
         if [[ $cert_count -gt 0 ]]; then
             print_success "SSL Certificates: $cert_count domains found"
-            
             # Check certificate expiration
             for domain_dir in /etc/letsencrypt/live/*/; do
                 if [[ -d "$domain_dir" ]]; then
                     local domain=$(basename "$domain_dir")
                     local cert_file="$domain_dir/cert.pem"
-                    
                     if [[ -f "$cert_file" ]]; then
                         local expiry_date=$(openssl x509 -in "$cert_file" -noout -enddate 2>/dev/null | cut -d= -f2)
                         local expiry_epoch=$(date -d "$expiry_date" +%s 2>/dev/null)
                         local current_epoch=$(date +%s)
                         local days_until_expiry=$(( (expiry_epoch - current_epoch) / 86400 ))
-                        
                         if [[ $days_until_expiry -gt 30 ]]; then
                             print_success "$domain: Valid for $days_until_expiry days"
                         elif [[ $days_until_expiry -gt 7 ]]; then
@@ -97,43 +92,38 @@ main() {
         else
             print_info "No SSL certificates found"
         fi
-        
         # Check Certbot auto-renewal
         if crontab -l 2>/dev/null | grep -q certbot || systemctl list-timers 2>/dev/null | grep -q certbot; then
             print_success "Certbot auto-renewal: Configured"
         else
             print_warning "Certbot auto-renewal: Not configured"
         fi
-        
     else
         print_error "Certbot is not installed"
     fi
-    
+
     # Check OpenSSL
     echo ""
     print_substep "OpenSSL Check:"
     if command -v openssl >/dev/null 2>&1; then
         openssl_status=1
         print_success "OpenSSL is installed"
-        
+        # ...existing OpenSSL checks...
         # Check OpenSSL version
         local openssl_version=$(openssl version 2>/dev/null | awk '{print $2}')
         print_info "OpenSSL Version: $openssl_version"
-        
         # Check for DH parameters
         if [[ -f /etc/ssl/certs/dhparam.pem ]]; then
             print_success "DH Parameters: Available"
         else
             print_warning "DH Parameters: Not found"
         fi
-        
         # Check SSL directories
         if [[ -d /etc/ssl/private && -d /etc/ssl/certs ]]; then
             print_success "SSL Directories: Properly configured"
         else
             print_warning "SSL Directories: Missing or misconfigured"
         fi
-        
     else
         print_error "OpenSSL is not installed"
     fi

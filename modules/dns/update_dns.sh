@@ -236,5 +236,12 @@ case "${1:-}" in
         ;;
 esac
 
-# Execute main function
-main "$@"
+# Export update_dns function for orchestration
+update_dns() {
+    main "$@"
+}
+
+# Execute main function if run directly
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    main "$@"
+fi

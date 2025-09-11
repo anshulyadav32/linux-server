@@ -281,5 +281,12 @@ case "${1:-}" in
         ;;
 esac
 
-# Execute main function
-main "$@"
+# Export update_ssl function for orchestration
+update_ssl() {
+    main "$@"
+}
+
+# Execute main function if run directly
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    main "$@"
+fi
