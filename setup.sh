@@ -52,6 +52,13 @@ main() {
       echo "[HINT] Fix the error above and rerun setup.sh."
       exit 1
     fi
+
+    log "Running final health check (check-server.sh)..."
+    if bash check-server.sh; then
+      log "All modules passed health checks."
+    else
+      log "[WARN] Some modules reported issues. See above for details."
+    fi
 }
 
 main "$@"
