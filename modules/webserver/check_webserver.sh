@@ -168,56 +168,81 @@ main() {
     
     if [[ $apache_status -eq 1 ]]; then
         print_success "✓ Apache: Operational"
+        if command -v apache2ctl >/dev/null 2>&1; then
+            apache_modules=$(apache2ctl -M 2>/dev/null | wc -l)
+            print_info "Apache Modules: $apache_modules loaded"
+        fi
     else
-        print_info "○ Apache: Not installed"
+        if command -v apache2 >/dev/null 2>&1; then
+            if systemctl is-active --quiet apache2; then
+                print_success "Apache is installed and running"
+            else
+                print_warning "Apache is installed but not running"
+            fi
+        else
+            print_error "Apache is not installed"
+        fi
     fi
     
     if [[ $nginx_status -eq 1 ]]; then
         print_success "✓ Nginx: Operational"
+        if command -v nginx >/dev/null 2>&1; then
+            nginx_config=$(nginx -T 2>/dev/null | wc -l)
+            print_info "Nginx Config Lines: $nginx_config"
+        fi
     else
-        print_info "○ Nginx: Not installed"
+        if command -v nginx >/dev/null 2>&1; then
+            if systemctl is-active --quiet nginx; then
+                print_success "Nginx is installed and running"
+            else
+                print_warning "Nginx is installed but not running"
+            fi
+        else
+            print_error "Nginx is not installed"
+        fi
     fi
     
-    if [[ $php_status -eq 1 ]]; then
-        print_success "✓ PHP: Operational"
+    if command -v php >/dev/null 2>&1; then
+        if systemctl is-active --quiet php8.3-fpm; then
+            php_version=$(php -v 2>/dev/null | head -n1)
+            print_info "PHP Version: $php_version"
+        else
+            print_warning "PHP-FPM is installed but not running"
+        fi
     else
-        print_info "○ PHP: Not installed"
+        print_error "PHP is not installed"
     fi
-    
-    if [[ $apache_status -eq 1 || $nginx_status -eq 1 ]]; then
-        print_success "Webserver module is operational"
-        exit 0
-    else
-        print_warning "No web servers are currently operational"
-        print_info "Run 'sudo bash install.sh' to install webserver services"
-        exit 2
-    fi
-}
-
-# =============================================================================
-# SCRIPT EXECUTION
 # =============================================================================
 
 # Handle command line arguments
 case "${1:-}" in
-    --help|-h)
+        if command -v nginx >/dev/null 2>&1; then
+            if systemctl is-active --quiet nginx; then
         echo "Usage: $0 [options]"
         echo ""
-        echo "Options:"
-        echo "  --help, -h     Show this help message"
-        echo "  --quiet, -q    Quiet mode (minimal output)"
-        echo "  --verbose, -v  Verbose mode (detailed output)"
-        echo ""
-        echo "This script checks the health and status of webserver services."
-        exit 0
-        ;;
-    --quiet|-q)
-        QUIET_MODE=1
-        ;;
+                # Show Nginx config
+                local nginx_config=$(nginx -T 2>/dev/null | wc -l)
+                print_info "Nginx Config Lines: $nginx_config"
+            else
+                print_warning "Nginx is installed but not running"
+            fi
+        else
+            print_error "Nginx is not installed"
+        fi
     --verbose|-v)
         VERBOSE_MODE=1
         ;;
 esac
-
+        if command -v php >/dev/null 2>&1; then
+            if systemctl is-active --quiet php8.3-fpm; then
 # Execute main function
 main "$@"
+                # Show PHP version
+                local php_version=$(php -v 2>/dev/null | head -n1)
+                print_info "PHP Version: $php_version"
+            else
+                print_warning "PHP-FPM is installed but not running"
+            fi
+        else
+            print_error "PHP is not installed"
+        fi
