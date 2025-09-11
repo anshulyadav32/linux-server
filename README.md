@@ -21,6 +21,13 @@ A comprehensive, production-ready automation framework for Linux server deployme
 
 ## 🚀 Quick Installation
 
+### For WSL Users (Recommended)
+```bash
+git clone https://github.com/anshulyadav32/linux-server.git
+cd linux-server
+./scripts/wsl-setup.sh setup
+```
+
 ### One-Command Installation
 Deploy the complete server stack with a single command:
 ```bash
@@ -288,9 +295,40 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Issues & Support**: [GitHub Issues](https://github.com/anshulyadav32/linux-server/issues)
 - **Documentation**: [GitHub Pages](https://anshulyadav32.github.io/linux-server/)
 
+## 🐧 WSL (Windows Subsystem for Linux) Support
+
+**NEW: Complete WSL support with automated setup!**
+
+For WSL users, we provide dedicated tools to handle line ending issues and root access:
+
+### Quick WSL Setup
+```bash
+# Clone and setup in one command
+git clone https://github.com/anshulyadav32/linux-server.git
+cd linux-server
+./scripts/wsl-setup.sh setup
+```
+
+### WSL-Specific Commands
+```bash
+# Fix Windows line ending issues
+./scripts/fix-line-endings.sh
+
+# Get root access in WSL
+./scripts/wsl-setup.sh root
+# OR from Windows PowerShell: wsl -u root
+
+# Install with automatic WSL handling
+./scripts/wsl-setup.sh install
+```
+
+📖 **[Complete WSL Setup Guide](docs/WSL_SETUP.md)** - Detailed WSL instructions and troubleshooting
+
+---
+
 ## 💡 System Requirements
 
-- **OS**: Ubuntu 18.04+, Debian 9+, CentOS 7+, RHEL 7+
+- **OS**: Ubuntu 18.04+, Debian 9+, CentOS 7+, RHEL 7+, **WSL 2** (Windows 10/11)
 - **Memory**: Minimum 2GB RAM (4GB+ recommended)
 - **Storage**: Minimum 10GB free space
 - **Network**: Internet connection for package downloads
